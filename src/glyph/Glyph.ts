@@ -1,6 +1,6 @@
 import { cache } from '../decorators';
 import Path from './Path';
-import {isMark} from 'unicode-properties';
+import {isMark} from './isMark';
 import StandardNames from './StandardNames';
 
 /**

@@ -1,6 +1,5 @@
 import * as r from 'restructure';
 import { cache } from './decorators';
-import { logErrors } from './base';
 import Directory from './tables/directory';
 import tables from './tables';
 import CmapProcessor from './CmapProcessor';
@@ -48,12 +47,7 @@ export default class TTFFont {
     if (!(table.tag in this._tables)) {
       try {
         this._tables[table.tag] = this._decodeTable(table);
-      } catch (e) {
-        if (logErrors) {
-          console.error(`Error decoding table ${table.tag}`);
-          console.error(e.stack);
-        }
-      }
+      } catch {}
     }
 
     return this._tables[table.tag];

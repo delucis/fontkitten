@@ -1,9 +1,13 @@
-import { openSync } from 'fontkitten';
+import { open } from './helpers/util.js';
 import assert from 'assert';
 
 describe('glyph positioning', function () {
   describe('basic positioning', function () {
-    let font = openSync(new URL('data/SourceSansPro/SourceSansPro-Regular.otf', import.meta.url));
+    let font;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/SourceSansPro/SourceSansPro-Regular.otf', import.meta.url));
+    });
 
     it('should get a glyph width', () => assert.equal(font.getGlyph(5).advanceWidth, 615));
   });

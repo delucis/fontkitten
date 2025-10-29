@@ -1,10 +1,15 @@
-import { openSync } from 'fontkitten';
+import { open } from './helpers/util.js';
 import assert from 'assert';
 
 describe('glyphs', function () {
   describe('truetype glyphs', function () {
-    let font = openSync(new URL('data/OpenSans/OpenSans-Regular.ttf', import.meta.url));
-    let mada = openSync(new URL('data/Mada/Mada-VF.ttf', import.meta.url));
+    let font;
+    let mada;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/OpenSans/OpenSans-Regular.ttf', import.meta.url));
+      mada = await open(new URL('data/Mada/Mada-VF.ttf', import.meta.url));
+    });
 
     it('should get a TTFGlyph', function () {
       let glyph = font.getGlyph(39); // D
@@ -71,7 +76,11 @@ describe('glyphs', function () {
   });
 
   describe('CFF glyphs', function () {
-    let font = openSync(new URL('data/SourceSansPro/SourceSansPro-Regular.otf', import.meta.url));
+    let font;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/SourceSansPro/SourceSansPro-Regular.otf', import.meta.url));
+    });
 
     it('should get a CFFGlyph', function () {
       let glyph = font.getGlyph(5); // D
@@ -123,7 +132,11 @@ describe('glyphs', function () {
   });
 
   describe('CFF glyphs (CID font)', function () {
-    let font = openSync(new URL('data/NotoSansCJK/NotoSansCJKkr-Regular.otf', import.meta.url));
+    let font;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/NotoSansCJK/NotoSansCJKkr-Regular.otf', import.meta.url));
+    });
 
     it('should get a CFFGlyph', function () {
       let glyph = font.getGlyph(27); // :
@@ -172,7 +185,11 @@ describe('glyphs', function () {
   });
 
   describe('SBIX glyphs', function () {
-    let font = openSync(new URL('data/ss-emoji/ss-emoji-apple.ttf', import.meta.url));
+    let font;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/ss-emoji/ss-emoji-apple.ttf', import.meta.url));
+    });
 
     it('should get an SBIXGlyph', function () {
       let glyph = font.glyphsForString('😜')[0];
@@ -202,7 +219,11 @@ describe('glyphs', function () {
   });
 
   describe('COLR glyphs', function () {
-    let font = openSync(new URL('data/ss-emoji/ss-emoji-microsoft.ttf', import.meta.url));
+    let font;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/ss-emoji/ss-emoji-microsoft.ttf', import.meta.url));
+    });
 
     it('should get an SBIXGlyph', function () {
       let glyph = font.glyphsForString('😜')[0];
@@ -238,8 +259,13 @@ describe('glyphs', function () {
   });
 
   describe('WOFF ttf glyphs', function () {
-    let font = openSync(new URL('data/SourceSansPro/SourceSansPro-Regular.ttf.woff', import.meta.url));
-    let glyph = font.glyphsForString('D')[0];
+    let font;
+    let glyph;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/SourceSansPro/SourceSansPro-Regular.ttf.woff', import.meta.url));
+      glyph = font.glyphsForString('D')[0];
+    });
 
     it('should get the glyph name', function () {
       return assert.equal(glyph.name, 'D');
@@ -255,8 +281,13 @@ describe('glyphs', function () {
   });
 
   describe('WOFF otf glyphs', function () {
-    let font = openSync(new URL('data/SourceSansPro/SourceSansPro-Regular.otf.woff', import.meta.url));
-    let glyph = font.glyphsForString('D')[0];
+    let font;
+    let glyph;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/SourceSansPro/SourceSansPro-Regular.otf.woff', import.meta.url));
+      glyph = font.glyphsForString('D')[0];
+    });
 
     it('should get the glyph name', function () {
       return assert.equal(glyph.name, 'D');
@@ -272,9 +303,13 @@ describe('glyphs', function () {
   });
 
   describe('WOFF2 ttf glyph', function () {
-    let font = openSync(new URL('data/SourceSansPro/SourceSansPro-Regular.ttf.woff2', import.meta.url));
+    let font;
+    let glyph;
 
-    let glyph = font.glyphsForString('D')[0];
+    beforeEach(async () => {
+      font = await open(new URL('data/SourceSansPro/SourceSansPro-Regular.ttf.woff2', import.meta.url));
+      glyph = font.glyphsForString('D')[0];
+    });
 
     it('should get the glyph name', function () {
       return assert.equal(glyph.name, 'D');
@@ -309,9 +344,13 @@ describe('glyphs', function () {
   });
 
   describe('WOFF2 otf glyph', function () {
-    let font = openSync(new URL('data/SourceSansPro/SourceSansPro-Regular.otf.woff2', import.meta.url));
+    let font;
+    let glyph;
 
-    let glyph = font.glyphsForString('D')[0];
+    beforeEach(async () => {
+      font = await open(new URL('data/SourceSansPro/SourceSansPro-Regular.otf.woff2', import.meta.url));
+      glyph = font.glyphsForString('D')[0];
+    });
 
     it('should get the glyph name', function () {
       return assert.equal(glyph.name, 'D');

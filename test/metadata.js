@@ -1,8 +1,12 @@
-import { openSync } from 'fontkitten';
+import { open } from './helpers/util.js';
 import assert from 'assert';
 
 describe('metadata', function () {
-  let font = openSync(new URL('data/NotoSans/NotoSans.ttc', import.meta.url), 'NotoSans');
+  let font;
+
+  beforeEach(async () => {
+    font = await open(new URL('data/NotoSans/NotoSans.ttc', import.meta.url), 'NotoSans');
+  });
 
   it('has metadata properties', function () {
     assert.equal(font.fullName, 'Noto Sans');

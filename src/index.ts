@@ -1,15 +1,24 @@
-import { registerFormat } from './base';
+import { DecodeStream } from 'restructure';
 import TTFFont from './TTFFont';
 import WOFFFont from './WOFFFont';
 import WOFF2Font from './WOFF2Font';
 import TrueTypeCollection from './TrueTypeCollection';
 import DFont from './DFont';
 
-// Register font formats
-registerFormat(TTFFont);
-registerFormat(WOFFFont);
-registerFormat(WOFF2Font);
-registerFormat(TrueTypeCollection);
-registerFormat(DFont);
+const formats = [TTFFont, WOFFFont, WOFF2Font, TrueTypeCollection, DFont];
 
-export * from './base';
+export function create(buffer, postscriptName) {
+	for (let i = 0; i < formats.length; i++) {
+		let format = formats[i];
+		if (format.probe(buffer)) {
+			let font = new format(new DecodeStream(buffer));
+			if (postscriptName) {
+				return font.getFont(postscriptName);
+			}
+
+			return font;
+		}
+	}
+
+	throw new Error('Unknown font format');
+}

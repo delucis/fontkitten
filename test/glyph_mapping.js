@@ -1,9 +1,13 @@
-import { openSync } from 'fontkitten';
+import { open } from './helpers/util.js';
 import assert from 'assert';
 
 describe('character to glyph mapping', function () {
-  describe('basic cmap handling', function () {
-    let font = openSync(new URL('data/OpenSans/OpenSans-Regular.ttf', import.meta.url));
+  describe('basic cmap handling', () => {
+    let font;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/OpenSans/OpenSans-Regular.ttf', import.meta.url));
+    });
 
     it('should get characterSet', function () {
       assert(Array.isArray(font.characterSet));
@@ -29,14 +33,14 @@ describe('character to glyph mapping', function () {
       return assert.deepEqual(glyphs.map(g => g.codePoints), [[104], [101], [108], [108], [111]]);
     });
 
-    it('should support unicode variation selectors', function () {
-      let font = openSync(new URL('data/fonttest/TestCMAP14.otf', import.meta.url));
+    it('should support unicode variation selectors', async () => {
+      let font = await open(new URL('data/fonttest/TestCMAP14.otf', import.meta.url));
       let glyphs = font.glyphsForString('\u{82a6}\u{82a6}\u{E0100}\u{82a6}\u{E0101}');
       assert.deepEqual(glyphs.map(g => g.id), [1, 1, 2]);
     });
 
-    it('should support legacy encodings when no unicode cmap is found', function () {
-      let font = openSync(new URL('data/fonttest/TestCMAPMacTurkish.ttf', import.meta.url));
+    it('should support legacy encodings when no unicode cmap is found', async () => {
+      let font = await open(new URL('data/fonttest/TestCMAPMacTurkish.ttf', import.meta.url));
       let glyphs = font.glyphsForString("“ABÇĞIİÖŞÜ”");
       assert.deepEqual(glyphs.map(g => g.id), [200, 34, 35, 126, 176, 42, 178, 140, 181, 145, 201]);
     });

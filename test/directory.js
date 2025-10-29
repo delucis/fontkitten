@@ -1,10 +1,14 @@
 // @ts-check
 
-import { openSync } from 'fontkitten';
+import { open } from './helpers/util.js';
 import assert from 'assert';
 
 describe('metadata', function () {
-  let font = openSync(new URL('data/OpenSans/OpenSans-Regular.ttf', import.meta.url));
+  let font;
+
+  beforeEach(async () => {
+    font = await open(new URL('data/OpenSans/OpenSans-Regular.ttf', import.meta.url));
+  });
 
   it('decodes SFNT directory values correctly', function () {
     let dir = font.directory;

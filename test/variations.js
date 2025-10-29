@@ -1,18 +1,19 @@
-import { openSync } from 'fontkitten';
+import { open } from './helpers/util.js';
 import assert from 'assert';
 import fs from 'fs';
+
+const fontExists = fs.existsSync('/Library/Fonts/Skia.ttf');
 
 describe('variations', function () {
   describe('Skia', function () {
     let font;
-    if (fs.existsSync('/Library/Fonts/Skia.ttf')) {
-      font = openSync('/Library/Fonts/Skia.ttf');
-    }
 
-    beforeEach(function () {
-      if (!font) {
+    beforeEach(async function () {
+      if (!fontExists) {
         this.skip();
+        return;
       }
+      font = await open('/Library/Fonts/Skia.ttf');
     });
 
     it('should get available variation axes', function () {
@@ -70,8 +71,8 @@ describe('variations', function () {
   });
 
   describe('truetype variations', function () {
-    it('should support sharing all points', function () {
-      let font = openSync(new URL('data/fonttest/TestGVAROne.ttf', import.meta.url));
+    it('should support sharing all points', async () => {
+      const font = await open(new URL('data/fonttest/TestGVAROne.ttf', import.meta.url));
 
       assert.equal(
         font.getVariation({ wght: 300 }).glyphsForString("彌")[0].path.toSVG(),
@@ -79,8 +80,8 @@ describe('variations', function () {
       );
     });
 
-    it('should support sharing enumerated points', function () {
-      let font = openSync(new URL('data/fonttest/TestGVARTwo.ttf', import.meta.url));
+    it('should support sharing enumerated points', async () => {
+      let font = await open(new URL('data/fonttest/TestGVARTwo.ttf', import.meta.url));
 
       assert.equal(
         font.getVariation({ wght: 300 }).glyphsForString("彌")[0].path.toSVG(),
@@ -88,8 +89,8 @@ describe('variations', function () {
       );
     });
 
-    it('should support sharing no points', function () {
-      let font = openSync(new URL('data/fonttest/TestGVARThree.ttf', import.meta.url));
+    it('should support sharing no points', async () => {
+      let font = await open(new URL('data/fonttest/TestGVARThree.ttf', import.meta.url));
 
       assert.equal(
         font.getVariation({ wght: 300 }).glyphsForString("彌")[0].path.toSVG(),
@@ -97,8 +98,8 @@ describe('variations', function () {
       );
     });
 
-    it('should use the HVAR table when available for variation metrics', function () {
-      let font = openSync(new URL('data/fonttest/TestGVARFour.ttf', import.meta.url));
+    it('should use the HVAR table when available for variation metrics', async () => {
+      let font = await open(new URL('data/fonttest/TestGVARFour.ttf', import.meta.url));
 
       assert.equal(
         Math.round(font.getVariation({ wght: 150 }).glyphsForString('O')[0].advanceWidth),
@@ -106,8 +107,8 @@ describe('variations', function () {
       );
     });
 
-    it('should fall back to the last entry in an HVAR table', function () {
-      let font = openSync(new URL('data/fonttest/TestHVARTwo.ttf', import.meta.url));
+    it('should fall back to the last entry in an HVAR table', async () => {
+      let font = await open(new URL('data/fonttest/TestHVARTwo.ttf', import.meta.url));
 
       assert.equal(
         Math.round(font.getVariation({ wght: 400 }).glyphsForString('A')[0].advanceWidth),
@@ -117,7 +118,11 @@ describe('variations', function () {
   });
 
   describe('CFF2 variations', function () {
-    let font = openSync(new URL('data/fonttest/AdobeVFPrototype-Subset.otf', import.meta.url));
+    let font;
+
+    beforeEach(async () => {
+      font = await open(new URL('data/fonttest/AdobeVFPrototype-Subset.otf', import.meta.url));
+    });
 
     it('applies variations to CFF2 glyphs', function () {
       assert.equal(

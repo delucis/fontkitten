@@ -1,8 +1,12 @@
-import { openSync } from 'fontkitten';
+import { open } from './helpers/util.js';
 import assert from 'assert';
 
 describe('opentype', function () {
-  let font = openSync(new URL('data/SourceSansPro/SourceSansPro-Regular.otf', import.meta.url));
+  let font;
+
+  beforeEach(async () => {
+    font = await open(new URL('data/SourceSansPro/SourceSansPro-Regular.otf', import.meta.url));
+  });
 
   it('featureParams nameID of stylistic set should be 257', function () {
     assert.equal(font.GSUB.featureList[150].feature.featureParams.nameID, 257);

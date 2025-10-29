@@ -13,4 +13,3 @@ registerFormat(TrueTypeCollection);
 registerFormat(DFont);
 
 export * from './base';
-export * from './fs';

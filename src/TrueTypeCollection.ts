@@ -1,7 +1,5 @@
 import * as r from 'restructure';
 import TTFFont from './TTFFont';
-import Directory from './tables/directory';
-import tables from './tables';
 import { asciiDecoder } from './utils';
 
 let TTCHeader = new r.VersionedStruct(r.uint32, {

@@ -4,10 +4,23 @@ import { cache } from './decorators';
 import { range } from './utils';
 
 export default class CmapProcessor {
-  constructor(cmapTable) {
+  #cmap: any;
+  #uvs: null | {
+    version: number;
+    varSelectors: {
+      toArray: () => Array<{
+        varSelector: number;
+        defaultUVS: Array<{ startUnicodeValue: number; additionalCount: number; }>;
+        nonDefaultUVS: Array<{ unicodeValue: number; glyphID: number; }>;
+      }>;
+    }
+  };
+  #encoding: any;
+
+  constructor(cmapTable: { tables: { platformID: number, encodingID: number, table: any }[] }) {
     // Attempt to find a Unicode cmap first
-    this.encoding = null;
-    this.cmap = this.findSubtable(cmapTable, [
+    this.#encoding = null;
+    this.#cmap = this.#findSubtable(cmapTable, [
       // 32-bit subtables
       [3, 10],
       [0, 6],
@@ -22,28 +35,28 @@ export default class CmapProcessor {
     ]);
 
     // If not unicode cmap was found, take the first table with a supported encoding.
-    if (!this.cmap) {
+    if (!this.#cmap) {
       for (let cmap of cmapTable.tables) {
         let encoding = getEncoding(cmap.platformID, cmap.encodingID, cmap.table.language - 1);
         let mapping = getEncodingMapping(encoding);
         if (mapping) {
-          this.cmap = cmap.table;
-          this.encoding = mapping;
+          this.#cmap = cmap.table;
+          this.#encoding = mapping;
         }
       }
     }
 
-    if (!this.cmap) {
+    if (!this.#cmap) {
       throw new Error("Could not find a supported cmap table");
     }
 
-    this.uvs = this.findSubtable(cmapTable, [[0, 5]]);
-    if (this.uvs && this.uvs.version !== 14) {
-      this.uvs = null;
+    this.#uvs = this.#findSubtable(cmapTable, [[0, 5]]);
+    if (this.#uvs && this.#uvs.version !== 14) {
+      this.#uvs = null;
     }
   }
 
-  findSubtable(cmapTable, pairs) {
+  #findSubtable(cmapTable: { tables: { platformID: number, encodingID: number, table: any }[] }, pairs: [number, number][]): any {
     for (let [platformID, encodingID] of pairs) {
       for (let cmap of cmapTable.tables) {
         if (cmap.platformID === platformID && cmap.encodingID === encodingID) {
@@ -55,21 +68,21 @@ export default class CmapProcessor {
     return null;
   }
 
-  lookup(codepoint, variationSelector) {
+  lookup(codepoint: number, variationSelector?: number): number {
     // If there is no Unicode cmap in this font, we need to re-encode
     // the codepoint in the encoding that the cmap supports.
-    if (this.encoding) {
-      codepoint = this.encoding.get(codepoint) || codepoint;
+    if (this.#encoding) {
+      codepoint = this.#encoding.get(codepoint) || codepoint;
 
       // Otherwise, try to get a Unicode variation selector for this codepoint if one is provided.
     } else if (variationSelector) {
-      let gid = this.getVariationSelector(codepoint, variationSelector);
+      let gid = this.#getVariationSelector(codepoint, variationSelector);
       if (gid) {
         return gid;
       }
     }
 
-    let cmap = this.cmap;
+    let cmap = this.#cmap;
     switch (cmap.version) {
       case 0:
         return cmap.codeMap.get(codepoint) || 0;
@@ -144,23 +157,23 @@ export default class CmapProcessor {
     }
   }
 
-  getVariationSelector(codepoint, variationSelector) {
-    if (!this.uvs) {
+  #getVariationSelector(codepoint: number, variationSelector: number): number {
+    if (!this.#uvs) {
       return 0;
     }
 
-    let selectors = this.uvs.varSelectors.toArray();
-    let i = binarySearch(selectors, x => variationSelector - x.varSelector);
+    let selectors = this.#uvs.varSelectors.toArray();
+    let i = binarySearch(selectors, (x) => variationSelector - x.varSelector);
     let sel = selectors[i];
 
     if (i !== -1 && sel.defaultUVS) {
-      i = binarySearch(sel.defaultUVS, x =>
+      i = binarySearch(sel.defaultUVS, (x) =>
         codepoint < x.startUnicodeValue ? -1 : codepoint > x.startUnicodeValue + x.additionalCount ? +1 : 0
       );
     }
 
     if (i !== -1 && sel.nonDefaultUVS) {
-      i = binarySearch(sel.nonDefaultUVS, x => codepoint - x.unicodeValue);
+      i = binarySearch(sel.nonDefaultUVS, (x) => codepoint - x.unicodeValue);
       if (i !== -1) {
         return sel.nonDefaultUVS[i].glyphID;
       }
@@ -170,8 +183,8 @@ export default class CmapProcessor {
   }
 
   @cache
-  getCharacterSet() {
-    let cmap = this.cmap;
+  getCharacterSet(): number[] {
+    let cmap = this.#cmap;
     switch (cmap.version) {
       case 0:
         return range(0, cmap.codeMap.length);
@@ -207,77 +220,6 @@ export default class CmapProcessor {
 
       case 14:
         throw new Error('TODO: cmap format 14');
-
-      default:
-        throw new Error(`Unknown cmap format ${cmap.version}`);
-    }
-  }
-
-  @cache
-  codePointsForGlyph(gid) {
-    let cmap = this.cmap;
-    switch (cmap.version) {
-      case 0: {
-        let res = [];
-        for (let i = 0; i < 256; i++) {
-          if (cmap.codeMap.get(i) === gid) {
-            res.push(i);
-          }
-        }
-
-        return res;
-      }
-
-      case 4: {
-        let res = [];
-        for (let i = 0; i < cmap.segCount; i++) {
-          let end = cmap.endCode.get(i);
-          let start = cmap.startCode.get(i);
-          let rangeOffset = cmap.idRangeOffset.get(i);
-          let delta = cmap.idDelta.get(i);
-
-          for (var c = start; c <= end; c++) {
-            let g = 0;
-            if (rangeOffset === 0) {
-              g = c + delta;
-            } else {
-              let index = rangeOffset / 2 + (c - start) - (cmap.segCount - i);
-              g = cmap.glyphIndexArray.get(index) || 0;
-              if (g !== 0) {
-                g += delta;
-              }
-            }
-
-            if (g === gid) {
-              res.push(c);
-            }
-          }
-        }
-
-        return res;
-      }
-
-      case 12: {
-        let res = [];
-        for (let group of cmap.groups.toArray()) {
-          if (gid >= group.glyphID && gid <= group.glyphID + (group.endCharCode - group.startCharCode)) {
-            res.push(group.startCharCode + (gid - group.glyphID));
-          }
-        }
-
-        return res;
-      }
-
-      case 13: {
-        let res = [];
-        for (let group of cmap.groups.toArray()) {
-          if (gid === group.glyphID) {
-            res.push(...range(group.startCharCode, group.endCharCode + 1));
-          }
-        }
-
-        return res;
-      }
 
       default:
         throw new Error(`Unknown cmap format ${cmap.version}`);

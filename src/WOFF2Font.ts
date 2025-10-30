@@ -5,24 +5,26 @@ import TTFGlyph, { Point } from './glyph/TTFGlyph';
 import WOFF2Glyph from './glyph/WOFF2Glyph';
 import WOFF2Directory from './tables/WOFF2Directory';
 import { asciiDecoder } from './utils';
+import { Glyph } from './types';
 
 /**
  * Subclass of TTFFont that represents a TTF/OTF font compressed by WOFF2
  * See spec here: http://www.w3.org/TR/WOFF2/
  */
 export default class WOFF2Font extends TTFFont {
-  type = 'WOFF2';
+  type: TTFFont['type'] = 'WOFF2';
+  _decompressed: boolean = false;
 
-  static probe(buffer) {
+  static probe(buffer: Buffer): boolean {
     return asciiDecoder.decode(buffer.slice(0, 4)) === 'wOF2';
   }
 
-  _decodeDirectory() {
+  _decodeDirectory(): void {
     this.directory = WOFF2Directory.decode(this.stream);
     this._dataPos = this.stream.pos;
   }
 
-  _decompress() {
+  #decompress(): void {
     // decompress data and setup table offsets if we haven't already
     if (!this._decompressed) {
       this.stream.pos = this._dataPos;
@@ -45,14 +47,14 @@ export default class WOFF2Font extends TTFFont {
     }
   }
 
-  _decodeTable(table) {
-    this._decompress();
+  protected _decodeTable(table: any): any {
+    this.#decompress();
     return super._decodeTable(table);
   }
 
   // Override this method to get a glyph and return our
   // custom subclass if there is a glyf table.
-  _getBaseGlyph(glyph, characters = []) {
+  _getBaseGlyph(glyph: number, characters: number[] = []): Glyph | null {
     if (!this._glyphs[glyph]) {
       if (this.directory.tables.glyf && this.directory.tables.glyf.transformed) {
         if (!this._transformedGlyphs) { this._transformGlyfTable(); }
@@ -61,11 +63,13 @@ export default class WOFF2Font extends TTFFont {
       } else {
         return super._getBaseGlyph(glyph, characters);
       }
+    } else {
+      return this._glyphs[glyph];
     }
   }
 
-  _transformGlyfTable() {
-    this._decompress();
+  _transformGlyfTable(): void {
+    this.#decompress();
     this.stream.pos = this.directory.tables.glyf.offset;
     let table = GlyfTable.decode(this.stream);
     let glyphs = [];
@@ -108,18 +112,21 @@ export default class WOFF2Font extends TTFFont {
 
 // Special class that accepts a length and returns a sub-stream for that data
 class Substream {
-  constructor(length) {
+  length: string;
+  _buf: any;
+
+  constructor(length: string) {
     this.length = length;
     this._buf = new r.Buffer(length);
   }
 
-  decode(stream, parent) {
+  decode(stream: any, parent: any): any {
     return new r.DecodeStream(this._buf.decode(stream, parent));
   }
 }
 
 // This struct represents the entire glyf table
-let GlyfTable = new r.Struct({
+const GlyfTable = new r.Struct({
   version: r.uint32,
   numGlyphs: r.uint16,
   indexFormat: r.uint16,
@@ -144,7 +151,7 @@ const ONE_MORE_BYTE_CODE2 = 254;
 const ONE_MORE_BYTE_CODE1 = 255;
 const LOWEST_U_CODE = 253;
 
-function read255UInt16(stream) {
+function read255UInt16(stream: any): number {
   let code = stream.readUInt8();
 
   if (code === WORD_CODE) {
@@ -162,14 +169,14 @@ function read255UInt16(stream) {
   return code;
 }
 
-function withSign(flag, baseval) {
+function withSign(flag: number, baseval: number): number {
   return flag & 1 ? baseval : -baseval;
 }
 
-function decodeTriplet(flags, glyphs, nPoints) {
+function decodeTriplet(flags: any, glyphs: any, nPoints: number): Point[] {
   let y;
   let x = y = 0;
-  let res = [];
+  let res: Point[] = [];
 
   for (let i = 0; i < nPoints; i++) {
     let dx = 0, dy = 0;

@@ -1,7 +1,5 @@
 import * as r from 'restructure';
 import TTFFont from './TTFFont';
-import Directory from './tables/directory';
-import tables from './tables';
 import { asciiDecoder } from './utils';
 
 let TTCHeader = new r.VersionedStruct(r.uint32, {
@@ -34,7 +32,7 @@ export default class TrueTypeCollection {
     this.header = TTCHeader.decode(stream);
   }
 
-  getFont(name) {
+  getFont(name: string) {
     for (let offset of this.header.offsets) {
       let stream = new r.DecodeStream(this.stream.buffer);
       stream.pos = offset;

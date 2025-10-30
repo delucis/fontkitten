@@ -2,17 +2,25 @@ import { cache } from '../decorators';
 import Path from './Path';
 import {isMark} from './isMark';
 import StandardNames from './StandardNames';
+import { Glyph as GlyphType } from '../types';
 
 /**
  * Glyph objects represent a glyph in the font. They have various properties for accessing metrics and
- * the actual vector path the glyph represents, and methods for rendering the glyph to a graphics context.
+ * the actual vector path the glyph represents.
  *
  * You do not create glyph objects directly. They are created by various methods on the font object.
  * There are several subclasses of the base Glyph class internally that may be returned depending
  * on the font format, but they all inherit from this class.
  */
-export default class Glyph {
-  constructor(id, codePoints, font) {
+export default class Glyph implements GlyphType {
+  id: number;
+  codePoints: number[];
+  isMark: boolean;
+  isLigature: boolean;
+  _font: any;
+  _metrics: any;
+
+  constructor(id: number, codePoints: number[], font: any) {
     /**
      * The glyph id in the font
      * @type {number}
@@ -33,40 +41,38 @@ export default class Glyph {
     this.isLigature = this.codePoints.length > 1;
   }
 
-  _getPath() {
+  _getPath(): Path {
     return new Path();
   }
 
-  _getCBox() {
+  _getCBox(): Path['cbox'] {
     return this.path.cbox;
   }
 
-  _getBBox() {
+  _getBBox(): Path['bbox'] {
     return this.path.bbox;
   }
 
-  _getTableMetrics(table) {
+  #getTableMetrics(table: any): { advance: number; bearing: number } {
     if (this.id < table.metrics.length) {
       return table.metrics.get(this.id);
     }
 
-    let metric = table.metrics.get(table.metrics.length - 1);
-    let res = {
+    const metric = table.metrics.get(table.metrics.length - 1);
+    return {
       advance: metric ? metric.advance : 0,
       bearing: table.bearings.get(this.id - table.metrics.length) || 0
     };
-
-    return res;
   }
 
   _getMetrics(cbox) {
     if (this._metrics) { return this._metrics; }
 
-    let {advance:advanceWidth, bearing:leftBearing} = this._getTableMetrics(this._font.hmtx);
+    let {advance:advanceWidth, bearing:leftBearing} = this.#getTableMetrics(this._font.hmtx);
 
     // For vertical metrics, use vmtx if available, or fall back to global data from OS/2 or hhea
     if (this._font.vmtx) {
-      var {advance:advanceHeight, bearing:topBearing} = this._getTableMetrics(this._font.vmtx);
+      var {advance:advanceHeight, bearing:topBearing} = this.#getTableMetrics(this._font.vmtx);
 
     } else {
       let os2;
@@ -102,7 +108,7 @@ export default class Glyph {
    * @type {BBox}
    */
   @cache
-  get cbox() {
+  get cbox(): Path['cbox'] {
     return this._getCBox();
   }
 
@@ -112,7 +118,7 @@ export default class Glyph {
    * @type {BBox}
    */
   @cache
-  get bbox() {
+  get bbox(): Path['bbox'] {
     return this._getBBox();
   }
 
@@ -121,7 +127,7 @@ export default class Glyph {
    * @type {Path}
    */
   @cache
-  get path() {
+  get path(): Path {
     // Cache the path so we only decode it once
     // Decoding is actually performed by subclasses
     return this._getPath();

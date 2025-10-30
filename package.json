@@ -6,10 +6,8 @@
     "opentype",
     "font",
     "typography",
-    "subset",
     "emoji",
-    "glyph",
-    "layout"
+    "glyph"
   ],
   "scripts": {
     "pretest": "pnpm build",

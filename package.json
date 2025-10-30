@@ -14,7 +14,7 @@
   "scripts": {
     "pretest": "pnpm build",
     "test": "mocha",
-    "build": "tsdown",
+    "build": "tsdown --dts",
     "prepublishOnly": "pnpm build"
   },
   "type": "module",

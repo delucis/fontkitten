@@ -10,7 +10,7 @@
 
 Fontkitten is a font data library, focused on font file parsing and metadata extraction.
 
-- 5x smaller install size than `fontkit`
+- 13x smaller install size than `fontkit`
 - Drop-in replacement for the supported APIs
 - Built-in TypeScript types
 

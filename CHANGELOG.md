@@ -1,5 +1,11 @@
 # fontkitten
 
+## 0.0.7
+
+### Patch Changes
+
+- [`664b697`](https://github.com/delucis/fontkitten/commit/664b697556763425ada1f624c61067e9d862dbe1) Thanks [@delucis](https://github.com/delucis)! - Updates README to reflect new install size
+
 ## 0.0.6
 
 ### Patch Changes

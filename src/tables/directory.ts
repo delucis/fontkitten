@@ -8,7 +8,7 @@ let TableEntry = new r.Struct({
   length:     r.uint32
 });
 
-let Directory = new r.Struct({
+const Directory = new r.Struct({
   tag:            new r.String(4),
   numTables:      r.uint16,
   searchRange:    r.uint16,

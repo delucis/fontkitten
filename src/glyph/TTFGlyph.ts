@@ -30,24 +30,27 @@ const WE_HAVE_INSTRUCTIONS      = 1 << 8;
 
 // Represents a point in a simple glyph
 export class Point {
-  constructor(onCurve, endContour, x = 0, y = 0) {
-    this.onCurve = onCurve;
-    this.endContour = endContour;
-    this.x = x;
-    this.y = y;
-  }
+  constructor(
+    public onCurve: boolean,
+    public endContour: boolean,
+    public x: number = 0,
+    public y: number = 0
+  ) {}
 
-  copy() {
+  copy(): Point {
     return new Point(this.onCurve, this.endContour, this.x, this.y);
   }
 }
 
 // Represents a component in a composite glyph
 class Component {
-  constructor(glyphID, dx, dy) {
-    this.glyphID = glyphID;
-    this.dx = dx;
-    this.dy = dy;
+  pos: number;
+  scaleX: number;
+  scaleY: number;
+  scale01: number;
+  scale10: number;
+
+  constructor(public glyphID: number, public dx: number, public dy: number) {
     this.pos = 0;
     this.scaleX = this.scaleY = 1;
     this.scale01 = this.scale10 = 0;
@@ -320,7 +323,7 @@ export default class TTFGlyph extends Glyph {
     return this._metrics;
   }
 
-  // Converts contours to a Path object that can be rendered
+  // Converts contours to a Path object.
   _getPath() {
     let contours = this._getContours();
     let path = new Path;

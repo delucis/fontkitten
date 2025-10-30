@@ -32,7 +32,7 @@ export default class TrueTypeCollection {
     this.header = TTCHeader.decode(stream);
   }
 
-  getFont(name) {
+  getFont(name: string) {
     for (let offset of this.header.offsets) {
       let stream = new r.DecodeStream(this.stream.buffer);
       stream.pos = offset;

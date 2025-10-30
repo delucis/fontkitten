@@ -1,21 +1,21 @@
+import * as r from 'restructure';
+import inflate from 'tiny-inflate';
 import TTFFont from './TTFFont';
 import WOFFDirectory from './tables/WOFFDirectory';
-import inflate from 'tiny-inflate';
-import * as r from 'restructure';
 import { asciiDecoder } from './utils';
 
 export default class WOFFFont extends TTFFont {
-  type = 'WOFF';
+  type: TTFFont['type'] = 'WOFF';
 
-  static probe(buffer) {
+  static probe(buffer: Buffer): boolean {
     return asciiDecoder.decode(buffer.slice(0, 4)) === 'wOFF';
   }
 
-  _decodeDirectory() {
+  _decodeDirectory(): void {
     this.directory = WOFFDirectory.decode(this.stream, { _startOffset: 0 });
   }
 
-  _getTableStream(tag) {
+  _getTableStream(tag: string): any {
     let table = this.directory.tables[tag];
     if (table) {
       this.stream.pos = table.offset;

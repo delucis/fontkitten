@@ -1,5 +1,4 @@
 import isEqual from 'fast-deep-equal';
-import * as r from 'restructure';
 import CFFOperand from './CFFOperand';
 import { PropertyDescriptor } from 'restructure';
 

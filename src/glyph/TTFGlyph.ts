@@ -22,17 +22,11 @@ const SAME_Y          = 1 << 5;
 
 // Flags for composite glyphs
 const ARG_1_AND_2_ARE_WORDS     = 1 << 0;
-const ARGS_ARE_XY_VALUES        = 1 << 1;
-const ROUND_XY_TO_GRID          = 1 << 2;
 const WE_HAVE_A_SCALE           = 1 << 3;
 const MORE_COMPONENTS           = 1 << 5;
 const WE_HAVE_AN_X_AND_Y_SCALE  = 1 << 6;
 const WE_HAVE_A_TWO_BY_TWO      = 1 << 7;
 const WE_HAVE_INSTRUCTIONS      = 1 << 8;
-const USE_MY_METRICS            = 1 << 9;
-const OVERLAP_COMPOUND          = 1 << 10;
-const SCALED_COMPONENT_OFFSET   = 1 << 11;
-const UNSCALED_COMPONENT_OFFSET = 1 << 12;
 
 // Represents a point in a simple glyph
 export class Point {

@@ -1,5 +1,11 @@
 # fontkitten
 
+## 0.0.6
+
+### Patch Changes
+
+- [#10](https://github.com/delucis/fontkitten/pull/10) [`cbf1a09`](https://github.com/delucis/fontkitten/commit/cbf1a09c837e5c3df533dd7f825308851d33f9c4) Thanks [@delucis](https://github.com/delucis)! - Reduces install size significantly by replacing the `brotli` dependency with a smaller implementation.
+
 ## 0.0.5
 
 ### Patch Changes

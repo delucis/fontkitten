@@ -1,6 +1,6 @@
 import * as r from 'restructure';
 import TTFFont from './TTFFont';
-import { brotliDecode } from './brotliDecode';
+import { brotliDecode } from './vendor/brotliDecode';
 import TTFGlyph, { Point } from './glyph/TTFGlyph';
 import WOFF2Glyph from './glyph/WOFF2Glyph';
 import WOFF2Directory from './tables/WOFF2Directory';

@@ -41,7 +41,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE
 """
 
-This license applies to `src/brotliDecode.ts` originating from https://github.com/google/brotli/blob/master/js/decode.ts:
+This license applies to `src/vendor/brotliDecode.ts` originating from https://github.com/google/brotli/blob/master/js/decode.ts:
 
 Copyright 2017 Google Inc. All Rights Reserved.
 

@@ -11,7 +11,7 @@ Fontkitten is a font data library based on the [fontkit](https://www.npmjs.com/p
 
 Fontkitten does not include `open` and `openSync` utilities for loading fonts directly from the file system.
 
-Instead, load fonts from the file system by reading the file and passing it to the `create` function, which expects a `Buffer`:
+Instead, read a font from the file system yourself and pass it to the `create` function, which expects a `Buffer`:
 
 ```javascript
 import { create } from 'fontkitten';
@@ -26,7 +26,7 @@ const font = create(buffer, 'PostScriptName');
 
 ### Removed APIs
 
-Fontkitten does not include the following APIs on parsed fonts:
+Fontkitten does not include the following Fontkit APIs on parsed fonts:
 
 - `.setDefaultLanguage()` i18n support for font names
 - `.createSubset()` subsetting support

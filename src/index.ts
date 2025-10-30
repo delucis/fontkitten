@@ -29,3 +29,5 @@ export function create(buffer: Buffer, postscriptName?: string): Font | FontColl
 
 	throw new Error('Unknown font format');
 }
+
+export * from './types';

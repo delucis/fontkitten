@@ -191,22 +191,4 @@ export default class Glyph {
   get name() {
     return this._getName();
   }
-
-  /**
-   * Renders the glyph to the given graphics context, at the specified font size.
-   * @param {CanvasRenderingContext2d} ctx
-   * @param {number} size
-   */
-  render(ctx, size) {
-    ctx.save();
-
-    let scale = 1 / this._font.head.unitsPerEm * size;
-    ctx.scale(scale, scale);
-
-    let fn = this.path.toFunction();
-    fn(ctx);
-    ctx.fill();
-
-    ctx.restore();
-  }
 }

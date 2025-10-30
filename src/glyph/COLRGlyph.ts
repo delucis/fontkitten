@@ -78,13 +78,4 @@ export default class COLRGlyph extends Glyph {
 
     return layers;
   }
-
-  render(ctx, size) {
-    for (let {glyph, color} of this.layers) {
-      ctx.fillColor([color.red, color.green, color.blue], color.alpha / 255 * 100);
-      glyph.render(ctx, size);
-    }
-
-    return;
-  }
 }

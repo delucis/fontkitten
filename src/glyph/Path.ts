@@ -22,19 +22,6 @@ export default class Path {
   }
 
   /**
-   * Compiles the path to a JavaScript function that can be applied with
-   * a graphics context in order to render the path.
-   * @return {string}
-   */
-  toFunction() {
-    return ctx => {
-      this.commands.forEach(c => {
-        return ctx[c.command].apply(ctx, c.args)
-      })
-    };
-  }
-
-  /**
    * Converts the path to an SVG path data string
    * @return {string}
    */

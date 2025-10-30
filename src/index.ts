@@ -4,6 +4,7 @@ import WOFFFont from './WOFFFont';
 import WOFF2Font from './WOFF2Font';
 import TrueTypeCollection from './TrueTypeCollection';
 import DFont from './DFont';
+import { Font, FontCollection } from './types';
 
 const formats = [TTFFont, WOFFFont, WOFF2Font, TrueTypeCollection, DFont];
 
@@ -14,8 +15,7 @@ const formats = [TTFFont, WOFFFont, WOFF2Font, TrueTypeCollection, DFont];
  * @param buffer `Buffer` containing font data
  * @param postscriptName Optional PostScript name of font to extract from collection file.
  */
-// TODO: Add proper return type
-export function create(buffer: Buffer, postscriptName?: string) {
+export function create(buffer: Buffer, postscriptName?: string): Font | FontCollection {
 	for (const format of formats) {
 		if (format.probe(buffer)) {
 			const font = new format(new DecodeStream(buffer));

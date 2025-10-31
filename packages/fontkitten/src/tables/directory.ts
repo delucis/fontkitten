@@ -1,5 +1,5 @@
 import * as r from 'restructure';
-import Tables from './';
+import Tables from '.';
 
 let TableEntry = new r.Struct({
   tag:        new r.String(4),

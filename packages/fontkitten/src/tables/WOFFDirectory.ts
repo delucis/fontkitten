@@ -1,5 +1,5 @@
 import * as r from 'restructure';
-import tables from './';
+import tables from '.';
 
 let WOFFDirectoryEntry = new r.Struct({
   tag:          new r.String(4),

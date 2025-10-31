@@ -29,7 +29,7 @@ npm install fontkitten
 
 Fontkitten does not include `open` and `openSync` utilities for loading fonts directly from the file system.
 
-Instead, read a font from the file system yourself and pass it to the `create` function, which expects a `Buffer`. See [“Basic usage”](#basic-usage) for an example.
+Instead, read a font from the file system yourself and pass it to the `create` function, which expects a `Buffer`. See the [`create()` documentation](#createbuffer-postscriptname) for an example.
 
 ### Removed APIs
 

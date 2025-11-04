@@ -1,5 +1,11 @@
 # fontkitten
 
+## 0.0.8
+
+### Patch Changes
+
+- [#14](https://github.com/delucis/fontkitten/pull/14) [`940eb9d`](https://github.com/delucis/fontkitten/commit/940eb9d4ccdb241db949ec2a97f7a3458d34d5b4) Thanks [@delucis](https://github.com/delucis)! - Reduces install size further by bundling some dependencies
+
 ## 0.0.7
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 let ImageTable = new r.Struct({
   ppem: r.uint16,

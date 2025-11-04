@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 let Setting = new r.Struct({
   setting: r.uint16,

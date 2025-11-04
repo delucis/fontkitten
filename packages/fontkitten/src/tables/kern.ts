@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 let KernPair = new r.Struct({
   left:   r.uint16,

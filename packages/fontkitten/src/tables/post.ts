@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 // PostScript information
 export default new r.VersionedStruct(r.fixed32, {

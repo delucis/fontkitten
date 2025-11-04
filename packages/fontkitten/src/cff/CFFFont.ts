@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import CFFIndex from './CFFIndex';
 import CFFTop from './CFFTop';
 import CFFPrivateDict from './CFFPrivateDict';

@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 let shortFrac = new r.Fixed(16, 'BE', 14);
 

@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import Tables from '.';
 
 let TableEntry = new r.Struct({

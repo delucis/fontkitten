@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 let loca = new r.VersionedStruct('head.indexToLocFormat', {
   0: {

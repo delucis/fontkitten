@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import { ScriptList, FeatureList, LookupList, Coverage, ClassDef, Device } from './opentype';
 import { GPOSLookup } from './GPOS';
 

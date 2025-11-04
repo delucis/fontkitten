@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import TTFFont from './TTFFont';
 import { asciiDecoder } from './utils';
 

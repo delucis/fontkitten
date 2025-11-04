@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import { UnboundedArray, LookupTable, StateTable } from './aat';
 
 let LigatureData = {

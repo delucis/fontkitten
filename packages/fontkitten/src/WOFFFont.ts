@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import inflate from 'tiny-inflate';
 import TTFFont from './TTFFont';
 import WOFFDirectory from './tables/WOFFDirectory';

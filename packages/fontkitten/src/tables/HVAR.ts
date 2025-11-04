@@ -1,5 +1,5 @@
-import * as r from 'restructure';
-import { resolveLength } from 'restructure';
+import * as r from '@fontkitten/restructure';
+import { resolveLength } from '@fontkitten/restructure';
 import { ItemVariationStore } from './variations';
 
 // TODO: add this to restructure

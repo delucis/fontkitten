@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 // VDMX tables contain ascender/descender overrides for certain (usually small)
 // sizes. This is needed in order to match font metrics on Windows.

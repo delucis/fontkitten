@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import {getEncoding, LANGUAGES} from '../encodings';
 
 let NameRecord = new r.Struct({

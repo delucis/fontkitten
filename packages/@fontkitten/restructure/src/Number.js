@@ -28,31 +28,15 @@ class NumberT extends Base {
 export {NumberT as Number};
 
 export const uint8 = new NumberT('UInt8');
-export const uint16be = new NumberT('UInt16', 'BE');
-export const uint16 = uint16be;
-export const uint16le = new NumberT('UInt16', 'LE');
-export const uint24be = new NumberT('UInt24', 'BE');
-export const uint24 = uint24be;
-export const uint24le = new NumberT('UInt24', 'LE');
-export const uint32be = new NumberT('UInt32', 'BE');
-export const uint32 = uint32be;
-export const uint32le = new NumberT('UInt32', 'LE');
+export const uint16 = new NumberT('UInt16', 'BE');
+export const uint24 = new NumberT('UInt24', 'BE');
+export const uint32 = new NumberT('UInt32', 'BE');
 export const int8 = new NumberT('Int8');
-export const int16be = new NumberT('Int16', 'BE');
-export const int16 = int16be;
-export const int16le = new NumberT('Int16', 'LE');
-export const int24be = new NumberT('Int24', 'BE');
-export const int24 = int24be;
-export const int24le = new NumberT('Int24', 'LE');
-export const int32be = new NumberT('Int32', 'BE');
-export const int32 = int32be;
-export const int32le = new NumberT('Int32', 'LE');
-export const floatbe = new NumberT('Float', 'BE');
-export const float = floatbe;
-export const floatle = new NumberT('Float', 'LE');
-export const doublebe = new NumberT('Double', 'BE');
-export const double = doublebe;
-export const doublele = new NumberT('Double', 'LE');
+export const int16 = new NumberT('Int16', 'BE');
+export const int24 = new NumberT('Int24', 'BE');
+export const int32 = new NumberT('Int32', 'BE');
+export const float = new NumberT('Float', 'BE');
+export const double = new NumberT('Double', 'BE');
 
 export class Fixed extends NumberT {
   constructor(size, endian, fracBits = size >> 1) {
@@ -69,9 +53,5 @@ export class Fixed extends NumberT {
   }
 }
 
-export const fixed16be = new Fixed(16, 'BE');
-export const fixed16 = fixed16be;
-export const fixed16le = new Fixed(16, 'LE');
-export const fixed32be = new Fixed(32, 'BE');
-export const fixed32 = fixed32be;
-export const fixed32le = new Fixed(32, 'LE');
+export const fixed16 = new Fixed(16, 'BE');
+export const fixed32 = new Fixed(32, 'BE');

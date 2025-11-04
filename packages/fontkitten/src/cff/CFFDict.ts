@@ -1,6 +1,6 @@
 import isEqual from 'fast-deep-equal';
 import CFFOperand from './CFFOperand';
-import { PropertyDescriptor } from 'restructure';
+import { PropertyDescriptor } from '@fontkitten/restructure';
 
 export default class CFFDict {
   constructor(ops = []) {

@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 let VmtxEntry = new r.Struct({
   advance: r.uint16,  // The advance height of the glyph

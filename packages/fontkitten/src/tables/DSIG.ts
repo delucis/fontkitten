@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 let Signature = new r.Struct({
   format: r.uint32,

@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import { LookupTable, StateTable1 } from './aat';
 
 let ClassTable = new r.Struct({

@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 export let BigMetrics = new r.Struct({
   height: r.uint8,

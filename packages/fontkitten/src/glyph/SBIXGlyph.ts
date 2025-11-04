@@ -1,5 +1,5 @@
 import TTFGlyph from './TTFGlyph';
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 let SBIXImage = new r.Struct({
   originX: r.uint16,

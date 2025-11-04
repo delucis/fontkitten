@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import { cache } from './decorators';
 import Directory from './tables/directory';
 import tables from './tables';

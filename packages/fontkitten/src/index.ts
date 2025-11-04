@@ -1,4 +1,4 @@
-import { DecodeStream } from 'restructure';
+import { DecodeStream } from '@fontkitten/restructure';
 import TTFFont from './TTFFont';
 import WOFFFont from './WOFFFont';
 import WOFF2Font from './WOFF2Font';

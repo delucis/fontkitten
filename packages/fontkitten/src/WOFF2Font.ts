@@ -1,4 +1,4 @@
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 import TTFFont from './TTFFont';
 import { brotliDecode } from './vendor/brotliDecode';
 import TTFGlyph, { Point } from './glyph/TTFGlyph';

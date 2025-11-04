@@ -1,5 +1,5 @@
 import {Feature} from './opentype';
-import * as r from 'restructure';
+import * as r from '@fontkitten/restructure';
 
 /*******************
  * Variation Store *

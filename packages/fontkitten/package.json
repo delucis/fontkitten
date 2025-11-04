@@ -10,7 +10,6 @@
     "glyph"
   ],
   "scripts": {
-    "pretest": "pnpm build",
     "test": "mocha",
     "build": "tsdown --dts",
     "prepublishOnly": "pnpm build"

@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm --filter fontkitten... build",
+    "pretest": "pnpm build",
     "test": "pnpm --filter fontkitten... test"
   },
   "devDependencies": {

@@ -1,0 +1,17 @@
+{
+	"name": "@fontkitten/restructure",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"version": "0.0.7",
+	"scripts": {
+		"build": "tsdown --dts"
+	},
+	"devDependencies": {
+		"@types/node": "^24.9.2",
+		"tsdown": "^0.15.11",
+		"typescript": "^5.9.3"
+	}
+}

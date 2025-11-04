@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "outDir": "dist",
+    "strict": true,
+    "isolatedDeclarations": true,
+    "declaration": true,
+    "target": "esnext",
+    "moduleResolution": "bundler"
+  }
+}

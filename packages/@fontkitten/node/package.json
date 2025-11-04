@@ -1,0 +1,38 @@
+{
+  "name": "fontkitten",
+  "version": "0.0.7",
+  "description": "A lightweight font data library — fontkit’s little sibling",
+  "keywords": [
+    "opentype",
+    "font",
+    "typography",
+    "emoji",
+    "glyph"
+  ],
+  "scripts": {
+    "pretest": "pnpm build",
+    "test": "mocha",
+    "build": "tsdown --dts",
+    "prepublishOnly": "pnpm build"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "repository": "delucis/fontkitten",
+  "dependencies": {
+    "@fontkitten/core": "^0.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.2",
+    "mocha": "^10.0.0",
+    "tsdown": "^0.15.11"
+  }
+}

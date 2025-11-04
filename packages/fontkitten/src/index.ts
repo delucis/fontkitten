@@ -1,12 +1,7 @@
-import { DecodeStream } from 'restructure';
-import TTFFont from './TTFFont';
-import WOFFFont from './WOFFFont';
-import WOFF2Font from './WOFF2Font';
-import TrueTypeCollection from './TrueTypeCollection';
-import DFont from './DFont';
-import { Font, FontCollection } from './types';
+import { makeCreate, type CreateFn } from '@fontkitten/core';
+import { brotliDecode } from './vendor/brotliDecode';
 
-const formats = [TTFFont, WOFFFont, WOFF2Font, TrueTypeCollection, DFont];
+export * from '@fontkitten/core/types';
 
 /**
  * Returns a font object for the given buffer.
@@ -15,19 +10,6 @@ const formats = [TTFFont, WOFFFont, WOFF2Font, TrueTypeCollection, DFont];
  * @param buffer `Buffer` containing font data
  * @param postscriptName Optional PostScript name of font to extract from collection file.
  */
-export function create(buffer: Buffer, postscriptName?: string): Font | FontCollection {
-	for (const format of formats) {
-		if (format.probe(buffer)) {
-			const font = new format(new DecodeStream(buffer));
-			if (postscriptName) {
-				return font.getFont(postscriptName);
-			}
-
-			return font;
-		}
-	}
-
-	throw new Error('Unknown font format');
-}
-
-export * from './types';
+export const create: CreateFn = makeCreate({
+	decompressBrotli: (buffer: Buffer) => brotliDecode(new Int8Array(buffer)),
+});

@@ -15,7 +15,7 @@ importers:
         specifier: ^2.29.7
         version: 2.29.7(@types/node@24.9.2)
 
-  packages/fontkitten:
+  packages/@fontkitten/core:
     dependencies:
       fast-deep-equal:
         specifier: ^3.1.3
@@ -26,6 +26,38 @@ importers:
       tiny-inflate:
         specifier: ^1.0.3
         version: 1.0.3
+    devDependencies:
+      '@types/node':
+        specifier: ^24.9.2
+        version: 24.9.2
+      mocha:
+        specifier: ^10.0.0
+        version: 10.8.2
+      tsdown:
+        specifier: ^0.15.11
+        version: 0.15.11
+
+  packages/@fontkitten/node:
+    dependencies:
+      '@fontkitten/core':
+        specifier: ^0.0.7
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^24.9.2
+        version: 24.9.2
+      mocha:
+        specifier: ^10.0.0
+        version: 10.8.2
+      tsdown:
+        specifier: ^0.15.11
+        version: 0.15.11
+
+  packages/fontkitten:
+    dependencies:
+      '@fontkitten/core':
+        specifier: ^0.0.7
+        version: link:../@fontkitten/core
     devDependencies:
       '@types/node':
         specifier: ^24.9.2

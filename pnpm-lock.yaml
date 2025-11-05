@@ -23,9 +23,6 @@ importers:
       tsdown:
         specifier: ^0.15.11
         version: 0.15.11(typescript@5.9.3)
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
 
   packages/fontkitten:
     dependencies:
@@ -1892,7 +1889,8 @@ snapshots:
   tslib@2.8.1:
     optional: true
 
-  typescript@5.9.3: {}
+  typescript@5.9.3:
+    optional: true
 
   unconfig@7.3.3:
     dependencies:

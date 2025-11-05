@@ -1,4 +1,4 @@
-import {Base, ResType} from './Base.js';
+import {Base, ResType} from './Base';
 
 export class Bitfield extends Base<Record<string, boolean>> {
   #type: ResType<number, any>;

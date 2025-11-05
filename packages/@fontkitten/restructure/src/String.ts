@@ -1,5 +1,5 @@
-import {Base} from './Base.js';
-import {Number as NumberT} from './Number.js';
+import {Base} from './Base';
+import {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
 type Encoding = 'ascii' | 'utf8' | 'utf16le' | 'utf16-le' | 'utf-16be' | 'utf-16le' | 'utf16be' | 'utf16-be' | 'ucs2';

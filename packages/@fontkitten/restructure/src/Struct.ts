@@ -1,5 +1,5 @@
-import {Base, ResType} from './Base.js';
-import * as utils from './utils.js';
+import {Base, ResType} from './Base';
+import {PropertyDescriptor} from './utils';
 
 type FieldValue = any;
 type Fields = Record<string, ResType<any, any> | ((this: any, self: any) => FieldValue)>;
@@ -47,7 +47,7 @@ export class Struct<R extends Record<string, any> = any> extends Base<R> {
       }
 
       if (val !== undefined) {
-        if (val instanceof utils.PropertyDescriptor) {
+        if (val instanceof PropertyDescriptor) {
           Object.defineProperty(res, key, val);
         } else {
           res[key] = val;

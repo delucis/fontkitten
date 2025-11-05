@@ -1,11 +1,11 @@
-import {Array as ArrayT} from './Array.js';
-import {Number as NumberT} from './Number.js';
-import * as utils from './utils.js';
+import {Array as ArrayT} from './Array';
+import {Number as NumberT} from './Number';
+import {resolveLength} from './utils';
 
 export class LazyArray<T = unknown> extends ArrayT<T, LazyArrayValue<T>> {
   decode(stream: any, parent?: any): LazyArrayValue<T> {
     const { pos } = stream;
-    const length = utils.resolveLength(this.length, stream, parent);
+    const length = resolveLength(this.length, stream, parent);
 
     if (this.length instanceof NumberT) {
       parent = {

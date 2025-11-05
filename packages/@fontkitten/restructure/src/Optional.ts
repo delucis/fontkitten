@@ -1,4 +1,4 @@
-import {Base, ResType} from './Base.js';
+import {Base, ResType} from './Base';
 
 export class Optional<T = unknown> extends Base<T | undefined> {
   #type: ResType<T, any>;

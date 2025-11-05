@@ -1,6 +1,6 @@
-import {Base, ResType} from './Base.js';
-import {Number as NumberT} from './Number.js';
-import * as utils from './utils.js';
+import {Base, ResType} from './Base';
+import {Number as NumberT} from './Number';
+import {resolveLength} from './utils';
 
 type LengthType = 'count' | 'bytes';
 
@@ -28,7 +28,7 @@ class ArrayT<T = unknown, R = T[]> extends Base<R> {
     let ctx: any = parent;
 
     if (this.length != null) {
-      length = utils.resolveLength(this.length, stream, parent);
+      length = resolveLength(this.length, stream, parent);
     }
 
     if (this.length instanceof NumberT) {

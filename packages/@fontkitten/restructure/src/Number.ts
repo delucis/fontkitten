@@ -1,5 +1,5 @@
-import {DecodeStream} from './DecodeStream.js';
-import {Base} from './Base.js';
+import {DecodeStream} from './DecodeStream';
+import {Base} from './Base';
 
 class NumberT extends Base<number> {
   #size: number;

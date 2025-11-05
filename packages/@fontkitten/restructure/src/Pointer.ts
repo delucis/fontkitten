@@ -1,5 +1,5 @@
-import * as utils from './utils.js';
-import {Base, ResType} from './Base.js';
+import {PropertyDescriptor} from './utils';
+import {Base, ResType} from './Base';
 
 type PointerOptions = {
   type?: 'local' | 'parent' | 'global';
@@ -9,7 +9,7 @@ type PointerOptions = {
   relativeTo?: (ctx: any) => number;
 };
 
-export class Pointer<T = unknown> extends Base<T | null | number | utils.PropertyDescriptor> {
+export class Pointer<T = unknown> extends Base<T | null | number | PropertyDescriptor> {
   #type: ResType<T, any> | null;
   #options: Required<Pick<PointerOptions, 'type' | 'allowNull' | 'nullValue' | 'lazy'>> &
     Pick<PointerOptions, 'relativeTo'>;
@@ -20,7 +20,7 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
     this.#options = { type: 'local', allowNull: true, nullValue: 0, lazy: false, ...options };
   }
 
-  decode(stream: any, ctx: any): T | null | number | utils.PropertyDescriptor {
+  decode(stream: any, ctx: any): T | null | number | PropertyDescriptor {
     const offset = this.offsetType.decode(stream, ctx);
 
     // handle NULL pointers
@@ -62,7 +62,7 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
       // If this is a lazy pointer, define a getter to decode only when needed.
       // This obviously only works when the pointer is contained by a Struct.
       if (this.#options.lazy) {
-        return new utils.PropertyDescriptor({
+        return new PropertyDescriptor({
           get: decodeValue});
       }
 

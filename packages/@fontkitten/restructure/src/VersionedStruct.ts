@@ -1,5 +1,5 @@
-import {Struct} from './Struct.js';
-import {ResType} from './Base.js';
+import {Struct} from './Struct';
+import {ResType} from './Base';
 
 const getPath = (object: any, pathArray: string[]) => {
   return pathArray.reduce((prevObj: any, key: string) => prevObj && prevObj[key], object);

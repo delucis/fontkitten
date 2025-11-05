@@ -1,6 +1,6 @@
-import {Number as NumberT} from './Number.js';
+import {Number as NumberT} from './Number';
 
-export type LengthSpecifier<P = any> =
+type LengthSpecifier<P = any> =
   | number
   | string
   | NumberT

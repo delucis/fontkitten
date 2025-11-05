@@ -1,5 +1,5 @@
-import {Base, ResType} from './Base.js';
-import * as utils from './utils.js';
+import {Base, ResType} from './Base';
+import {resolveLength} from './utils';
 
 export class Reserved extends Base<undefined> {
   #type: ResType<number, any> | { size: () => number };
@@ -16,7 +16,7 @@ export class Reserved extends Base<undefined> {
   }
 
   size(data: any, parent?: any): number {
-    const count = utils.resolveLength(this.#count, null, parent);
+    const count = resolveLength(this.#count, null, parent);
     return this.#type.size() * count;
   }
 }

@@ -10,6 +10,8 @@ class NumberT extends Base {
     if (this.type[this.type.length - 1] !== '8') {
       this.fn += this.endian;
     }
+    this.readFnName = `read${this.fn}`;
+    this.writeFnName = `write${this.fn}`;
   }
 
   size() {
@@ -17,11 +19,11 @@ class NumberT extends Base {
   }
 
   decode(stream) {
-    return stream[`read${this.fn}`]();
+    return stream[this.readFnName]();
   }
 
   encode(stream, val) {
-    return stream[`write${this.fn}`](val);
+    return stream[this.writeFnName](val);
   }
 }
 

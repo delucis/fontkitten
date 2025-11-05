@@ -1,4 +1,3 @@
-export {EncodeStream} from './EncodeStream.js';
 export {DecodeStream} from './DecodeStream.js';
 export {Array} from './Array.js';
 export {LazyArray} from './LazyArray.js';

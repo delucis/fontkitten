@@ -1,10 +1,3 @@
 {
-  "compilerOptions": {
-    "outDir": "dist",
-    "strict": true,
-    "isolatedDeclarations": true,
-    "declaration": true,
-    "target": "esnext",
-    "moduleResolution": "bundler"
-  }
+  "extends": "../../../tsconfig.json"
 }

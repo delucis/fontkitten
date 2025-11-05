@@ -1,5 +1,11 @@
 # fontkitten
 
+## 0.0.9
+
+### Patch Changes
+
+- [`5dcbab5`](https://github.com/delucis/fontkitten/commit/5dcbab524cddfe5bfff9c396f20bc9a51f0d5ddc) Thanks [@delucis](https://github.com/delucis)! - Fixes the bundle published to npm
+
 ## 0.0.8
 
 ### Patch Changes

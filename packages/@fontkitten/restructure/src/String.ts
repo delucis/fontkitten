@@ -5,7 +5,7 @@ import {resolveLength} from './utils';
 
 type Encoding = 'ascii' | 'utf8' | 'utf16le' | 'utf16-le' | 'utf-16be' | 'utf-16le' | 'utf16be' | 'utf16-be' | 'ucs2';
 
-class StringT extends Base<string | Uint8Array> {
+class StringT extends Base<string> {
   #length: number | NumberT | string | ((this: any, parent?: any) => number);
   #encoding: Encoding | ((this: any, parent: any) => Encoding | undefined);
 
@@ -15,7 +15,7 @@ class StringT extends Base<string | Uint8Array> {
     this.#encoding = encoding;
   }
 
-  decode(stream: DecodeStream, parent?: any): string | Uint8Array {
+  decode(stream: DecodeStream, parent?: any): string {
     const encoding = typeof this.#encoding === 'function'
       ? this.#encoding.call(parent, parent) || 'ascii'
       : this.#encoding;

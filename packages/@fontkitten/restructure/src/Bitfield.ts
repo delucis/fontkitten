@@ -25,7 +25,7 @@ export class Bitfield extends Base<Record<string, boolean>> {
   }
 
   size(value?: Record<string, boolean> | null, parent?: any, includePointers?: boolean): number {
-    return this.type.size(null as any);
+    return this.type.size();
   }
 
   // encode(stream: any, keys: Record<string, boolean>): void {

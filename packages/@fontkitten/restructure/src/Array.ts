@@ -37,7 +37,7 @@ class ArrayT<T = unknown, R = T[]> extends Base<R> {
         parent:         { value: parent },
         _startOffset:   { value: pos },
         _currentOffset: { value: 0, writable: true },
-        _length:        { value: length as number }
+        _length:        { value: length }
       });
 
       ctx = res;
@@ -61,7 +61,7 @@ class ArrayT<T = unknown, R = T[]> extends Base<R> {
       }
     }
 
-    return res as any;
+    return res;
   }
 
   size(array: any, ctx: any, includePointers: boolean = true): number {

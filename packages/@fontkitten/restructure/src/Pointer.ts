@@ -18,9 +18,8 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
   constructor(offsetType: ResType<number, any>, type: ResType<T, any> | 'void' | null, options: PointerOptions = {}) {
     super();
     this.offsetType = offsetType;
-    this.type = type as any;
+    this.type = type === 'void' ? null : type;
     this.options = options;
-    if (type === 'void') { this.type = null; }
     if (this.options.type == null) { this.options.type = 'local'; }
     if (this.options.allowNull == null) { this.options.allowNull = true; }
     if (this.options.nullValue == null) { this.options.nullValue = 0; }
@@ -44,7 +43,7 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
     let relative: number;
     switch (this.options.type) {
       case 'local':     relative = ctx._startOffset; break;
-      case 'immediate': relative = stream.pos - this.offsetType.size(null as any); break;
+      case 'immediate': relative = stream.pos - this.offsetType.size(); break;
       case 'parent':    relative = ctx.parent._startOffset; break;
       default:
         var c = ctx;
@@ -62,7 +61,7 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
     const ptr = offset + relative;
 
     if (this.type != null) {
-      let val: T | null = null as any;
+      let val: T | null = null;
       const decodeValue = () => {
         if (val != null) { return val; }
 
@@ -112,11 +111,11 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
 
     if (val && ctx) {
       // Must be written as two separate lines rather than += in case `type.size` mutates ctx.pointerSize.
-      let size = (type as any).size(val, parent);
+      let size = type.size(val, parent);
       ctx.pointerSize += size;
     }
 
-  return this.offsetType.size(null as any, ctx);
+  return this.offsetType.size(null, ctx);
   }
 
   // encode(stream: any, val: any, ctx: any): void {
@@ -167,7 +166,7 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
   //     parent
   //   });
 
-  //   return ctx.pointerOffset += (type as any).size(val, parent);
+  //   return ctx.pointerOffset += type.size(val, parent);
   // }
 }
 

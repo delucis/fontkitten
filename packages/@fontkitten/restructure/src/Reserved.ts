@@ -17,7 +17,7 @@ export class Reserved extends Base<undefined> {
 
   size(data: any, parent?: any): number {
     const count = utils.resolveLength(this.count, null, parent);
-    return (this.type as any).size() * count;
+    return this.type.size() * count;
   }
 
   // encode(stream: any, val: undefined, parent?: any): void {

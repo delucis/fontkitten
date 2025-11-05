@@ -28,7 +28,7 @@ export class Optional<T = unknown> extends Base<T | undefined> {
     }
 
     if (condition) {
-      return this.type.size(val as any, parent);
+      return this.type.size(val, parent);
     } else {
       return 0;
     }
@@ -41,7 +41,7 @@ export class Optional<T = unknown> extends Base<T | undefined> {
   //   }
 
   //   if (condition) {
-  //     return this.type.encode(stream, val as any, parent);
+  //     return this.type.encode(stream, val, parent);
   //   }
   // }
 }

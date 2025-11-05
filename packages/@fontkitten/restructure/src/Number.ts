@@ -3,14 +3,17 @@ import {Base} from './Base.js';
 
 class NumberT extends Base<number> {
   type: keyof typeof DecodeStream.TYPES | 'UInt24' | 'Int24';
-  fn: string;
+  readFnName: string;
+  // writeFnName: string;
 
   constructor(type: string) {
     super();
-    this.fn = this.type = type;
+    let fn = this.type = type;
     if (this.type.at(- 1) !== '8') {
-      this.fn += 'BE';
+      fn += 'BE';
     }
+    this.readFnName = `read${fn}`;
+    // this.writeFnName = `write${fn}`;
   }
 
   size(value?: number | null, parent?: any, includePointers?: boolean): number {
@@ -18,11 +21,11 @@ class NumberT extends Base<number> {
   }
 
   decode(stream: any): number {
-    return stream[`read${this.fn}`]();
+    return stream[this.readFnName]();
   }
 
   // encode(stream: any, val: number): void {
-  //   return stream[`write${this.fn}`](val);
+  //   return stream[this.writeFnName](val);
   // }
 }
 

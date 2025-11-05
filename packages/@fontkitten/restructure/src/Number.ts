@@ -4,7 +4,6 @@ import {Base} from './Base.js';
 class NumberT extends Base<number> {
   type: keyof typeof DecodeStream.TYPES | 'UInt24' | 'Int24';
   readFnName: string;
-  // writeFnName: string;
 
   constructor(type: string) {
     super();
@@ -13,7 +12,6 @@ class NumberT extends Base<number> {
       fn += 'BE';
     }
     this.readFnName = `read${fn}`;
-    // this.writeFnName = `write${fn}`;
   }
 
   size(value?: number | null, parent?: any, includePointers?: boolean): number {
@@ -23,10 +21,6 @@ class NumberT extends Base<number> {
   decode(stream: any): number {
     return stream[this.readFnName]();
   }
-
-  // encode(stream: any, val: number): void {
-  //   return stream[this.writeFnName](val);
-  // }
 }
 
 export {NumberT as Number};
@@ -40,20 +34,16 @@ export const int16: NumberT = new NumberT('Int16');
 export const int32: NumberT = new NumberT('Int32');
 
 export class Fixed extends NumberT {
-  private _point: number;
+  #point: number;
 
   constructor(size: 16 | 32, fracBits: number = size >> 1) {
     super(`Int${size}`);
-    this._point = 1 << fracBits;
+    this.#point = 1 << fracBits;
   }
 
   decode(stream: any): number {
-    return super.decode(stream) / this._point;
+    return super.decode(stream) / this.#point;
   }
-
-  // encode(stream: any, val: number): void {
-  //   return super.encode(stream, (val * this._point) | 0);
-  // }
 }
 
 export const fixed16: Fixed = new Fixed(16);

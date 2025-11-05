@@ -1,7 +1,7 @@
 import * as utils from './utils.js';
 import {Base, ResType} from './Base.js';
 
-type PointerOptions<P = any> = {
+type PointerOptions = {
   type?: 'local' | 'parent' | 'global';
   allowNull?: boolean;
   nullValue?: number;
@@ -116,54 +116,6 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
 
   return this.offsetType.size(null, ctx);
   }
-
-  // encode(stream: any, val: any, ctx: any): void {
-  //   let relative: number;
-  //   const parent = ctx;
-  //   if ((val == null)) {
-  //     this.offsetType.encode(stream, this.options.nullValue!);
-  //     return;
-  //   }
-
-  //   switch (this.options.type) {
-  //     case 'local':
-  //       relative = ctx.startOffset;
-  //       break;
-  //     case 'parent':
-  //       ctx = ctx.parent;
-  //       relative = ctx.startOffset;
-  //       break;
-  //     default: // global
-  //       relative = 0;
-  //       while (ctx.parent) {
-  //         ctx = ctx.parent;
-  //       }
-  //   }
-
-  //   if (this.options.relativeTo) {
-  //     relative += this.relativeToGetter!(parent.val);
-  //   }
-
-  //   this.offsetType.encode(stream, ctx.pointerOffset - relative);
-
-  //   let { type } = this;
-  //   if (type == null) {
-  //     if (!(val instanceof VoidPointer)) {
-  //       throw new Error("Must be a VoidPointer");
-  //     }
-
-  //     ({ type } = val);
-  //     val = val.value;
-  //   }
-
-  //   ctx.pointers.push({
-  //     type,
-  //     val,
-  //     parent
-  //   });
-
-  //   return ctx.pointerOffset += type.size(val, parent);
-  // }
 }
 
 // A pointer whose type is determined at decode time

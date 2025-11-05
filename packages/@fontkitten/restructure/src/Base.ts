@@ -17,18 +17,4 @@ export abstract class Base<T = unknown, P = any> implements ResType<T, P> {
   abstract decode(stream: DecodeStream, parent?: P, length?: number): T;
   // For fixed-size types, value and parent can be ignored
   abstract size(value?: T | null, parent?: any, includePointers?: boolean): number;
-  // abstract encode(stream: EncodeStream, value: T, parent?: any): void;
-
-  // fromBuffer(buffer: Uint8Array): T {
-  //   const stream = new DecodeStream(buffer);
-  //   return this.decode(stream);
-  // }
-
-  // toBuffer(value: T): Uint8Array {
-  //   const size = this.size(value, undefined, true);
-  //   const buffer = new Uint8Array(size);
-  //   const stream = new EncodeStream(buffer);
-  //   this.encode(stream, value);
-  //   return buffer;
-  // }
 }

@@ -23,20 +23,4 @@ export class Bitfield extends Base<Record<string, boolean>> {
 
     return res;
   }
-
-  // size(value?: Record<string, boolean> | null, parent?: any, includePointers?: boolean): number {
-  //   return this.type.size();
-  // }
-
-  // encode(stream: any, keys: Record<string, boolean>): void {
-  //   let val = 0;
-  //   for (let i = 0; i < this.flags.length; i++) {
-  //     const flag = this.flags[i];
-  //     if (flag != null) {
-  //       if (keys[flag]) { val |= (1 << i); }
-  //     }
-  //   }
-
-  //   return this.type.encode(stream, val);
-  // }
 }

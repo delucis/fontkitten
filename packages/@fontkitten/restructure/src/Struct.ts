@@ -85,34 +85,4 @@ export class Struct<R extends Record<string, any> = any> extends Base<R> {
 
     return size;
   }
-
-  // encode(stream: any, val: Partial<R>, parent?: any): void {
-  //   let type: any;
-  //   if (this.preEncode != null) {
-  //     this.preEncode.call(val, stream);
-  //   }
-
-  //   const ctx: any = {
-  //     pointers: [] as Array<{type: any; val: any; parent: any}>,
-  //     startOffset: stream.pos,
-  //     parent,
-  //     val,
-  //     pointerSize: 0
-  //   };
-
-  //   ctx.pointerOffset = stream.pos + this.size(val, ctx, false);
-
-  //   for (const key in this.fields) {
-  //     type = this.fields[key];
-  //     if (type.encode != null) {
-  //       type.encode(stream, val[key], ctx);
-  //     }
-  //   }
-
-  //   let i = 0;
-  //   while (i < ctx.pointers.length) {
-  //     const ptr = ctx.pointers[i++];
-  //     ptr.type.encode(stream, ptr.val, ptr.parent);
-  //   }
-  // }
 }

@@ -63,54 +63,6 @@ class ArrayT<T = unknown, R = T[]> extends Base<R> {
 
     return res;
   }
-
-  // size(array: any, ctx: any, includePointers: boolean = true): number {
-  //   if (!array) {
-  //     return this.type.size(null, ctx) * utils.resolveLength(this.length, null, ctx);
-  //   }
-
-  //   let size = 0;
-  //   if (this.length instanceof NumberT) {
-  //     size += this.length.size();
-  //     ctx = {parent: ctx, pointerSize: 0};
-  //   }
-
-  //   for (let item of array) {
-  //     size += this.type.size(item, ctx);
-  //   }
-
-  //   if (ctx && includePointers && this.length instanceof NumberT) {
-  //     size += ctx.pointerSize;
-  //   }
-    
-  //   return size;
-  // }
-
-  // encode(stream: any, array: any, parent?: any): void {
-  //   let ctx: any = parent;
-  //   if (this.length instanceof NumberT) {
-  //     ctx = {
-  //       pointers: [],
-  //       startOffset: stream.pos,
-  //       parent
-  //     };
-
-  //     ctx.pointerOffset = stream.pos + this.size(array, ctx, false);
-  //     this.length.encode(stream, array.length);
-  //   }
-
-  //   for (let item of array) {
-  //     this.type.encode(stream, item, ctx);
-  //   }
-
-  //   if (this.length instanceof NumberT) {
-  //     let i = 0;
-  //     while (i < ctx.pointers.length) {
-  //       const ptr = ctx.pointers[i++];
-  //       ptr.type.encode(stream, ptr.val, ptr.parent);
-  //     }
-  //   }
-  // }
 }
 
 export {ArrayT as Array};

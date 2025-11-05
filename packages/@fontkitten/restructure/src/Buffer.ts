@@ -15,18 +15,18 @@ export class BufferT extends Base<Uint8Array> {
     return stream.readBuffer(length);
   }
 
-  size(val: Uint8Array | null | undefined, parent?: any): number {
-    if (!val) {
-      return utils.resolveLength(this.length, null, parent);
-    }
+  // size(val: Uint8Array | null | undefined, parent?: any): number {
+  //   if (!val) {
+  //     return utils.resolveLength(this.length, null, parent);
+  //   }
 
-    let len = val.length;
-    if (this.length instanceof NumberT) {
-      len += this.length.size();
-    }
+  //   let len = val.length;
+  //   if (this.length instanceof NumberT) {
+  //     len += this.length.size();
+  //   }
 
-    return len;
-  }
+  //   return len;
+  // }
 
   // encode(stream: any, buf: Uint8Array, parent?: any): void {
   //   if (this.length instanceof NumberT) {

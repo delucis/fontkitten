@@ -51,9 +51,9 @@ export class Fixed extends NumberT {
     return super.decode(stream) / this._point;
   }
 
-  encode(stream: any, val: number): void {
-    return super.encode(stream, (val * this._point) | 0);
-  }
+  // encode(stream: any, val: number): void {
+  //   return super.encode(stream, (val * this._point) | 0);
+  // }
 }
 
 export const fixed16: Fixed = new Fixed(16);

@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "test": "mocha",
+    "coverage": "c8 --reporter=text-lcov --reporter=html --output=coverage/lcov.info mocha",
     "build": "tsdown --dts"
   },
   "type": "module",
@@ -34,9 +35,10 @@
     "tiny-inflate": "^1.0.3"
   },
   "devDependencies": {
+    "@fontkitten/restructure": "^0.0.7",
     "@types/node": "^24.9.2",
     "mocha": "^10.0.0",
-    "@fontkitten/restructure": "^0.0.7",
+    "rollup-plugin-visualizer": "^6.0.5",
     "tsdown": "^0.15.11"
   }
 }

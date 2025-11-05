@@ -22,13 +22,13 @@ export class LazyArray<T = unknown> extends ArrayT<T, LazyArrayValue<T>> {
     return res;
   }
 
-  size(val: LazyArrayValue<T> | T[] | null | undefined, ctx: any): number {
-    if (val instanceof LazyArrayValue) {
-      val = val.toArray();
-    }
+  // size(val: LazyArrayValue<T> | T[] | null | undefined, ctx: any): number {
+  //   if (val instanceof LazyArrayValue) {
+  //     val = val.toArray();
+  //   }
 
-    return super.size(val, ctx);
-  }
+  //   return super.size(val, ctx);
+  // }
 
   // encode(stream: any, val: LazyArrayValue<T> | T[], ctx?: any): void {
   //   if (val instanceof LazyArrayValue) {

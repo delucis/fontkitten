@@ -2,7 +2,7 @@ import {Base} from './Base';
 import {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
-export class BufferT extends Base<Uint8Array> {
+class BufferT extends Base<Uint8Array> {
   #length: number | NumberT | string | ((this: any, parent?: any) => number);
 
   constructor(length: number | NumberT | string | ((this: any, parent?: any) => number)) {

@@ -1,4 +1,4 @@
-import isEqual from 'fast-deep-equal';
+// import isEqual from 'fast-deep-equal';
 import CFFOperand from './CFFOperand';
 import { PropertyDescriptor } from '@fontkitten/restructure';
 
@@ -31,21 +31,21 @@ export default class CFFDict {
     }
   }
 
-  encodeOperands(type, stream, ctx, operands) {
-    if (Array.isArray(type)) {
-      return operands.map((op, i) => this.encodeOperands(type[i], stream, ctx, op)[0]);
-    } else if (type.encode != null) {
-      return type.encode(stream, operands, ctx);
-    } else if (typeof operands === 'number') {
-      return [operands];
-    } else if (typeof operands === 'boolean') {
-      return [+operands];
-    } else if (Array.isArray(operands)) {
-      return operands;
-    } else {
-      return [operands];
-    }
-  }
+  // encodeOperands(type, stream, ctx, operands) {
+  //   if (Array.isArray(type)) {
+  //     return operands.map((op, i) => this.encodeOperands(type[i], stream, ctx, op)[0]);
+  //   } else if (type.encode != null) {
+  //     return type.encode(stream, operands, ctx);
+  //   } else if (typeof operands === 'number') {
+  //     return [operands];
+  //   } else if (typeof operands === 'boolean') {
+  //     return [+operands];
+  //   } else if (Array.isArray(operands)) {
+  //     return operands;
+  //   } else {
+  //     return [operands];
+  //   }
+  // }
 
   decode(stream, parent) {
     let end = stream.pos + parent.length;
@@ -94,73 +94,73 @@ export default class CFFDict {
     return ret;
   }
 
-  size(dict, parent, includePointers = true) {
-    let ctx = {
-      parent,
-      val: dict,
-      pointerSize: 0,
-      startOffset: parent.startOffset || 0
-    };
+  // size(dict, parent, includePointers = true) {
+  //   let ctx = {
+  //     parent,
+  //     val: dict,
+  //     pointerSize: 0,
+  //     startOffset: parent.startOffset || 0
+  //   };
 
-    let len = 0;
+  //   let len = 0;
 
-    for (let k in this.fields) {
-      let field = this.fields[k];
-      let val = dict[field[1]];
-      if (val == null || isEqual(val, field[3])) {
-        continue;
-      }
+  //   for (let k in this.fields) {
+  //     let field = this.fields[k];
+  //     let val = dict[field[1]];
+  //     if (val == null || isEqual(val, field[3])) {
+  //       continue;
+  //     }
 
-      let operands = this.encodeOperands(field[2], null, ctx, val);
-      for (let op of operands) {
-        len += CFFOperand.size(op);
-      }
+  //     let operands = this.encodeOperands(field[2], null, ctx, val);
+  //     for (let op of operands) {
+  //       len += CFFOperand.size(op);
+  //     }
 
-      let key = Array.isArray(field[0]) ? field[0] : [field[0]];
-      len += key.length;
-    }
+  //     let key = Array.isArray(field[0]) ? field[0] : [field[0]];
+  //     len += key.length;
+  //   }
 
-    if (includePointers) {
-      len += ctx.pointerSize;
-    }
+  //   if (includePointers) {
+  //     len += ctx.pointerSize;
+  //   }
 
-    return len;
-  }
+  //   return len;
+  // }
 
-  encode(stream, dict, parent) {
-    let ctx = {
-      pointers: [],
-      startOffset: stream.pos,
-      parent,
-      val: dict,
-      pointerSize: 0
-    };
+  // encode(stream, dict, parent) {
+  //   let ctx = {
+  //     pointers: [],
+  //     startOffset: stream.pos,
+  //     parent,
+  //     val: dict,
+  //     pointerSize: 0
+  //   };
 
-    ctx.pointerOffset = stream.pos + this.size(dict, ctx, false);
+  //   ctx.pointerOffset = stream.pos + this.size(dict, ctx, false);
 
-    for (let field of this.ops) {
-      let val = dict[field[1]];
-      if (val == null || isEqual(val, field[3])) {
-        continue;
-      }
+  //   for (let field of this.ops) {
+  //     let val = dict[field[1]];
+  //     if (val == null || isEqual(val, field[3])) {
+  //       continue;
+  //     }
 
-      let operands = this.encodeOperands(field[2], stream, ctx, val);
-      for (let op of operands) {
-        CFFOperand.encode(stream, op);
-      }
+  //     let operands = this.encodeOperands(field[2], stream, ctx, val);
+  //     for (let op of operands) {
+  //       CFFOperand.encode(stream, op);
+  //     }
 
-      let key = Array.isArray(field[0]) ? field[0] : [field[0]];
-      for (let op of key) {
-        stream.writeUInt8(op);
-      }
-    }
+  //     let key = Array.isArray(field[0]) ? field[0] : [field[0]];
+  //     for (let op of key) {
+  //       stream.writeUInt8(op);
+  //     }
+  //   }
 
-    let i = 0;
-    while (i < ctx.pointers.length) {
-      let ptr = ctx.pointers[i++];
-      ptr.type.encode(stream, ptr.val, ptr.parent);
-    }
+  //   let i = 0;
+  //   while (i < ctx.pointers.length) {
+  //     let ptr = ctx.pointers[i++];
+  //     ptr.type.encode(stream, ptr.val, ptr.parent);
+  //   }
 
-    return;
-  }
+  //   return;
+  // }
 }

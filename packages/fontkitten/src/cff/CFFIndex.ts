@@ -65,86 +65,86 @@ export default class CFFIndex {
     return ret;
   }
 
-  size(arr, parent) {
-    let size = 2;
-    if (arr.length === 0) {
-      return size;
-    }
+  // size(arr, parent) {
+  //   let size = 2;
+  //   if (arr.length === 0) {
+  //     return size;
+  //   }
 
-    let type = this.type || new r.Buffer;
+  //   let type = this.type || new r.Buffer;
 
-    // find maximum offset to detminine offset type
-    let offset = 1;
-    for (let i = 0; i < arr.length; i++) {
-      let item = arr[i];
-      offset += type.size(item, parent);
-    }
+  //   // find maximum offset to detminine offset type
+  //   let offset = 1;
+  //   for (let i = 0; i < arr.length; i++) {
+  //     let item = arr[i];
+  //     offset += type.size(item, parent);
+  //   }
 
-    let offsetType;
-    if (offset <= 0xff) {
-      offsetType = r.uint8;
-    } else if (offset <= 0xffff) {
-      offsetType = r.uint16;
-    } else if (offset <= 0xffffff) {
-      offsetType = r.uint24;
-    } else if (offset <= 0xffffffff) {
-      offsetType = r.uint32;
-    } else {
-      throw new Error("Bad offset in CFFIndex");
-    }
+  //   let offsetType;
+  //   if (offset <= 0xff) {
+  //     offsetType = r.uint8;
+  //   } else if (offset <= 0xffff) {
+  //     offsetType = r.uint16;
+  //   } else if (offset <= 0xffffff) {
+  //     offsetType = r.uint24;
+  //   } else if (offset <= 0xffffffff) {
+  //     offsetType = r.uint32;
+  //   } else {
+  //     throw new Error("Bad offset in CFFIndex");
+  //   }
 
-    size += 1 + offsetType.size() * (arr.length + 1);
-    size += offset - 1;
+  //   size += 1 + offsetType.size() * (arr.length + 1);
+  //   size += offset - 1;
 
-    return size;
-  }
+  //   return size;
+  // }
 
-  encode(stream, arr, parent) {
-    stream.writeUInt16BE(arr.length);
-    if (arr.length === 0) {
-      return;
-    }
+  // encode(stream, arr, parent) {
+  //   stream.writeUInt16BE(arr.length);
+  //   if (arr.length === 0) {
+  //     return;
+  //   }
 
-    let type = this.type || new r.Buffer;
+  //   let type = this.type || new r.Buffer;
 
-    // find maximum offset to detminine offset type
-    let sizes = [];
-    let offset = 1;
-    for (let item of arr) {
-      let s = type.size(item, parent);
-      sizes.push(s);
-      offset += s;
-    }
+  //   // find maximum offset to detminine offset type
+  //   let sizes = [];
+  //   let offset = 1;
+  //   for (let item of arr) {
+  //     let s = type.size(item, parent);
+  //     sizes.push(s);
+  //     offset += s;
+  //   }
 
-    let offsetType;
-    if (offset <= 0xff) {
-      offsetType = r.uint8;
-    } else if (offset <= 0xffff) {
-      offsetType = r.uint16;
-    } else if (offset <= 0xffffff) {
-      offsetType = r.uint24;
-    } else if (offset <= 0xffffffff) {
-      offsetType = r.uint32;
-    } else {
-      throw new Error("Bad offset in CFFIndex");
-    }
+  //   let offsetType;
+  //   if (offset <= 0xff) {
+  //     offsetType = r.uint8;
+  //   } else if (offset <= 0xffff) {
+  //     offsetType = r.uint16;
+  //   } else if (offset <= 0xffffff) {
+  //     offsetType = r.uint24;
+  //   } else if (offset <= 0xffffffff) {
+  //     offsetType = r.uint32;
+  //   } else {
+  //     throw new Error("Bad offset in CFFIndex");
+  //   }
 
-    // write offset size
-    stream.writeUInt8(offsetType.size());
+  //   // write offset size
+  //   stream.writeUInt8(offsetType.size());
 
-    // write elements
-    offset = 1;
-    offsetType.encode(stream, offset);
+  //   // write elements
+  //   offset = 1;
+  //   offsetType.encode(stream, offset);
 
-    for (let size of sizes) {
-      offset += size;
-      offsetType.encode(stream, offset);
-    }
+  //   for (let size of sizes) {
+  //     offset += size;
+  //     offsetType.encode(stream, offset);
+  //   }
 
-    for (let item of arr) {
-      type.encode(stream, item, parent);
-    }
+  //   for (let item of arr) {
+  //     type.encode(stream, item, parent);
+  //   }
 
-    return;
-  }
+  //   return;
+  // }
 }

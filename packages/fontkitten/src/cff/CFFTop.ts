@@ -4,7 +4,6 @@ import CFFDict from './CFFDict';
 import CFFIndex from './CFFIndex';
 import CFFPointer from './CFFPointer';
 import CFFPrivateDict from './CFFPrivateDict';
-import StandardStrings from './CFFStandardStrings';
 import { StandardEncoding, ExpertEncoding } from './CFFEncodings';
 import { ISOAdobeCharset, ExpertCharset, ExpertSubsetCharset } from './CFFCharsets';
 import { ItemVariationStore } from '../tables/variations';
@@ -25,18 +24,18 @@ class PredefinedOp {
     return this.type.decode(stream, parent, operands);
   }
 
-  size(value, ctx) {
-    return this.type.size(value, ctx);
-  }
+  // size(value, ctx) {
+  //   return this.type.size(value, ctx);
+  // }
 
-  encode(stream, value, ctx) {
-    let index = this.predefinedOps.indexOf(value);
-    if (index !== -1) {
-      return index;
-    }
+  // encode(stream, value, ctx) {
+  //   let index = this.predefinedOps.indexOf(value);
+  //   if (index !== -1) {
+  //     return index;
+  //   }
 
-    return this.type.encode(stream, value, ctx);
-  }
+  //   return this.type.encode(stream, value, ctx);
+  // }
 }
 
 class CFFEncodingVersion extends r.Number {
@@ -144,13 +143,13 @@ class CFFPrivateOp {
     return ptr.decode(stream, parent, [operands[1]]);
   }
 
-  size(dict, ctx) {
-    return [CFFPrivateDict.size(dict, ctx, false), ptr.size(dict, ctx)[0]];
-  }
+  // size(dict, ctx) {
+  //   return [CFFPrivateDict.size(dict, ctx, false), ptr.size(dict, ctx)[0]];
+  // }
 
-  encode(stream, dict, ctx) {
-    return [CFFPrivateDict.size(dict, ctx, false), ptr.encode(stream, dict, ctx)[0]];
-  }
+  // encode(stream, dict, ctx) {
+  //   return [CFFPrivateDict.size(dict, ctx, false), ptr.encode(stream, dict, ctx)[0]];
+  // }
 }
 
 let FontDict = new CFFDict([

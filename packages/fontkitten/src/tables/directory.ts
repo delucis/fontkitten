@@ -26,33 +26,33 @@ Directory.process = function() {
   this.tables = tables;
 };
 
-Directory.preEncode = function() {
-  if (!Array.isArray(this.tables)) {
-    let tables = [];
-    for (let tag in this.tables) {
-      let table = this.tables[tag];
-      if (table) {
-        tables.push({
-          tag: tag,
-          checkSum: 0,
-          offset: new r.VoidPointer(Tables[tag], table),
-          length: Tables[tag].size(table)
-        });
-      }
-    }
+// Directory.preEncode = function() {
+//   if (!Array.isArray(this.tables)) {
+//     let tables = [];
+//     for (let tag in this.tables) {
+//       let table = this.tables[tag];
+//       if (table) {
+//         tables.push({
+//           tag: tag,
+//           checkSum: 0,
+//           offset: new r.VoidPointer(Tables[tag], table),
+//           length: Tables[tag].size(table)
+//         });
+//       }
+//     }
     
-    this.tables = tables;
-  }
+//     this.tables = tables;
+//   }
 
-  this.tag = 'true';
-  this.numTables = this.tables.length;
+//   this.tag = 'true';
+//   this.numTables = this.tables.length;
 
-  let maxExponentFor2 = Math.floor((Math.log(this.numTables) / Math.LN2));
-  let maxPowerOf2 = Math.pow(2, maxExponentFor2);
+//   let maxExponentFor2 = Math.floor((Math.log(this.numTables) / Math.LN2));
+//   let maxPowerOf2 = Math.pow(2, maxExponentFor2);
 
-  this.searchRange =  maxPowerOf2 * 16;
-  this.entrySelector = Math.log(maxPowerOf2) / Math.LN2;
-  this.rangeShift = this.numTables * 16 - this.searchRange;
-};
+//   this.searchRange =  maxPowerOf2 * 16;
+//   this.entrySelector = Math.log(maxPowerOf2) / Math.LN2;
+//   this.rangeShift = this.numTables * 16 - this.searchRange;
+// };
 
 export default Directory;

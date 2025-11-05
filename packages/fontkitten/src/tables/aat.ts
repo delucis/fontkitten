@@ -1,38 +1,38 @@
 import * as r from '@fontkitten/restructure';
 
-class UnboundedArrayAccessor {
-  constructor(type, stream, parent) {
-    this.type = type;
-    this.stream = stream;
-    this.parent = parent;
-    this.base = this.stream.pos;
-    this._items = [];
-  }
+// class UnboundedArrayAccessor {
+//   constructor(type, stream, parent) {
+//     this.type = type;
+//     this.stream = stream;
+//     this.parent = parent;
+//     this.base = this.stream.pos;
+//     this._items = [];
+//   }
 
-  getItem(index) {
-    if (this._items[index] == null) {
-      let pos = this.stream.pos;
-      this.stream.pos = this.base + this.type.size(null, this.parent) * index;
-      this._items[index] = this.type.decode(this.stream, this.parent);
-      this.stream.pos = pos;
-    }
+//   getItem(index) {
+//     if (this._items[index] == null) {
+//       let pos = this.stream.pos;
+//       this.stream.pos = this.base + this.type.size(null, this.parent) * index;
+//       this._items[index] = this.type.decode(this.stream, this.parent);
+//       this.stream.pos = pos;
+//     }
 
-    return this._items[index];
-  }
+//     return this._items[index];
+//   }
 
-  inspect() {
-    return `[UnboundedArray ${this.type.constructor.name}]`;
-  }
-}
+//   inspect() {
+//     return `[UnboundedArray ${this.type.constructor.name}]`;
+//   }
+// }
 
 export class UnboundedArray extends r.Array {
   constructor(type) {
     super(type, 0);
   }
 
-  decode(stream, parent) {
-    return new UnboundedArrayAccessor(this.type, stream, parent);
-  }
+  // decode(stream, parent) {
+  //   return new UnboundedArrayAccessor(this.type, stream, parent);
+  // }
 }
 
 export let LookupTable = function(ValueType = r.uint16) {

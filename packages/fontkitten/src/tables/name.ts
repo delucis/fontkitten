@@ -15,7 +15,7 @@ let NameRecord = new r.Struct({
 
 let LangTagRecord = new r.Struct({
   length:  r.uint16,
-  tag:     new r.Pointer(r.uint16, new r.String('length', 'utf16be'), {type: 'parent', relativeTo: ctx => ctx.stringOffset})
+  tag:     new r.Pointer(r.uint16, new r.String('length', 'utf16-be'), {type: 'parent', relativeTo: ctx => ctx.stringOffset})
 });
 
 var NameTable = new r.VersionedStruct(r.uint16, {

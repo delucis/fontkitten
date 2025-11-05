@@ -2,26 +2,31 @@ import {Base} from './Base.js';
 import {Number as NumberT} from './Number.js';
 import * as utils from './utils.js';
 
-class StringT extends Base {
-  constructor(length, encoding = 'ascii') {
+type Encoding = 'ascii' | 'utf8' | 'utf16le' | 'utf16-le' | 'utf-16be' | 'utf-16le' | 'utf16be' | 'utf16-be' | 'ucs2';
+
+class StringT extends Base<string | Uint8Array> {
+  length: number | NumberT | string | ((this: any, parent?: any) => number);
+  encoding: Encoding | ((this: any, parent: any) => Encoding | undefined);
+
+  constructor(length: number | NumberT | string | ((this: any, parent?: any) => number), encoding: Encoding | ((this: any, parent: any) => Encoding | undefined) = 'ascii') {
     super();
     this.length = length;
     this.encoding = encoding;
   }
 
-  decode(stream, parent) {
-    let length, pos;
+  decode(stream: any, parent?: any): string | Uint8Array {
+    let length: number, pos: number;
 
     let { encoding } = this;
     if (typeof encoding === 'function') {
       encoding = encoding.call(parent, parent) || 'ascii';
     }
-    let width = encodingWidth(encoding);
+    const width = encodingWidth(encoding);
 
     if (this.length != null) {
       length = utils.resolveLength(this.length, stream, parent);
     } else {
-      let buffer;
+      let buffer: Uint8Array;
       ({buffer, length, pos} = stream);
 
       while ((pos < length - width + 1) &&
@@ -34,7 +39,6 @@ class StringT extends Base {
       length = pos - stream.pos;
     }
 
-
     const string = stream.readString(length, encoding);
 
     if ((this.length == null) && (stream.pos < stream.length)) {
@@ -44,7 +48,7 @@ class StringT extends Base {
     return string;
   }
 
-  size(val, parent) {
+  size(val: string | null | undefined, parent?: any): number {
     // Use the defined value if no value was given
     if (val === undefined || val === null) {
       return utils.resolveLength(this.length, null, parent);
@@ -71,27 +75,27 @@ class StringT extends Base {
     return size;
   }
 
-  encode(stream, val, parent) {
-    let { encoding } = this;
-    if (typeof encoding === 'function') {
-      encoding = encoding.call(parent != null ? parent.val : undefined, parent != null ? parent.val : undefined) || 'ascii';
-    }
+  // encode(stream: any, val: string, parent?: any): any {
+  //   let { encoding } = this;
+  //   if (typeof encoding === 'function') {
+  //     encoding = encoding.call(parent != null ? parent.val : undefined, parent != null ? parent.val : undefined) || 'ascii';
+  //   }
 
-    if (this.length instanceof NumberT) {
-      this.length.encode(stream, byteLength(val, encoding));
-    }
+  //   if (this.length instanceof NumberT) {
+  //     this.length.encode(stream, byteLength(val, encoding));
+  //   }
 
-    stream.writeString(val, encoding);
+  //   stream.writeString(val, encoding);
 
-    if ((this.length == null)) {
-      return encodingWidth(encoding) == 2 ?
-        stream.writeUInt16LE(0x0000) :
-        stream.writeUInt8(0x00);
-    }
-  }
+  //   if ((this.length == null)) {
+  //     return encodingWidth(encoding) == 2 ?
+  //       stream.writeUInt16LE(0x0000) :
+  //       stream.writeUInt8(0x00);
+  //   }
+  // }
 }
 
-function encodingWidth(encoding) {
+function encodingWidth(encoding: string): number {
   switch(encoding) {
     case 'ascii':
     case 'utf8': // utf8 is a byte-based encoding for zero-term string
@@ -111,7 +115,7 @@ function encodingWidth(encoding) {
   }
 }
 
-function byteLength(string, encoding) {
+function byteLength(string: string, encoding: string): number {
   switch (encoding) {
     case 'ascii':
       return string.length;

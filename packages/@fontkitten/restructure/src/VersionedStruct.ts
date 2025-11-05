@@ -1,11 +1,20 @@
 import {Struct} from './Struct.js';
+import {ResType} from './Base.js';
 
-const getPath = (object, pathArray) => {
-  return pathArray.reduce((prevObj, key) => prevObj && prevObj[key], object);
+const getPath = (object: any, pathArray: string[]) => {
+  return pathArray.reduce((prevObj: any, key: string) => prevObj && prevObj[key], object);
 };
 
-export class VersionedStruct extends Struct {
-  constructor(type, versions = {}) {
+type VersionMap<V extends string | number = any> = Record<string | number, Record<string, ResType<any, any> | VersionedStruct>> & {
+  header?: Record<string, ResType<any, any>>
+};
+
+export class VersionedStruct<R extends Record<string, any> = any> extends Struct<R> {
+  type: string | ResType<number | string, any>;
+  versions: VersionMap;
+  versionPath?: string[];
+
+  constructor(type: string | ResType<number | string, any>, versions: VersionMap = {}) {
     super();
     this.type = type;
     this.versions = versions;
@@ -14,11 +23,11 @@ export class VersionedStruct extends Struct {
     }
   }
 
-  decode(stream, parent, length = 0) {
+  decode(stream: any, parent?: any, length: number = 0): any {
     const res = this._setup(stream, parent, length);
 
     if (typeof this.type === 'string') {
-      res.version = getPath(parent, this.versionPath);
+      res.version = getPath(parent, this.versionPath!);
     } else {
       res.version = this.type.decode(stream);
     }
@@ -44,7 +53,7 @@ export class VersionedStruct extends Struct {
     return res;
   }
 
-  size(val, parent, includePointers = true) {
+  size(val: any, parent?: any, includePointers: boolean = true): number {
     let key, type;
     if (!val) {
       throw new Error('Not a fixed size');
@@ -54,7 +63,7 @@ export class VersionedStruct extends Struct {
       this.preEncode.call(val);
     }
 
-    const ctx = {
+    const ctx: any = {
       parent,
       val,
       pointerSize: 0
@@ -93,47 +102,47 @@ export class VersionedStruct extends Struct {
     return size;
   }
 
-  encode(stream, val, parent) {
-    let key, type;
-    if (this.preEncode != null) {
-      this.preEncode.call(val, stream);
-    }
+  // encode(stream: any, val: any, parent?: any): void {
+  //   let key, type: any;
+  //   if (this.preEncode != null) {
+  //     this.preEncode.call(val, stream);
+  //   }
 
-    const ctx = {
-      pointers: [],
-      startOffset: stream.pos,
-      parent,
-      val,
-      pointerSize: 0
-    };
+  //   const ctx: any = {
+  //     pointers: [] as Array<{type: any; val: any; parent: any}>,
+  //     startOffset: stream.pos,
+  //     parent,
+  //     val,
+  //     pointerSize: 0
+  //   };
 
-    ctx.pointerOffset = stream.pos + this.size(val, ctx, false);
+  //   ctx.pointerOffset = stream.pos + this.size(val, ctx, false);
 
-    if (typeof this.type !== 'string') {
-      this.type.encode(stream, val.version);
-    }
+  //   if (typeof this.type !== 'string') {
+  //     this.type.encode(stream, val.version);
+  //   }
 
-    if (this.versions.header) {
-      for (key in this.versions.header) {
-        type = this.versions.header[key];
-        if (type.encode != null) {
-          type.encode(stream, val[key], ctx);
-        }
-      }
-    }
+  //   if (this.versions.header) {
+  //     for (key in this.versions.header) {
+  //       type = this.versions.header[key];
+  //       if (type.encode != null) {
+  //         type.encode(stream, val[key], ctx);
+  //       }
+  //     }
+  //   }
 
-    const fields = this.versions[val.version];
-    for (key in fields) {
-      type = fields[key];
-      if (type.encode != null) {
-        type.encode(stream, val[key], ctx);
-      }
-    }
+  //   const fields = this.versions[val.version];
+  //   for (key in fields) {
+  //     type = fields[key];
+  //     if (type.encode != null) {
+  //       type.encode(stream, val[key], ctx);
+  //     }
+  //   }
 
-    let i = 0;
-    while (i < ctx.pointers.length) {
-      const ptr = ctx.pointers[i++];
-      ptr.type.encode(stream, ptr.val, ptr.parent);
-    }
-  }
+  //   let i = 0;
+  //   while (i < ctx.pointers.length) {
+  //     const ptr = ctx.pointers[i++];
+  //     ptr.type.encode(stream, ptr.val, ptr.parent);
+  //   }
+  // }
 }

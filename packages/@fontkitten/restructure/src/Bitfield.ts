@@ -1,16 +1,19 @@
-import {Base} from './Base.js';
+import {Base, ResType} from './Base.js';
 
-export class Bitfield extends Base {
-  constructor(type, flags = []) {
+export class Bitfield extends Base<Record<string, boolean>> {
+  type: ResType<number, any>;
+  flags: (string | null | undefined)[];
+
+  constructor(type: ResType<number, any>, flags: (string | null | undefined)[] = []) {
     super();
     this.type = type;
     this.flags = flags;
   }
 
-  decode(stream) {
+  decode(stream: any): Record<string, boolean> {
     const val = this.type.decode(stream);
 
-    const res = {};
+    const res: Record<string, boolean> = {};
     for (let i = 0; i < this.flags.length; i++) {
       const flag = this.flags[i];
       if (flag != null) {
@@ -21,19 +24,19 @@ export class Bitfield extends Base {
     return res;
   }
 
-  size() {
-    return this.type.size();
+  size(value?: Record<string, boolean> | null, parent?: any, includePointers?: boolean): number {
+    return this.type.size(null as any);
   }
 
-  encode(stream, keys) {
-    let val = 0;
-    for (let i = 0; i < this.flags.length; i++) {
-      const flag = this.flags[i];
-      if (flag != null) {
-        if (keys[flag]) { val |= (1 << i); }
-      }
-    }
+  // encode(stream: any, keys: Record<string, boolean>): void {
+  //   let val = 0;
+  //   for (let i = 0; i < this.flags.length; i++) {
+  //     const flag = this.flags[i];
+  //     if (flag != null) {
+  //       if (keys[flag]) { val |= (1 << i); }
+  //     }
+  //   }
 
-    return this.type.encode(stream, val);
-  }
+  //   return this.type.encode(stream, val);
+  // }
 }

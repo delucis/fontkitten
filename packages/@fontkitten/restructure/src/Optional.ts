@@ -1,13 +1,16 @@
-import {Base} from './Base.js';
+import {Base, ResType} from './Base.js';
 
-export class Optional extends Base {
-  constructor(type, condition = true) {
+export class Optional<T = unknown> extends Base<T | undefined> {
+  type: ResType<T, any>;
+  condition: boolean | ((this: any, parent?: any) => boolean);
+
+  constructor(type: ResType<T, any>, condition: boolean | ((this: any, parent?: any) => boolean) = true) {
     super();
     this.type = type;
     this.condition = condition;
   }
 
-  decode(stream, parent) {
+  decode(stream: any, parent?: any): T | undefined {
     let { condition } = this;
     if (typeof condition === 'function') {
       condition = condition.call(parent, parent);
@@ -18,27 +21,27 @@ export class Optional extends Base {
     }
   }
 
-  size(val, parent) {
+  size(val: T | undefined, parent?: any): number {
     let { condition } = this;
     if (typeof condition === 'function') {
       condition = condition.call(parent, parent);
     }
 
     if (condition) {
-      return this.type.size(val, parent);
+      return this.type.size(val as any, parent);
     } else {
       return 0;
     }
   }
 
-  encode(stream, val, parent) {
-    let { condition } = this;
-    if (typeof condition === 'function') {
-      condition = condition.call(parent, parent);
-    }
+  // encode(stream: any, val: T | undefined, parent?: any): void {
+  //   let { condition } = this;
+  //   if (typeof condition === 'function') {
+  //     condition = condition.call(parent, parent);
+  //   }
 
-    if (condition) {
-      return this.type.encode(stream, val, parent);
-    }
-  }
+  //   if (condition) {
+  //     return this.type.encode(stream, val as any, parent);
+  //   }
+  // }
 }

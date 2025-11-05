@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let shortFrac = new r.Fixed(16, 'BE', 14);
+let shortFrac = new r.Fixed(16, 14);
 class Offset {
   static decode(stream, parent) {
     // In short format, offsets are multiplied by 2.

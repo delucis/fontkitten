@@ -2,8 +2,8 @@ import {Array as ArrayT} from './Array.js';
 import {Number as NumberT} from './Number.js';
 import * as utils from './utils.js';
 
-export class LazyArray extends ArrayT {
-  decode(stream, parent) {
+export class LazyArray<T = unknown> extends ArrayT<T, LazyArrayValue<T>> {
+  decode(stream: any, parent?: any): LazyArrayValue<T> {
     const { pos } = stream;
     const length = utils.resolveLength(this.length, stream, parent);
 
@@ -16,13 +16,13 @@ export class LazyArray extends ArrayT {
       };
     }
 
-    const res = new LazyArrayValue(this.type, length, stream, parent);
+    const res = new LazyArrayValue<T>(this.type, length, stream, parent);
 
     stream.pos += length * this.type.size(null, parent);
     return res;
   }
 
-  size(val, ctx) {
+  size(val: LazyArrayValue<T> | T[] | null | undefined, ctx: any): number {
     if (val instanceof LazyArrayValue) {
       val = val.toArray();
     }
@@ -30,17 +30,24 @@ export class LazyArray extends ArrayT {
     return super.size(val, ctx);
   }
 
-  encode(stream, val, ctx) {
-    if (val instanceof LazyArrayValue) {
-      val = val.toArray();
-    }
+  // encode(stream: any, val: LazyArrayValue<T> | T[], ctx?: any): void {
+  //   if (val instanceof LazyArrayValue) {
+  //     val = val.toArray();
+  //   }
 
-    return super.encode(stream, val, ctx);
-  }
+  //   return super.encode(stream, val, ctx);
+  // }
 }
 
-class LazyArrayValue {
-  constructor(type, length, stream, ctx) {
+class LazyArrayValue<T = unknown> {
+  private type: any;
+  private stream: any;
+  private ctx: any;
+  private base: number;
+  private items: (T | undefined)[];
+  length: number;
+
+  constructor(type: any, length: number, stream: any, ctx: any) {
     this.type = type;
     this.length = length;
     this.stream = stream;
@@ -49,7 +56,7 @@ class LazyArrayValue {
     this.items = [];
   }
 
-  get(index) {
+  get(index: number): T | undefined {
     if ((index < 0) || (index >= this.length)) {
       return undefined;
     }
@@ -64,10 +71,12 @@ class LazyArrayValue {
     return this.items[index];
   }
 
-  toArray() {
-    const result = [];
+  toArray(): T[] {
+    const result: T[] = [];
     for (let i = 0, end = this.length; i < end; i++) {
-      result.push(this.get(i));
+      const v = this.get(i);
+      // get() can theoretically return undefined for OOB, but index < length protects us.
+      result.push(v as T);
     }
     return result;
   }

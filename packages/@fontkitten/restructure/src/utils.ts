@@ -1,6 +1,16 @@
 import {Number as NumberT} from './Number.js';
 
-export function resolveLength(length, stream, parent) {
+export type LengthSpecifier<P = any> =
+  | number
+  | string
+  | NumberT
+  | ((this: any, parent?: P) => number);
+
+export function resolveLength(
+  length: LengthSpecifier,
+  stream?: { decode?: (s: any) => number } | any,
+  parent?: any
+): number {
   let res;
   if (typeof length === 'number') {
     res = length;
@@ -22,14 +32,13 @@ export function resolveLength(length, stream, parent) {
   return res;
 };
 
-export class PropertyDescriptor {
-  constructor(opts = {}) {
-    this.enumerable = true;
-    this.configurable = true;
-
-    for (let key in opts) {
-      const val = opts[key];
-      this[key] = val;
+export class PropertyDescriptor implements globalThis.PropertyDescriptor {
+  enumerable = true;
+  configurable = true;
+  
+  constructor(opts: Partial<globalThis.PropertyDescriptor> = {}) {
+    for (const key in opts) {
+      (this as any)[key] = opts[key as keyof typeof opts];
     }
   }
 }

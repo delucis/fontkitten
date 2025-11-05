@@ -1,13 +1,26 @@
 import * as utils from './utils.js';
-import {Base} from './Base.js';
+import {Base, ResType} from './Base.js';
 
-export class Pointer extends Base {
-  constructor(offsetType, type, options = {}) {
+type PointerOptions<P = any> = {
+  type?: 'local' | 'immediate' | 'parent' | 'global';
+  allowNull?: boolean;
+  nullValue?: number;
+  lazy?: boolean;
+  relativeTo?: (ctx: any) => number;
+};
+
+export class Pointer<T = unknown> extends Base<T | null | number | utils.PropertyDescriptor> {
+  offsetType: ResType<number, any>;
+  type: ResType<T, any> | null;
+  options: PointerOptions;
+  private relativeToGetter?: (ctx: any) => number;
+
+  constructor(offsetType: ResType<number, any>, type: ResType<T, any> | 'void' | null, options: PointerOptions = {}) {
     super();
     this.offsetType = offsetType;
-    this.type = type;
+    this.type = type as any;
     this.options = options;
-    if (this.type === 'void') { this.type = null; }
+    if (type === 'void') { this.type = null; }
     if (this.options.type == null) { this.options.type = 'local'; }
     if (this.options.allowNull == null) { this.options.allowNull = true; }
     if (this.options.nullValue == null) { this.options.nullValue = 0; }
@@ -20,7 +33,7 @@ export class Pointer extends Base {
     }
   }
 
-  decode(stream, ctx) {
+  decode(stream: any, ctx: any): T | null | number | utils.PropertyDescriptor {
     const offset = this.offsetType.decode(stream, ctx);
 
     // handle NULL pointers
@@ -28,10 +41,10 @@ export class Pointer extends Base {
       return null;
     }
 
-    let relative;
+    let relative: number;
     switch (this.options.type) {
       case 'local':     relative = ctx._startOffset; break;
-      case 'immediate': relative = stream.pos - this.offsetType.size(); break;
+      case 'immediate': relative = stream.pos - this.offsetType.size(null as any); break;
       case 'parent':    relative = ctx.parent._startOffset; break;
       default:
         var c = ctx;
@@ -43,19 +56,19 @@ export class Pointer extends Base {
     }
 
     if (this.options.relativeTo) {
-      relative += this.relativeToGetter(ctx);
+      relative += this.relativeToGetter!(ctx);
     }
 
     const ptr = offset + relative;
 
     if (this.type != null) {
-      let val = null;
+      let val: T | null = null as any;
       const decodeValue = () => {
         if (val != null) { return val; }
 
         const { pos } = stream;
         stream.pos = ptr;
-        val = this.type.decode(stream, ctx);
+        val = this.type!.decode(stream, ctx);
         stream.pos = pos;
         return val;
       };
@@ -73,7 +86,7 @@ export class Pointer extends Base {
     }
   }
 
-  size(val, ctx) {
+  size(val: any, ctx: any): number {
     const parent = ctx;
     switch (this.options.type) {
       case 'local': case 'immediate':
@@ -99,68 +112,70 @@ export class Pointer extends Base {
 
     if (val && ctx) {
       // Must be written as two separate lines rather than += in case `type.size` mutates ctx.pointerSize.
-      let size = type.size(val, parent);
+      let size = (type as any).size(val, parent);
       ctx.pointerSize += size;
     }
 
-    return this.offsetType.size();
+  return this.offsetType.size(null as any, ctx);
   }
 
-  encode(stream, val, ctx) {
-    let relative;
-    const parent = ctx;
-    if ((val == null)) {
-      this.offsetType.encode(stream, this.options.nullValue);
-      return;
-    }
+  // encode(stream: any, val: any, ctx: any): void {
+  //   let relative: number;
+  //   const parent = ctx;
+  //   if ((val == null)) {
+  //     this.offsetType.encode(stream, this.options.nullValue!);
+  //     return;
+  //   }
 
-    switch (this.options.type) {
-      case 'local':
-        relative = ctx.startOffset;
-        break;
-      case 'immediate':
-        relative = stream.pos + this.offsetType.size(val, parent);
-        break;
-      case 'parent':
-        ctx = ctx.parent;
-        relative = ctx.startOffset;
-        break;
-      default: // global
-        relative = 0;
-        while (ctx.parent) {
-          ctx = ctx.parent;
-        }
-    }
+  //   switch (this.options.type) {
+  //     case 'local':
+  //       relative = ctx.startOffset;
+  //       break;
+  //     case 'immediate':
+  //       relative = stream.pos + this.offsetType.size(val, parent);
+  //       break;
+  //     case 'parent':
+  //       ctx = ctx.parent;
+  //       relative = ctx.startOffset;
+  //       break;
+  //     default: // global
+  //       relative = 0;
+  //       while (ctx.parent) {
+  //         ctx = ctx.parent;
+  //       }
+  //   }
 
-    if (this.options.relativeTo) {
-      relative += this.relativeToGetter(parent.val);
-    }
+  //   if (this.options.relativeTo) {
+  //     relative += this.relativeToGetter!(parent.val);
+  //   }
 
-    this.offsetType.encode(stream, ctx.pointerOffset - relative);
+  //   this.offsetType.encode(stream, ctx.pointerOffset - relative);
 
-    let { type } = this;
-    if (type == null) {
-      if (!(val instanceof VoidPointer)) {
-        throw new Error("Must be a VoidPointer");
-      }
+  //   let { type } = this;
+  //   if (type == null) {
+  //     if (!(val instanceof VoidPointer)) {
+  //       throw new Error("Must be a VoidPointer");
+  //     }
 
-      ({ type } = val);
-      val = val.value;
-    }
+  //     ({ type } = val);
+  //     val = val.value;
+  //   }
 
-    ctx.pointers.push({
-      type,
-      val,
-      parent
-    });
+  //   ctx.pointers.push({
+  //     type,
+  //     val,
+  //     parent
+  //   });
 
-    return ctx.pointerOffset += type.size(val, parent);
-  }
+  //   return ctx.pointerOffset += (type as any).size(val, parent);
+  // }
 }
 
 // A pointer whose type is determined at decode time
-export class VoidPointer {
-  constructor(type, value) {
+export class VoidPointer<T = unknown> {
+  type: ResType<T, any>;
+  value: T;
+  constructor(type: ResType<T, any>, value: T) {
     this.type = type;
     this.value = value;
   }

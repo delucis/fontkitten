@@ -2,24 +2,24 @@ import {DecodeStream} from './DecodeStream.js';
 import {Base} from './Base.js';
 
 class NumberT extends Base<number> {
-  type: keyof typeof DecodeStream.TYPES | 'UInt24' | 'Int24';
-  readFnName: string;
+  #size: number;
+  #readFnName: string;
 
   constructor(type: string) {
     super();
-    let fn = this.type = type;
-    if (this.type.at(- 1) !== '8') {
-      fn += 'BE';
+    this.#readFnName = `read${type}`;
+    if (type.at(-1) !== '8') {
+      this.#readFnName += 'BE';
     }
-    this.readFnName = `read${fn}`;
+    this.#size = DecodeStream.TYPES[type];
   }
 
-  size(value?: number | null, parent?: any, includePointers?: boolean): number {
-    return DecodeStream.TYPES[this.type];
+  size(): number {
+    return this.#size;
   }
 
   decode(stream: any): number {
-    return stream[this.readFnName]();
+    return stream[this.#readFnName]();
   }
 }
 

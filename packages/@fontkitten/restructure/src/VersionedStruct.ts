@@ -10,26 +10,24 @@ type VersionMap = Record<string | number, Record<string, ResType<any, any> | Ver
 };
 
 export class VersionedStruct<R extends Record<string, any> = any> extends Struct<R> {
-  type: string | ResType<number | string, any>;
-  versions: VersionMap;
-  versionPath?: string[];
+  #type: string | ResType<number | string, any>;
+  #versionPath?: string[];
 
-  constructor(type: string | ResType<number | string, any>, versions: VersionMap = {}) {
+  constructor(type: string | ResType<number | string, any>, public versions: VersionMap = {}) {
     super();
-    this.type = type;
-    this.versions = versions;
+    this.#type = type;
     if (typeof type === 'string') {
-      this.versionPath = type.split('.');
+      this.#versionPath = type.split('.');
     }
   }
 
   decode(stream: any, parent?: any, length: number = 0): any {
     const res = this._setup(stream, parent, length);
 
-    if (typeof this.type === 'string') {
-      res.version = getPath(parent, this.versionPath!);
+    if (typeof this.#type === 'string') {
+      res.version = getPath(parent, this.#versionPath!);
     } else {
-      res.version = this.type.decode(stream);
+      res.version = this.#type.decode(stream);
     }
 
     if (this.versions.header) {

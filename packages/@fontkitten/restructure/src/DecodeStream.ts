@@ -1,12 +1,10 @@
 export class DecodeStream {
-  view: DataView;
+  #view: DataView;
   pos: number;
-  length: number;
 
   constructor(public buffer: Uint8Array) {
-    this.view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+    this.#view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
     this.pos = 0;
-    this.length = this.buffer.length;
   }
 
   readString(length: number, encoding: string = 'ascii'): string | Uint8Array {
@@ -23,31 +21,31 @@ export class DecodeStream {
   }
 
   readUInt8(): number {
-    const ret = this.view.getUint8(this.pos);
+    const ret = this.#view.getUint8(this.pos);
     this.pos += DecodeStream.TYPES.UInt8;
     return ret;
   }
 
   readUInt16BE(): number {
-    const ret = this.view.getUint16(this.pos);
+    const ret = this.#view.getUint16(this.pos);
     this.pos += DecodeStream.TYPES.UInt16;
     return ret;
   }
 
   readUInt32BE(): number {
-    const ret = this.view.getUint32(this.pos);
+    const ret = this.#view.getUint32(this.pos);
     this.pos += DecodeStream.TYPES.UInt32;
     return ret;
   }
 
   readInt8(): number {
-    const ret = this.view.getInt8(this.pos);
+    const ret = this.#view.getInt8(this.pos);
     this.pos += DecodeStream.TYPES.Int8;
     return ret;
   }
 
   readInt16BE(): number {
-    const ret = this.view.getInt16(this.pos);
+    const ret = this.#view.getInt16(this.pos);
     this.pos += DecodeStream.TYPES.Int16;
     return ret;
   }
@@ -57,7 +55,7 @@ export class DecodeStream {
   }
 
   readInt32BE(): number {
-    const ret = this.view.getInt32(this.pos);
+    const ret = this.#view.getInt32(this.pos);
     this.pos += DecodeStream.TYPES.Int32;
     return ret;
   }

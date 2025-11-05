@@ -5,9 +5,9 @@ import * as utils from './utils.js';
 type LengthType = 'count' | 'bytes';
 
 class ArrayT<T = unknown, R = T[]> extends Base<R> {
-  type: ResType<T, any>;
-  length: number | NumberT | string | ((this: any, parent?: any) => number);
-  lengthType: LengthType;
+  protected type: ResType<T, any>;
+  protected length: number | NumberT | string | ((this: any, parent?: any) => number);
+  #lengthType: LengthType;
 
   constructor(
     type: ResType<T, any>,
@@ -17,7 +17,7 @@ class ArrayT<T = unknown, R = T[]> extends Base<R> {
     super();
     this.type = type;
     this.length = length;
-    this.lengthType = lengthType;
+    this.#lengthType = lengthType;
   }
 
   decode(stream: any, parent?: any): any {
@@ -43,7 +43,7 @@ class ArrayT<T = unknown, R = T[]> extends Base<R> {
       ctx = res;
     }
 
-    if ((length == null) || (this.lengthType === 'bytes')) {
+    if ((length == null) || (this.#lengthType === 'bytes')) {
       const target = (length != null) ?
         stream.pos + length
       : (parent != null ? parent._length : undefined) ?

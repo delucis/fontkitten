@@ -10,38 +10,26 @@ type PointerOptions = {
 };
 
 export class Pointer<T = unknown> extends Base<T | null | number | utils.PropertyDescriptor> {
-  offsetType: ResType<number, any>;
-  type: ResType<T, any> | null;
-  options: PointerOptions;
-  private relativeToGetter?: (ctx: any) => number;
+  #type: ResType<T, any> | null;
+  #options: Required<Pick<PointerOptions, 'type' | 'allowNull' | 'nullValue' | 'lazy'>> &
+    Pick<PointerOptions, 'relativeTo'>;
 
-  constructor(offsetType: ResType<number, any>, type: ResType<T, any> | 'void' | null, options: PointerOptions = {}) {
+  constructor(public offsetType: ResType<number, any>, type: ResType<T, any> | 'void' | null, options: PointerOptions = {}) {
     super();
-    this.offsetType = offsetType;
-    this.type = type === 'void' ? null : type;
-    this.options = options;
-    if (this.options.type == null) { this.options.type = 'local'; }
-    if (this.options.allowNull == null) { this.options.allowNull = true; }
-    if (this.options.nullValue == null) { this.options.nullValue = 0; }
-    if (this.options.lazy == null) { this.options.lazy = false; }
-    if (this.options.relativeTo) {
-      if (typeof this.options.relativeTo !== 'function') {
-        throw new Error('relativeTo option must be a function');
-      }
-      this.relativeToGetter = options.relativeTo;
-    }
+    this.#type = type === 'void' ? null : type;
+    this.#options = { type: 'local', allowNull: true, nullValue: 0, lazy: false, ...options };
   }
 
   decode(stream: any, ctx: any): T | null | number | utils.PropertyDescriptor {
     const offset = this.offsetType.decode(stream, ctx);
 
     // handle NULL pointers
-    if ((offset === this.options.nullValue) && this.options.allowNull) {
+    if ((offset === this.#options.nullValue) && this.#options.allowNull) {
       return null;
     }
 
     let relative: number;
-    switch (this.options.type) {
+    switch (this.#options.type) {
       case 'local':     relative = ctx._startOffset; break;
       case 'parent':    relative = ctx.parent._startOffset; break;
       default:
@@ -53,27 +41,27 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
         relative = c._startOffset || 0;
     }
 
-    if (this.options.relativeTo) {
-      relative += this.relativeToGetter!(ctx);
+    if (this.#options.relativeTo) {
+      relative += this.#options.relativeTo(ctx);
     }
 
     const ptr = offset + relative;
 
-    if (this.type != null) {
+    if (this.#type != null) {
       let val: T | null = null;
       const decodeValue = () => {
         if (val != null) { return val; }
 
         const { pos } = stream;
         stream.pos = ptr;
-        val = this.type!.decode(stream, ctx);
+        val = this.#type!.decode(stream, ctx);
         stream.pos = pos;
         return val;
       };
 
       // If this is a lazy pointer, define a getter to decode only when needed.
       // This obviously only works when the pointer is contained by a Struct.
-      if (this.options.lazy) {
+      if (this.#options.lazy) {
         return new utils.PropertyDescriptor({
           get: decodeValue});
       }
@@ -86,7 +74,7 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
 
   size(val: any, ctx: any): number {
     const parent = ctx;
-    switch (this.options.type) {
+    switch (this.#options.type) {
       case 'local':
         break;
       case 'parent':
@@ -98,7 +86,7 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
         }
     }
 
-    let { type } = this;
+    let type = this.#type;
     if (type == null) {
       if (!(val instanceof VoidPointer)) {
         throw new Error("Must be a VoidPointer");

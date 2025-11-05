@@ -2,13 +2,13 @@ import {Base, ResType} from './Base.js';
 import * as utils from './utils.js';
 
 export class Reserved extends Base<undefined> {
-  type: ResType<number, any> | { size: () => number };
-  count: number | string | ((this: any, parent?: any) => number);
+  #type: ResType<number, any> | { size: () => number };
+  #count: number | string | ((this: any, parent?: any) => number);
 
   constructor(type: any, count: number | string | ((this: any, parent?: any) => number) = 1) {
     super();
-    this.type = type;
-    this.count = count;
+    this.#type = type;
+    this.#count = count;
   }
   decode(stream: any, parent?: any): undefined {
     stream.pos += this.size(null, parent);
@@ -16,7 +16,7 @@ export class Reserved extends Base<undefined> {
   }
 
   size(data: any, parent?: any): number {
-    const count = utils.resolveLength(this.count, null, parent);
-    return this.type.size() * count;
+    const count = utils.resolveLength(this.#count, null, parent);
+    return this.#type.size() * count;
   }
 }

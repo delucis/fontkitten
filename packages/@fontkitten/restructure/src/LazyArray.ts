@@ -24,20 +24,20 @@ export class LazyArray<T = unknown> extends ArrayT<T, LazyArrayValue<T>> {
 }
 
 class LazyArrayValue<T = unknown> {
-  private type: any;
-  private stream: any;
-  private ctx: any;
-  private base: number;
-  private items: (T | undefined)[];
+  #type: any;
+  #stream: any;
+  #ctx: any;
+  #base: number;
+  #items: (T | undefined)[];
   length: number;
 
   constructor(type: any, length: number, stream: any, ctx: any) {
-    this.type = type;
+    this.#type = type;
     this.length = length;
-    this.stream = stream;
-    this.ctx = ctx;
-    this.base = this.stream.pos;
-    this.items = [];
+    this.#stream = stream;
+    this.#ctx = ctx;
+    this.#base = this.#stream.pos;
+    this.#items = [];
   }
 
   get(index: number): T | undefined {
@@ -45,14 +45,14 @@ class LazyArrayValue<T = unknown> {
       return undefined;
     }
 
-    if (this.items[index] == null) {
-      const { pos } = this.stream;
-      this.stream.pos = this.base + (this.type.size(null, this.ctx) * index);
-      this.items[index] = this.type.decode(this.stream, this.ctx);
-      this.stream.pos = pos;
+    if (this.#items[index] == null) {
+      const { pos } = this.#stream;
+      this.#stream.pos = this.#base + (this.#type.size(null, this.#ctx) * index);
+      this.#items[index] = this.#type.decode(this.#stream, this.#ctx);
+      this.#stream.pos = pos;
     }
 
-    return this.items[index];
+    return this.#items[index];
   }
 
   toArray(): T[] {

@@ -1,29 +1,28 @@
 import {Base} from './Base.js';
 import {Number as NumberT} from './Number.js';
-import * as utils from './utils.js';
+import {resolveLength} from './utils';
 
 type Encoding = 'ascii' | 'utf8' | 'utf16le' | 'utf16-le' | 'utf-16be' | 'utf-16le' | 'utf16be' | 'utf16-be' | 'ucs2';
 
 class StringT extends Base<string | Uint8Array> {
-  length: number | NumberT | string | ((this: any, parent?: any) => number);
-  encoding: Encoding | ((this: any, parent: any) => Encoding | undefined);
+  #length: number | NumberT | string | ((this: any, parent?: any) => number);
+  #encoding: Encoding | ((this: any, parent: any) => Encoding | undefined);
 
   constructor(length: number | NumberT | string | ((this: any, parent?: any) => number), encoding: Encoding | ((this: any, parent: any) => Encoding | undefined) = 'ascii') {
     super();
-    this.length = length;
-    this.encoding = encoding;
+    this.#length = length;
+    this.#encoding = encoding;
   }
 
   decode(stream: any, parent?: any): string | Uint8Array {
-    let { encoding } = this;
-    if (typeof encoding === 'function') {
-      encoding = encoding.call(parent, parent) || 'ascii';
-    }
+    const encoding = typeof this.#encoding === 'function'
+      ? this.#encoding.call(parent, parent) || 'ascii'
+      : this.#encoding;
     const width = encodingWidth(encoding);
-    const length = utils.resolveLength(this.length, stream, parent);
+    const length = resolveLength(this.#length, stream, parent);
     const string = stream.readString(length, encoding);
 
-    if ((this.length == null) && (stream.pos < stream.length)) {
+    if ((this.#length == null) && (stream.pos < stream.length)) {
       stream.pos+=width;
     }
 

@@ -5,16 +5,16 @@ type FieldValue = any;
 type Fields = Record<string, ResType<any, any> | ((this: any, self: any) => FieldValue)>;
 
 export class Struct<R extends Record<string, any> = any> extends Base<R> {
-  fields: Fields;
+  #fields: Fields;
 
   constructor(fields: Fields = {}) {
     super();
-    this.fields = fields;
+    this.#fields = fields;
   }
 
   decode(stream: any, parent?: any, length: number = 0): R {
     const res = this._setup(stream, parent, length);
-    this._parseFields(stream, res, this.fields);
+    this._parseFields(stream, res, this.#fields);
 
     if (this.process != null) {
       this.process.call(res, stream);
@@ -22,7 +22,7 @@ export class Struct<R extends Record<string, any> = any> extends Base<R> {
     return res;
   }
 
-  _setup(stream: any, parent: any, length: number): any {
+  protected _setup(stream: any, parent: any, length: number): any {
     const res: any = {};
 
     // define hidden properties
@@ -36,7 +36,7 @@ export class Struct<R extends Record<string, any> = any> extends Base<R> {
     return res;
   }
 
-  _parseFields(stream: any, res: any, fields: Fields): void {
+  protected _parseFields(stream: any, res: any, fields: Fields): void {
     for (let key in fields) {
       let val: any;
       const type = fields[key];
@@ -67,13 +67,9 @@ export class Struct<R extends Record<string, any> = any> extends Base<R> {
       pointerSize: 0
     };
 
-    if (this.preEncode != null) {
-      this.preEncode.call(val);
-    }
-
     let size = 0;
-    for (let key in this.fields) {
-      const type = this.fields[key];
+    for (let key in this.#fields) {
+      const type = this.#fields[key];
       if (typeof type !== 'function' && type.size != null) {
         size += type.size(val[key], ctx);
       }

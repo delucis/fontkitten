@@ -2,7 +2,7 @@ import * as utils from './utils.js';
 import {Base, ResType} from './Base.js';
 
 type PointerOptions<P = any> = {
-  type?: 'local' | 'immediate' | 'parent' | 'global';
+  type?: 'local' | 'parent' | 'global';
   allowNull?: boolean;
   nullValue?: number;
   lazy?: boolean;
@@ -43,7 +43,6 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
     let relative: number;
     switch (this.options.type) {
       case 'local':     relative = ctx._startOffset; break;
-      case 'immediate': relative = stream.pos - this.offsetType.size(); break;
       case 'parent':    relative = ctx.parent._startOffset; break;
       default:
         var c = ctx;
@@ -88,7 +87,7 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
   size(val: any, ctx: any): number {
     const parent = ctx;
     switch (this.options.type) {
-      case 'local': case 'immediate':
+      case 'local':
         break;
       case 'parent':
         ctx = ctx.parent;
@@ -129,9 +128,6 @@ export class Pointer<T = unknown> extends Base<T | null | number | utils.Propert
   //   switch (this.options.type) {
   //     case 'local':
   //       relative = ctx.startOffset;
-  //       break;
-  //     case 'immediate':
-  //       relative = stream.pos + this.offsetType.size(val, parent);
   //       break;
   //     case 'parent':
   //       ctx = ctx.parent;

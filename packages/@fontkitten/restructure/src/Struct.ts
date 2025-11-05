@@ -1,10 +1,10 @@
-import {Base, ResType} from './Base';
+import {BaseWithSize, ResType, ResTypeWithSize} from './Base';
 import {PropertyDescriptor} from './utils';
 
 type FieldValue = any;
-type Fields = Record<string, ResType<any, any> | ((this: any, self: any) => FieldValue)>;
+type Fields = Record<string, ResType | ResTypeWithSize | ((this: any, self: any) => FieldValue)>;
 
-export class Struct<R extends Record<string, any> = any> extends Base<R> {
+export class Struct<R extends Record<string, any> = any> extends BaseWithSize<R> {
   #fields: Fields;
 
   constructor(fields: Fields = {}) {
@@ -70,7 +70,7 @@ export class Struct<R extends Record<string, any> = any> extends Base<R> {
     let size = 0;
     for (let key in this.#fields) {
       const type = this.#fields[key];
-      if (typeof type !== 'function' && type.size != null) {
+      if (typeof type !== 'function' && 'size' in type && type.size != null) {
         size += type.size(val[key], ctx);
       }
     }

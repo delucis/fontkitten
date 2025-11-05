@@ -1,7 +1,7 @@
 import {DecodeStream} from './DecodeStream';
-import {Base} from './Base';
+import {BaseWithSize} from './Base';
 
-class NumberT extends Base<number> {
+class NumberT extends BaseWithSize<number> {
   #size: number;
   #readFnName: string;
 

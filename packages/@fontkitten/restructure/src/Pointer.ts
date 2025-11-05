@@ -1,5 +1,5 @@
 import {PropertyDescriptor} from './utils';
-import {Base, ResType} from './Base';
+import {BaseWithSize, ResTypeWithSize} from './Base';
 
 type PointerOptions = {
   type?: 'local' | 'parent' | 'global';
@@ -9,12 +9,12 @@ type PointerOptions = {
   relativeTo?: (ctx: any) => number;
 };
 
-export class Pointer<T = unknown> extends Base<T | null | number | PropertyDescriptor> {
-  #type: ResType<T, any> | null;
+export class Pointer<T = unknown> extends BaseWithSize<T | null | number | PropertyDescriptor> {
+  #type: ResTypeWithSize<T, any> | null;
   #options: Required<Pick<PointerOptions, 'type' | 'allowNull' | 'nullValue' | 'lazy'>> &
     Pick<PointerOptions, 'relativeTo'>;
 
-  constructor(public offsetType: ResType<number, any>, type: ResType<T, any> | 'void' | null, options: PointerOptions = {}) {
+  constructor(public offsetType: ResTypeWithSize<number, any>, type: ResTypeWithSize<T, any> | 'void' | null, options: PointerOptions = {}) {
     super();
     this.#type = type === 'void' ? null : type;
     this.#options = { type: 'local', allowNull: true, nullValue: 0, lazy: false, ...options };
@@ -108,10 +108,5 @@ export class Pointer<T = unknown> extends Base<T | null | number | PropertyDescr
 
 // A pointer whose type is determined at decode time
 export class VoidPointer<T = unknown> {
-  type: ResType<T, any>;
-  value: T;
-  constructor(type: ResType<T, any>, value: T) {
-    this.type = type;
-    this.value = value;
-  }
+  constructor(public type: ResTypeWithSize<T, any>, public value: T) {}
 }

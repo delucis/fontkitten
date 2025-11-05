@@ -1,22 +1,18 @@
-import {Base, ResType} from './Base';
+import {Base, ResTypeWithSize} from './Base';
 import {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
 type LengthType = 'count' | 'bytes';
 
 class ArrayT<T = unknown, R = T[]> extends Base<R> {
-  protected type: ResType<T, any>;
-  protected length: number | NumberT | string | ((this: any, parent?: any) => number);
   #lengthType: LengthType;
 
   constructor(
-    type: ResType<T, any>,
-    length: number | NumberT | string | ((this: any, parent?: any) => number),
+    protected type: ResTypeWithSize<T, any>,
+    protected length: number | NumberT | string | ((this: any, parent?: any) => number),
     lengthType: LengthType = 'count'
   ) {
     super();
-    this.type = type;
-    this.length = length;
     this.#lengthType = lengthType;
   }
 

@@ -1,8 +1,8 @@
-import {Base, ResType} from './Base';
+import {BaseWithSize, ResTypeWithSize} from './Base';
 import {resolveLength} from './utils';
 
-export class Reserved extends Base<undefined> {
-  #type: ResType<number, any> | { size: () => number };
+export class Reserved extends BaseWithSize<undefined> {
+  #type: ResTypeWithSize<number, any> | { size: () => number };
   #count: number | string | ((this: any, parent?: any) => number);
 
   constructor(type: any, count: number | string | ((this: any, parent?: any) => number) = 1) {

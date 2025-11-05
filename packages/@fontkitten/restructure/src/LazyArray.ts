@@ -74,9 +74,8 @@ class LazyArrayValue<T = unknown> {
   toArray(): T[] {
     const result: T[] = [];
     for (let i = 0, end = this.length; i < end; i++) {
-      const v = this.get(i);
       // get() can theoretically return undefined for OOB, but index < length protects us.
-      result.push(v as T);
+      result.push(this.get(i)!);
     }
     return result;
   }

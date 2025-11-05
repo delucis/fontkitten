@@ -1,3 +1,4 @@
+import type { DecodeStream } from './DecodeStream';
 import {Number as NumberT} from './Number';
 
 type LengthSpecifier<P = any> =
@@ -8,7 +9,7 @@ type LengthSpecifier<P = any> =
 
 export function resolveLength(
   length: LengthSpecifier,
-  stream?: { decode?: (s: any) => number } | any,
+  stream?: DecodeStream | null,
   parent?: any
 ): number {
   let res;

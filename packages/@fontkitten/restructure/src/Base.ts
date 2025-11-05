@@ -1,4 +1,4 @@
-import {DecodeStream} from './DecodeStream';
+import type {DecodeStream} from './DecodeStream';
 
 // Generic interface for a restructure type.
 export interface ResType<T = unknown, P = any> {

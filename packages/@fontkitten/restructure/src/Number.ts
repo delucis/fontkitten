@@ -3,14 +3,11 @@ import {BaseWithSize} from './Base';
 
 class NumberT extends BaseWithSize<number> {
   #size: number;
-  #readFnName: string;
+  #readFnName: Extract<keyof DecodeStream, `read${string}Int${string}`>;
 
-  constructor(type: string) {
+  constructor(type: 'Int8' | 'UInt8' | 'Int16' | 'UInt16' | 'UInt24' | 'Int32' | 'UInt32') {
     super();
-    this.#readFnName = `read${type}`;
-    if (type.at(-1) !== '8') {
-      this.#readFnName += 'BE';
-    }
+    this.#readFnName = (type === 'Int8' || type === 'UInt8') ? `read${type}` : `read${type}BE`;
     this.#size = DecodeStream.TYPES[type];
   }
 
@@ -18,7 +15,7 @@ class NumberT extends BaseWithSize<number> {
     return this.#size;
   }
 
-  decode(stream: any): number {
+  decode(stream: DecodeStream): number {
     return stream[this.#readFnName]();
   }
 }

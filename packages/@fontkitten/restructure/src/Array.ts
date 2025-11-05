@@ -1,4 +1,5 @@
-import {Base, ResTypeWithSize} from './Base';
+import {Base, type ResTypeWithSize} from './Base';
+import type { DecodeStream } from './DecodeStream';
 import {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
@@ -16,7 +17,7 @@ class ArrayT<T = unknown, R = T[]> extends Base<R> {
     this.#lengthType = lengthType;
   }
 
-  decode(stream: any, parent?: any): any {
+  decode(stream: DecodeStream, parent?: any): any {
     let length: number | undefined;
     const { pos } = stream;
 
@@ -44,8 +45,7 @@ class ArrayT<T = unknown, R = T[]> extends Base<R> {
         stream.pos + length
       : (parent != null ? parent._length : undefined) ?
         parent._startOffset + parent._length
-      :
-        stream.length;
+      : stream.length;
 
       while (stream.pos < target) {
         res.push(this.type.decode(stream, ctx));

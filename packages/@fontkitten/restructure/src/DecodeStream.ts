@@ -1,10 +1,12 @@
 export class DecodeStream {
   #view: DataView;
   pos: number;
+  length: number;
 
   constructor(public buffer: Uint8Array) {
     this.#view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
     this.pos = 0;
+    this.length = buffer.length;
   }
 
   readString(length: number, encoding: string = 'ascii'): string | Uint8Array {

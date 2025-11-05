@@ -1,4 +1,5 @@
-import {Base, ResType} from './Base';
+import {Base, type ResType} from './Base';
+import type { DecodeStream } from './DecodeStream';
 
 export class Optional<T = unknown> extends Base<T | undefined> {
   #type: ResType<T, any>;
@@ -10,7 +11,7 @@ export class Optional<T = unknown> extends Base<T | undefined> {
     this.#condition = condition;
   }
 
-  decode(stream: any, parent?: any): T | undefined {
+  decode(stream: DecodeStream, parent?: any): T | undefined {
     const condition = typeof this.#condition === 'function'
       ? this.#condition.call(parent, parent)
       : this.#condition;

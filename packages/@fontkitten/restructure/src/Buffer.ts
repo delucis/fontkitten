@@ -1,5 +1,6 @@
 import {Base} from './Base';
-import {Number as NumberT} from './Number';
+import type { DecodeStream } from './DecodeStream';
+import type {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
 class BufferT extends Base<Uint8Array> {
@@ -10,7 +11,7 @@ class BufferT extends Base<Uint8Array> {
     this.#length = length;
   }
   
-  decode(stream: any, parent?: any): Uint8Array {
+  decode(stream: DecodeStream, parent?: any): Uint8Array {
     const length = resolveLength(this.#length, stream, parent);
     return stream.readBuffer(length);
   }

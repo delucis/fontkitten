@@ -1,7 +1,8 @@
-import {BaseWithSize, ResTypeWithSize} from './Base';
+import {BaseWithSize, type ResTypeWithSize} from './Base';
+import type { DecodeStream } from './DecodeStream';
 import {resolveLength} from './utils';
 
-export class Reserved extends BaseWithSize<undefined> {
+export class Reserved extends BaseWithSize<void> {
   #type: ResTypeWithSize<number, any> | { size: () => number };
   #count: number | string | ((this: any, parent?: any) => number);
 
@@ -10,9 +11,8 @@ export class Reserved extends BaseWithSize<undefined> {
     this.#type = type;
     this.#count = count;
   }
-  decode(stream: any, parent?: any): undefined {
+  decode(stream: DecodeStream, parent?: any): void {
     stream.pos += this.size(null, parent);
-    return undefined;
   }
 
   size(data: any, parent?: any): number {

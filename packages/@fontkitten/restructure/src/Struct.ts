@@ -1,4 +1,5 @@
-import {BaseWithSize, ResType, ResTypeWithSize} from './Base';
+import {BaseWithSize, type ResType, type ResTypeWithSize} from './Base';
+import type { DecodeStream } from './DecodeStream';
 import {PropertyDescriptor} from './utils';
 
 type FieldValue = any;
@@ -12,7 +13,7 @@ export class Struct<R extends Record<string, any> = any> extends BaseWithSize<R>
     this.#fields = fields;
   }
 
-  decode(stream: any, parent?: any, length: number = 0): R {
+  decode(stream: DecodeStream, parent?: any, length: number = 0): R {
     const res = this._setup(stream, parent, length);
     this._parseFields(stream, res, this.#fields);
 
@@ -22,7 +23,7 @@ export class Struct<R extends Record<string, any> = any> extends BaseWithSize<R>
     return res;
   }
 
-  protected _setup(stream: any, parent: any, length: number): any {
+  protected _setup(stream: DecodeStream, parent: any, length: number): any {
     const res: any = {};
 
     // define hidden properties
@@ -36,7 +37,7 @@ export class Struct<R extends Record<string, any> = any> extends BaseWithSize<R>
     return res;
   }
 
-  protected _parseFields(stream: any, res: any, fields: Fields): void {
+  protected _parseFields(stream: DecodeStream, res: any, fields: Fields): void {
     for (let key in fields) {
       let val: any;
       const type = fields[key];

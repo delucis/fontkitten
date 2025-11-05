@@ -1,4 +1,5 @@
-import {Base, ResType} from './Base';
+import {Base, type ResType} from './Base';
+import type { DecodeStream } from './DecodeStream';
 
 export class Bitfield extends Base<Record<string, boolean>> {
   #type: ResType<number, any>;
@@ -10,7 +11,7 @@ export class Bitfield extends Base<Record<string, boolean>> {
     this.#flags = flags;
   }
 
-  decode(stream: any): Record<string, boolean> {
+  decode(stream: DecodeStream): Record<string, boolean> {
     const val = this.#type.decode(stream);
 
     const res: Record<string, boolean> = {};

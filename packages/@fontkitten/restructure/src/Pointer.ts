@@ -1,5 +1,6 @@
 import {PropertyDescriptor} from './utils';
-import {BaseWithSize, ResTypeWithSize} from './Base';
+import {BaseWithSize, type ResTypeWithSize} from './Base';
+import type { DecodeStream } from './DecodeStream';
 
 type PointerOptions = {
   type?: 'local' | 'parent' | 'global';
@@ -20,7 +21,7 @@ export class Pointer<T = unknown> extends BaseWithSize<T | null | number | Prope
     this.#options = { type: 'local', allowNull: true, nullValue: 0, lazy: false, ...options };
   }
 
-  decode(stream: any, ctx: any): T | null | number | PropertyDescriptor {
+  decode(stream: DecodeStream, ctx: any): T | null | number | PropertyDescriptor {
     const offset = this.offsetType.decode(stream, ctx);
 
     // handle NULL pointers
@@ -102,7 +103,7 @@ export class Pointer<T = unknown> extends BaseWithSize<T | null | number | Prope
       ctx.pointerSize += size;
     }
 
-  return this.offsetType.size(null, ctx);
+    return this.offsetType.size(null, ctx);
   }
 }
 

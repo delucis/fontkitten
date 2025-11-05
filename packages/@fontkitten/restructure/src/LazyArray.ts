@@ -1,10 +1,11 @@
 import {Array as ArrayT} from './Array';
-import { ResTypeWithSize } from './Base';
+import type { ResTypeWithSize } from './Base';
+import type {DecodeStream} from './DecodeStream';
 import {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
 export class LazyArray<T = unknown> extends ArrayT<T, LazyArrayValue<T>> {
-  decode(stream: any, parent?: any): LazyArrayValue<T> {
+  decode(stream: DecodeStream, parent?: any): LazyArrayValue<T> {
     const { pos } = stream;
     const length = resolveLength(this.length, stream, parent);
 

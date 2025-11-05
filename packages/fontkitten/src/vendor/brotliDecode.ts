@@ -4,10 +4,6 @@
    See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 */
 
-interface BrotliDecodeOptions {
-  customDictionary: Int8Array|null;
-}
-
 /* GENERATED CODE BEGIN */
 const MAX_HUFFMAN_TABLE_SIZE: Int32Array = Int32Array.from([256, 402, 436, 468, 500, 534, 566, 598, 630, 662, 694, 726, 758, 790, 822, 854, 886, 920, 952, 984, 1016, 1048, 1080]);
 const CODE_LENGTH_CODE_ORDER: Int32Array = Int32Array.from([1, 2, 3, 4, 0, 5, 17, 6, 16, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
@@ -107,38 +103,6 @@ function decodeWindowBits(s: State): number {
     return 8 + n;
   }
   return 17;
-}
-function enableEagerOutput(s: State): number {
-  if (s.runningState !== 1) {
-    return makeError(s, -24);
-  }
-  s.isEager = 1;
-  return 0;
-}
-function enableLargeWindow(s: State): number {
-  if (s.runningState !== 1) {
-    return makeError(s, -24);
-  }
-  s.isLargeWindow = 1;
-  return 0;
-}
-function attachDictionaryChunk(s: State, data: Int8Array): number {
-  if (s.runningState !== 1) {
-    return makeError(s, -24);
-  }
-  if (s.cdNumChunks === 0) {
-    s.cdChunks = new Array(16);
-    s.cdChunkOffsets = new Int32Array(16);
-    s.cdBlockBits = -1;
-  }
-  if (s.cdNumChunks === 15) {
-    return makeError(s, -27);
-  }
-  s.cdChunks[s.cdNumChunks] = data;
-  s.cdNumChunks++;
-  s.cdTotalSize += data.length;
-  s.cdChunkOffsets[s.cdNumChunks] = s.cdTotalSize;
-  return 0;
 }
 function initState(s: State): number {
   if (s.runningState !== 0) {
@@ -1949,15 +1913,10 @@ type ByteBuffer = Int8Array;
 /**
  * Decodes brotli stream.
  */
-export function brotliDecode(
-    bytes: Int8Array, options?: BrotliDecodeOptions): Int8Array {
+export function brotliDecode(bytes: Int8Array): Int8Array {
   const s = new State();
   s.input = new InputStream(bytes);
   initState(s);
-  if (options) {
-    const customDictionary: Int8Array|null = options.customDictionary;
-    if (customDictionary) attachDictionaryChunk(s, customDictionary);
-  }
   let totalOutput = 0;
   const chunks: Int8Array[] = [];
   while (true) {

@@ -3,7 +3,7 @@ import type { DecodeStream } from './DecodeStream';
 import type {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
-type Encoding = 'ascii' | 'utf8' | 'utf16le' | 'utf16-le' | 'utf-16be' | 'utf-16le' | 'utf16be' | 'utf16-be' | 'ucs2';
+type Encoding = 'ascii' | 'utf8' | 'utf-16be' | 'utf-16le' | 'utf16be' | 'utf16-be' | 'ucs2';
 
 class StringT implements Structure<string> {
   #length: number | NumberT | string | ((this: any, parent?: any) => number);
@@ -35,8 +35,6 @@ function encodingWidth(encoding: string): number {
     case 'ascii':
     case 'utf8': // utf8 is a byte-based encoding for zero-term string
       return 1;
-    case 'utf16le':
-    case 'utf16-le':
     case 'utf-16be':
     case 'utf-16le':
     case 'utf16be':

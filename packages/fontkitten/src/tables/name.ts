@@ -93,38 +93,3 @@ NameTable.process = function(stream) {
 
   this.records = records;
 };
-
-// NameTable.preEncode = function() {
-//   if (Array.isArray(this.records)) return;
-//   this.version = 0;
-
-//   let records = [];
-//   for (let key in this.records) {
-//     let val = this.records[key];
-//     if (key === 'fontFeatures') continue;
-
-//     records.push({
-//       platformID: 3,
-//       encodingID: 1,
-//       languageID: 0x409,
-//       nameID: NAMES.indexOf(key),
-//       length: val.en.length * 2,
-//       string: val.en
-//     });
-
-//     if (key === 'postscriptName') {
-//       records.push({
-//         platformID: 1,
-//         encodingID: 0,
-//         languageID: 0,
-//         nameID: NAMES.indexOf(key),
-//         length: val.en.length,
-//         string: val.en
-//       });
-//     }
-//   }
-
-//   this.records = records;
-//   this.count = records.length;
-//   this.stringOffset = NameTable.size(this, null, false);
-// };

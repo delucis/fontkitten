@@ -23,19 +23,6 @@ class PredefinedOp {
 
     return this.type.decode(stream, parent, operands);
   }
-
-  // size(value, ctx) {
-  //   return this.type.size(value, ctx);
-  // }
-
-  // encode(stream, value, ctx) {
-  //   let index = this.predefinedOps.indexOf(value);
-  //   if (index !== -1) {
-  //     return index;
-  //   }
-
-  //   return this.type.encode(stream, value, ctx);
-  // }
 }
 
 class CFFEncodingVersion extends r.Number {
@@ -142,14 +129,6 @@ class CFFPrivateOp {
     parent.length = operands[0];
     return ptr.decode(stream, parent, [operands[1]]);
   }
-
-  // size(dict, ctx) {
-  //   return [CFFPrivateDict.size(dict, ctx, false), ptr.size(dict, ctx)[0]];
-  // }
-
-  // encode(stream, dict, ctx) {
-  //   return [CFFPrivateDict.size(dict, ctx, false), ptr.encode(stream, dict, ctx)[0]];
-  // }
 }
 
 let FontDict = new CFFDict([

@@ -46,16 +46,6 @@ export let LookupTable = function(ValueType = r.uint16) {
       ctx = ctx.parent.parent;
       return this.type.decode(stream, ctx);
     }
-
-    size(val, ctx) {
-      ctx = ctx.parent.parent;
-      return this.type.size(val, ctx);
-    }
-
-    encode(stream, val, ctx) {
-      ctx = ctx.parent.parent;
-      return this.type.encode(stream, val, ctx);
-    }
   }
 
   ValueType = new Shadow(ValueType);

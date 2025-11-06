@@ -72,41 +72,8 @@ export class Pointer<T = unknown> implements SizedStructure<T | null | number | 
     }
   }
 
-  size(val: any, ctx: any): number {
-    const parent = ctx;
-    switch (this.#options.type) {
-      case 'local':
-        break;
-      case 'parent':
-        ctx = ctx.parent;
-        break;
-      default: // global
-        while (ctx.parent) {
-          ctx = ctx.parent;
-        }
-    }
-
-    let type = this.#type;
-    if (type == null) {
-      if (!(val instanceof VoidPointer)) {
-        throw new Error("Must be a VoidPointer");
-      }
-
-      ({ type } = val);
-      val = val.value;
-    }
-
-    if (val && ctx && 'size' in type) {
-      // Must be written as two separate lines rather than += in case `type.size` mutates ctx.pointerSize.
-      let size = type.size(val, parent);
-      ctx.pointerSize += size;
-    }
-
-    return this.offsetType.size(null, ctx);
+  size(): number {
+    return this.offsetType.size();
   }
 }
 
-// A pointer whose type is determined at decode time
-export class VoidPointer<T = unknown> {
-  constructor(public type: SizedStructure<T, any>, public value: T) {}
-}

@@ -1,5 +1,11 @@
 # fontkitten
 
+## 0.0.10
+
+### Patch Changes
+
+- [#19](https://github.com/delucis/fontkitten/pull/19) [`79da3f1`](https://github.com/delucis/fontkitten/commit/79da3f1974332b16b969bd89bdf1f69832c59914) Thanks [@delucis](https://github.com/delucis)! - Reduces bundle size of fontkitten by about 25 KB by removing unused internal code
+
 ## 0.0.9
 
 ### Patch Changes

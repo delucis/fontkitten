@@ -1,4 +1,3 @@
-// import isEqual from 'fast-deep-equal';
 import CFFOperand from './CFFOperand';
 import { PropertyDescriptor } from '@fontkitten/restructure';
 

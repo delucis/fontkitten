@@ -1,13 +1,12 @@
-import {BaseWithSize, type ResTypeWithSize} from './Base';
+import type { SizedStructure } from './types';
 import type { DecodeStream } from './DecodeStream';
 import {resolveLength} from './utils';
 
-export class Reserved extends BaseWithSize<void> {
-  #type: ResTypeWithSize<number, any> | { size: () => number };
+export class Reserved implements SizedStructure<void> {
+  #type: SizedStructure<number, any> | { size: () => number };
   #count: number | string | ((this: any, parent?: any) => number);
 
   constructor(type: any, count: number | string | ((this: any, parent?: any) => number) = 1) {
-    super();
     this.#type = type;
     this.#count = count;
   }

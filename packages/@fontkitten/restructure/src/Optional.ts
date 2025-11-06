@@ -1,12 +1,11 @@
-import {Base, type ResType} from './Base';
+import type { Structure } from './types';
 import type { DecodeStream } from './DecodeStream';
 
-export class Optional<T = unknown> extends Base<T | undefined> {
-  #type: ResType<T, any>;
+export class Optional<T = unknown> implements Structure<T | undefined> {
+  #type: Structure<T, any>;
   #condition: boolean | ((this: any, parent?: any) => boolean);
 
-  constructor(type: ResType<T, any>, condition: boolean | ((this: any, parent?: any) => boolean) = true) {
-    super();
+  constructor(type: Structure<T, any>, condition: boolean | ((this: any, parent?: any) => boolean) = true) {
     this.#type = type;
     this.#condition = condition;
   }

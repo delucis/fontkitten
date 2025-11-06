@@ -1,16 +1,15 @@
-import {Base} from './Base';
+import type { Structure } from './types';
 import type { DecodeStream } from './DecodeStream';
 import type {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
 type Encoding = 'ascii' | 'utf8' | 'utf16le' | 'utf16-le' | 'utf-16be' | 'utf-16le' | 'utf16be' | 'utf16-be' | 'ucs2';
 
-class StringT extends Base<string> {
+class StringT implements Structure<string> {
   #length: number | NumberT | string | ((this: any, parent?: any) => number);
   #encoding: Encoding | ((this: any, parent: any) => Encoding | undefined);
 
   constructor(length: number | NumberT | string | ((this: any, parent?: any) => number), encoding: Encoding | ((this: any, parent: any) => Encoding | undefined) = 'ascii') {
-    super();
     this.#length = length;
     this.#encoding = encoding;
   }

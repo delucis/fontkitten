@@ -1,12 +1,11 @@
-import {Base, type ResType} from './Base';
+import type { Structure } from './types';
 import type { DecodeStream } from './DecodeStream';
 
-export class Bitfield extends Base<Record<string, boolean>> {
-  #type: ResType<number, any>;
+export class Bitfield implements Structure<Record<string, boolean>> {
+  #type: Structure<number, any>;
   #flags: (string | null | undefined)[];
 
-  constructor(type: ResType<number, any>, flags: (string | null | undefined)[] = []) {
-    super();
+  constructor(type: Structure<number, any>, flags: (string | null | undefined)[] = []) {
     this.#type = type;
     this.#flags = flags;
   }

@@ -1,12 +1,11 @@
 import {DecodeStream} from './DecodeStream';
-import {BaseWithSize} from './Base';
+import type {SizedStructure} from './types';
 
-class NumberT extends BaseWithSize<number> {
+class NumberT implements SizedStructure<number> {
   #size: number;
   #readFnName: Extract<keyof DecodeStream, `read${string}Int${string}`>;
 
-  constructor(type: 'Int8' | 'UInt8' | 'Int16' | 'UInt16' | 'UInt24' | 'Int32' | 'UInt32') {
-    super();
+  constructor(type: keyof typeof DecodeStream.TYPES) {
     this.#readFnName = (type === 'Int8' || type === 'UInt8') ? `read${type}` : `read${type}BE`;
     this.#size = DecodeStream.TYPES[type];
   }
@@ -38,7 +37,7 @@ export class Fixed extends NumberT {
     this.#point = 1 << fracBits;
   }
 
-  decode(stream: any): number {
+  decode(stream: DecodeStream): number {
     return super.decode(stream) / this.#point;
   }
 }

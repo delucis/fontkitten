@@ -1,19 +1,18 @@
-import {Base, type ResTypeWithSize} from './Base';
+import type { Structure, SizedStructure } from './types';
 import type { DecodeStream } from './DecodeStream';
 import {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
 type LengthType = 'count' | 'bytes';
 
-class ArrayT<T = unknown, R = T[]> extends Base<R> {
+class ArrayT<T = unknown, R = T[]> implements Structure<R> {
   #lengthType: LengthType;
 
   constructor(
-    protected type: ResTypeWithSize<T, any>,
+    protected type: Structure<T,any> | SizedStructure<T, any>,
     protected length: number | NumberT | string | ((this: any, parent?: any) => number),
     lengthType: LengthType = 'count'
   ) {
-    super();
     this.#lengthType = lengthType;
   }
 

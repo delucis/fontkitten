@@ -1,13 +1,12 @@
-import {Base} from './Base';
+import type { Structure } from './types';
 import type { DecodeStream } from './DecodeStream';
 import type {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
 
-class BufferT extends Base<Uint8Array> {
+class BufferT implements Structure<Uint8Array> {
   #length: number | NumberT | string | ((this: any, parent?: any) => number);
 
   constructor(length: number | NumberT | string | ((this: any, parent?: any) => number)) {
-    super();
     this.#length = length;
   }
   

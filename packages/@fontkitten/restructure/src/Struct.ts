@@ -1,15 +1,14 @@
-import {BaseWithSize, type ResType, type ResTypeWithSize} from './Base';
+import type { Structure, SizedStructure } from './types';
 import type { DecodeStream } from './DecodeStream';
 import {PropertyDescriptor} from './utils';
 
-type FieldValue = any;
-type Fields = Record<string, ResType | ResTypeWithSize | ((this: any, self: any) => FieldValue)>;
+export type StructFields = Record<string, Structure | SizedStructure | ((this: any, self: any) => any)>;
 
-export class Struct<R extends Record<string, any> = any> extends BaseWithSize<R> {
-  #fields: Fields;
+export class Struct<R extends StructFields = {}> implements SizedStructure<R> {
+  #fields: R;
+  process?: (this: any, stream: DecodeStream) => void;
 
-  constructor(fields: Fields = {}) {
-    super();
+  constructor(fields: R = {} as R) {
     this.#fields = fields;
   }
 
@@ -23,7 +22,7 @@ export class Struct<R extends Record<string, any> = any> extends BaseWithSize<R>
     return res;
   }
 
-  protected _setup(stream: DecodeStream, parent: any, length: number): any {
+  protected _setup(stream: DecodeStream, parent: any, length: number): R {
     const res: any = {};
 
     // define hidden properties
@@ -37,8 +36,8 @@ export class Struct<R extends Record<string, any> = any> extends BaseWithSize<R>
     return res;
   }
 
-  protected _parseFields(stream: DecodeStream, res: any, fields: Fields): void {
-    for (let key in fields) {
+  protected _parseFields(stream: DecodeStream, res: any, fields: R): void {
+    for (const key in fields) {
       let val: any;
       const type = fields[key];
       if (typeof type === 'function') {

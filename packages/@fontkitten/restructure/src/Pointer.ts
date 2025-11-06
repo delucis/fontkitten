@@ -1,5 +1,5 @@
 import {PropertyDescriptor} from './utils';
-import {BaseWithSize, type ResTypeWithSize} from './Base';
+import type { Structure, SizedStructure } from './types';
 import type { DecodeStream } from './DecodeStream';
 
 type PointerOptions = {
@@ -10,13 +10,12 @@ type PointerOptions = {
   relativeTo?: (ctx: any) => number;
 };
 
-export class Pointer<T = unknown> extends BaseWithSize<T | null | number | PropertyDescriptor> {
-  #type: ResTypeWithSize<T, any> | null;
+export class Pointer<T = unknown> implements SizedStructure<T | null | number | PropertyDescriptor> {
+  #type: Structure<T, any> | SizedStructure<T, any> | null;
   #options: Required<Pick<PointerOptions, 'type' | 'allowNull' | 'nullValue' | 'lazy'>> &
     Pick<PointerOptions, 'relativeTo'>;
 
-  constructor(public offsetType: ResTypeWithSize<number, any>, type: ResTypeWithSize<T, any> | 'void' | null, options: PointerOptions = {}) {
-    super();
+  constructor(public offsetType: SizedStructure<number, any>, type: Structure<T, any> | SizedStructure<T, any> | 'void' | null, options: PointerOptions = {}) {
     this.#type = type === 'void' ? null : type;
     this.#options = { type: 'local', allowNull: true, nullValue: 0, lazy: false, ...options };
   }
@@ -97,7 +96,7 @@ export class Pointer<T = unknown> extends BaseWithSize<T | null | number | Prope
       val = val.value;
     }
 
-    if (val && ctx) {
+    if (val && ctx && 'size' in type) {
       // Must be written as two separate lines rather than += in case `type.size` mutates ctx.pointerSize.
       let size = type.size(val, parent);
       ctx.pointerSize += size;
@@ -109,5 +108,5 @@ export class Pointer<T = unknown> extends BaseWithSize<T | null | number | Prope
 
 // A pointer whose type is determined at decode time
 export class VoidPointer<T = unknown> {
-  constructor(public type: ResTypeWithSize<T, any>, public value: T) {}
+  constructor(public type: SizedStructure<T, any>, public value: T) {}
 }

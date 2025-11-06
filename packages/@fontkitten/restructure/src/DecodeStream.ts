@@ -58,7 +58,7 @@ export class DecodeStream {
     return ret;
   }
   
-  static TYPES: Record<string, number> = {
+  static TYPES = {
     UInt8: 1,
     UInt16: 2,
     UInt24: 3,

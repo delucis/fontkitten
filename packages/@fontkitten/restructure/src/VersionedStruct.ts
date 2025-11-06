@@ -1,19 +1,21 @@
-import {Struct} from './Struct';
-import {ResType} from './Base';
+import {Struct, type StructFields} from './Struct';
+import type { Structure } from './types';
+import type { DecodeStream } from './DecodeStream';
 
 const getPath = (object: any, pathArray: string[]) => {
   return pathArray.reduce((prevObj: any, key: string) => prevObj && prevObj[key], object);
 };
 
-type VersionMap = Record<string | number, Record<string, ResType<any, any> | VersionedStruct>> & {
-  header?: Record<string, ResType<any, any>>
+type VersionMap = Record<number, StructFields> & {
+  header?: Record<string, Structure<any, any>>
 };
+type WithVersion<T> = T & { version: number };
 
-export class VersionedStruct<R extends Record<string, any> = any> extends Struct<R> {
-  #type: string | ResType<number | string, any>;
+export class VersionedStruct<R extends VersionMap = any> extends Struct<R[number]> {
+  #type: string | Structure<number, any>;
   #versionPath?: string[];
 
-  constructor(type: string | ResType<number | string, any>, public versions: VersionMap = {}) {
+  constructor(type: string | Structure<number, any>, public versions: R) {
     super();
     this.#type = type;
     if (typeof type === 'string') {
@@ -21,8 +23,8 @@ export class VersionedStruct<R extends Record<string, any> = any> extends Struct
     }
   }
 
-  decode(stream: any, parent?: any, length: number = 0): any {
-    const res = this._setup(stream, parent, length);
+  decode(stream: DecodeStream, parent?: any, length: number = 0): WithVersion<R[number]> {
+    const res = this._setup(stream, parent, length) as WithVersion<R[number]>;
 
     if (typeof this.#type === 'string') {
       res.version = getPath(parent, this.#versionPath!);

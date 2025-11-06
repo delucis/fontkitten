@@ -1,5 +1,5 @@
 import {Array as ArrayT} from './Array';
-import type { ResTypeWithSize } from './Base';
+import type { SizedStructure } from './types';
 import type {DecodeStream} from './DecodeStream';
 import {Number as NumberT} from './Number';
 import {resolveLength} from './utils';
@@ -26,14 +26,14 @@ export class LazyArray<T = unknown> extends ArrayT<T, LazyArrayValue<T>> {
 }
 
 class LazyArrayValue<T = unknown> {
-  #type: ResTypeWithSize<T>;
-  #stream: any;
+  #type: SizedStructure<T>;
+  #stream: DecodeStream;
   #ctx: any;
   #base: number;
   #items: (T | undefined)[];
   length: number;
 
-  constructor(type: ResTypeWithSize<T>, length: number, stream: any, ctx: any) {
+  constructor(type: SizedStructure<T>, length: number, stream: DecodeStream, ctx: any) {
     this.#type = type;
     this.length = length;
     this.#stream = stream;

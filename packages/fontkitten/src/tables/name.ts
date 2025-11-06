@@ -15,7 +15,7 @@ let NameRecord = new r.Struct({
 
 let LangTagRecord = new r.Struct({
   length:  r.uint16,
-  tag:     new r.Pointer(r.uint16, new r.String('length', 'utf16be'), {type: 'parent', relativeTo: ctx => ctx.stringOffset})
+  tag:     new r.Pointer(r.uint16, new r.String('length', 'utf16-be'), {type: 'parent', relativeTo: ctx => ctx.stringOffset})
 });
 
 var NameTable = new r.VersionedStruct(r.uint16, {
@@ -92,39 +92,4 @@ NameTable.process = function(stream) {
   }
 
   this.records = records;
-};
-
-NameTable.preEncode = function() {
-  if (Array.isArray(this.records)) return;
-  this.version = 0;
-
-  let records = [];
-  for (let key in this.records) {
-    let val = this.records[key];
-    if (key === 'fontFeatures') continue;
-
-    records.push({
-      platformID: 3,
-      encodingID: 1,
-      languageID: 0x409,
-      nameID: NAMES.indexOf(key),
-      length: val.en.length * 2,
-      string: val.en
-    });
-
-    if (key === 'postscriptName') {
-      records.push({
-        platformID: 1,
-        encodingID: 0,
-        languageID: 0,
-        nameID: NAMES.indexOf(key),
-        length: val.en.length,
-        string: val.en
-      });
-    }
-  }
-
-  this.records = records;
-  this.count = records.length;
-  this.stringOffset = NameTable.size(this, null, false);
 };

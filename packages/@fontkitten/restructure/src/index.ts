@@ -1,15 +1,14 @@
-export {EncodeStream} from './EncodeStream.js';
-export {DecodeStream} from './DecodeStream.js';
-export {Array} from './Array.js';
-export {LazyArray} from './LazyArray.js';
-export {Bitfield} from './Bitfield.js';
-export {Buffer} from './Buffer.js';
-export {Optional} from './Optional.js';
-export {Reserved} from './Reserved.js';
-export {String} from './String.js';
-export {Struct} from './Struct.js';
-export {VersionedStruct} from './VersionedStruct.js';
+export { DecodeStream } from './DecodeStream';
+export { Array } from './Array';
+export { LazyArray } from './LazyArray';
+export { Bitfield } from './Bitfield';
+export { Buffer } from './Buffer';
+export { Optional } from './Optional';
+export { Reserved } from './Reserved';
+export { String } from './String';
+export { Struct } from './Struct';
+export { VersionedStruct } from './VersionedStruct';
 
-export * from './utils.js';
-export * from './Number.js';
-export * from './Pointer.js';
+export * from './utils';
+export * from './Number';
+export * from './Pointer';

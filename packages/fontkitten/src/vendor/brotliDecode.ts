@@ -4,10 +4,6 @@
    See file LICENSE for detail or copy at https://opensource.org/licenses/MIT
 */
 
-interface BrotliDecodeOptions {
-  customDictionary: Int8Array|null;
-}
-
 /* GENERATED CODE BEGIN */
 const MAX_HUFFMAN_TABLE_SIZE: Int32Array = Int32Array.from([256, 402, 436, 468, 500, 534, 566, 598, 630, 662, 694, 726, 758, 790, 822, 854, 886, 920, 952, 984, 1016, 1048, 1080]);
 const CODE_LENGTH_CODE_ORDER: Int32Array = Int32Array.from([1, 2, 3, 4, 0, 5, 17, 6, 16, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
@@ -107,38 +103,6 @@ function decodeWindowBits(s: State): number {
     return 8 + n;
   }
   return 17;
-}
-function enableEagerOutput(s: State): number {
-  if (s.runningState !== 1) {
-    return makeError(s, -24);
-  }
-  s.isEager = 1;
-  return 0;
-}
-function enableLargeWindow(s: State): number {
-  if (s.runningState !== 1) {
-    return makeError(s, -24);
-  }
-  s.isLargeWindow = 1;
-  return 0;
-}
-function attachDictionaryChunk(s: State, data: Int8Array): number {
-  if (s.runningState !== 1) {
-    return makeError(s, -24);
-  }
-  if (s.cdNumChunks === 0) {
-    s.cdChunks = new Array(16);
-    s.cdChunkOffsets = new Int32Array(16);
-    s.cdBlockBits = -1;
-  }
-  if (s.cdNumChunks === 15) {
-    return makeError(s, -27);
-  }
-  s.cdChunks[s.cdNumChunks] = data;
-  s.cdNumChunks++;
-  s.cdTotalSize += data.length;
-  s.cdChunkOffsets[s.cdNumChunks] = s.cdTotalSize;
-  return 0;
 }
 function initState(s: State): number {
   if (s.runningState !== 0) {
@@ -812,34 +776,35 @@ function readMetablockHuffmanCodesAndContextMaps(s: State): number {
   return 0;
 }
 function copyUncompressedData(s: State): number {
-  const ringBuffer: Int8Array = s.ringBuffer;
-  let result: number;
-  if (s.metaBlockLength <= 0) {
-    result = reload(s);
-    if (result < 0) {
-      return result;
-    }
-    s.runningState = 2;
-    return 0;
-  }
-  const chunkLength: number = Math.min(s.ringBufferSize - s.pos, s.metaBlockLength);
-  result = copyRawBytes(s, ringBuffer, s.pos, chunkLength);
-  if (result < 0) {
-    return result;
-  }
-  s.metaBlockLength -= chunkLength;
-  s.pos += chunkLength;
-  if (s.pos === s.ringBufferSize) {
-    s.nextRunningState = 6;
-    s.runningState = 12;
-    return 0;
-  }
-  result = reload(s);
-  if (result < 0) {
-    return result;
-  }
-  s.runningState = 2;
-  return 0;
+  throw new Error("copyUncompressedData not implemented");
+  // const ringBuffer: Int8Array = s.ringBuffer;
+  // let result: number;
+  // if (s.metaBlockLength <= 0) {
+  //   result = reload(s);
+  //   if (result < 0) {
+  //     return result;
+  //   }
+  //   s.runningState = 2;
+  //   return 0;
+  // }
+  // const chunkLength: number = Math.min(s.ringBufferSize - s.pos, s.metaBlockLength);
+  // result = copyRawBytes(s, ringBuffer, s.pos, chunkLength);
+  // if (result < 0) {
+  //   return result;
+  // }
+  // s.metaBlockLength -= chunkLength;
+  // s.pos += chunkLength;
+  // if (s.pos === s.ringBufferSize) {
+  //   s.nextRunningState = 6;
+  //   s.runningState = 12;
+  //   return 0;
+  // }
+  // result = reload(s);
+  // if (result < 0) {
+  //   return result;
+  // }
+  // s.runningState = 2;
+  // return 0;
 }
 function writeRingBuffer(s: State): number {
   const toWrite: number = Math.min(s.outputLength - s.outputUsed, s.ringBufferBytesReady - s.ringBufferBytesWritten);
@@ -918,71 +883,73 @@ function doUseDictionary(s: State, fence: number): number {
   }
   return 0;
 }
-function initializeCompoundDictionary(s: State): void {
-  s.cdBlockMap = new Int8Array(256);
-  let blockBits = 8;
-  while (((s.cdTotalSize - 1) >> blockBits) !== 0) {
-    blockBits++;
-  }
-  blockBits -= 8;
-  s.cdBlockBits = blockBits;
-  let cursor = 0;
-  let index = 0;
-  while (cursor < s.cdTotalSize) {
-    while (s.cdChunkOffsets[index + 1] < cursor) {
-      index++;
-    }
-    s.cdBlockMap[cursor >> blockBits] = index;
-    cursor += 1 << blockBits;
-  }
-}
+// function initializeCompoundDictionary(s: State): void {
+//   s.cdBlockMap = new Int8Array(256);
+//   let blockBits = 8;
+//   while (((s.cdTotalSize - 1) >> blockBits) !== 0) {
+//     blockBits++;
+//   }
+//   blockBits -= 8;
+//   s.cdBlockBits = blockBits;
+//   let cursor = 0;
+//   let index = 0;
+//   while (cursor < s.cdTotalSize) {
+//     while (s.cdChunkOffsets[index + 1] < cursor) {
+//       index++;
+//     }
+//     s.cdBlockMap[cursor >> blockBits] = index;
+//     cursor += 1 << blockBits;
+//   }
+// }
 function initializeCompoundDictionaryCopy(s: State, address: number, length: number): number {
-  if (s.cdBlockBits === -1) {
-    initializeCompoundDictionary(s);
-  }
-  let index: number = s.cdBlockMap[address >> s.cdBlockBits];
-  while (address >= s.cdChunkOffsets[index + 1]) {
-    index++;
-  }
-  if (s.cdTotalSize > address + length) {
-    return makeError(s, -9);
-  }
-  s.distRbIdx = (s.distRbIdx + 1) & 0x3;
-  s.rings[s.distRbIdx] = s.distance;
-  s.metaBlockLength -= length;
-  s.cdBrIndex = index;
-  s.cdBrOffset = address - s.cdChunkOffsets[index];
-  s.cdBrLength = length;
-  s.cdBrCopied = 0;
-  return 0;
+  throw new Error("initializeCompoundDictionaryCopy not implemented");
+  // if (s.cdBlockBits === -1) {
+  //   initializeCompoundDictionary(s);
+  // }
+  // let index: number = s.cdBlockMap[address >> s.cdBlockBits];
+  // while (address >= s.cdChunkOffsets[index + 1]) {
+  //   index++;
+  // }
+  // if (s.cdTotalSize > address + length) {
+  //   return makeError(s, -9);
+  // }
+  // s.distRbIdx = (s.distRbIdx + 1) & 0x3;
+  // s.rings[s.distRbIdx] = s.distance;
+  // s.metaBlockLength -= length;
+  // s.cdBrIndex = index;
+  // s.cdBrOffset = address - s.cdChunkOffsets[index];
+  // s.cdBrLength = length;
+  // s.cdBrCopied = 0;
+  // return 0;
 }
 function copyFromCompoundDictionary(s: State, fence: number): number {
-  let pos: number = s.pos;
-  const origPos: number = pos;
-  while (s.cdBrLength !== s.cdBrCopied) {
-    const space: number = fence - pos;
-    const chunkLength: number = s.cdChunkOffsets[s.cdBrIndex + 1] - s.cdChunkOffsets[s.cdBrIndex];
-    const remChunkLength: number = chunkLength - s.cdBrOffset;
-    let length: number = s.cdBrLength - s.cdBrCopied;
-    if (length > remChunkLength) {
-      length = remChunkLength;
-    }
-    if (length > space) {
-      length = space;
-    }
-    s.ringBuffer.set(s.cdChunks[s.cdBrIndex].subarray(s.cdBrOffset, s.cdBrOffset + length), pos);
-    pos += length;
-    s.cdBrOffset += length;
-    s.cdBrCopied += length;
-    if (length === remChunkLength) {
-      s.cdBrIndex++;
-      s.cdBrOffset = 0;
-    }
-    if (pos >= fence) {
-      break;
-    }
-  }
-  return pos - origPos;
+  throw new Error("copyFromCompoundDictionary not implemented");
+  // let pos: number = s.pos;
+  // const origPos: number = pos;
+  // while (s.cdBrLength !== s.cdBrCopied) {
+  //   const space: number = fence - pos;
+  //   const chunkLength: number = s.cdChunkOffsets[s.cdBrIndex + 1] - s.cdChunkOffsets[s.cdBrIndex];
+  //   const remChunkLength: number = chunkLength - s.cdBrOffset;
+  //   let length: number = s.cdBrLength - s.cdBrCopied;
+  //   if (length > remChunkLength) {
+  //     length = remChunkLength;
+  //   }
+  //   if (length > space) {
+  //     length = space;
+  //   }
+  //   s.ringBuffer.set(s.cdChunks[s.cdBrIndex].subarray(s.cdBrOffset, s.cdBrOffset + length), pos);
+  //   pos += length;
+  //   s.cdBrOffset += length;
+  //   s.cdBrCopied += length;
+  //   if (length === remChunkLength) {
+  //     s.cdBrIndex++;
+  //     s.cdBrOffset = 0;
+  //   }
+  //   if (pos >= fence) {
+  //     break;
+  //   }
+  // }
+  // return pos - origPos;
 }
 function decompress(s: State): number {
   let result: number;
@@ -1409,59 +1376,60 @@ function transformDictionaryWord(dst: Int8Array, dstOffset: number, src: ByteBuf
       }
     }
   } else if (transformType === 21 || transformType === 22) {
-    let shiftOffset: number = offset - len;
-    const param: number = transforms.params[transformIndex];
-    let scalar: number = (param & 0x7FFF) + (0x1000000 - (param & 0x8000));
-    while (len > 0) {
-      let step = 1;
-      const c0: number = dst[shiftOffset] & 0xFF;
-      if (c0 < 0x80) {
-        scalar += c0;
-        dst[shiftOffset] = scalar & 0x7F;
-      } else if (c0 < 0xC0) {
-      } else if (c0 < 0xE0) {
-        if (len >= 2) {
-          const c1: number = dst[shiftOffset + 1];
-          scalar += (c1 & 0x3F) | ((c0 & 0x1F) << 6);
-          dst[shiftOffset] = 0xC0 | ((scalar >> 6) & 0x1F);
-          dst[shiftOffset + 1] = (c1 & 0xC0) | (scalar & 0x3F);
-          step = 2;
-        } else {
-          step = len;
-        }
-      } else if (c0 < 0xF0) {
-        if (len >= 3) {
-          const c1: number = dst[shiftOffset + 1];
-          const c2: number = dst[shiftOffset + 2];
-          scalar += (c2 & 0x3F) | ((c1 & 0x3F) << 6) | ((c0 & 0x0F) << 12);
-          dst[shiftOffset] = 0xE0 | ((scalar >> 12) & 0x0F);
-          dst[shiftOffset + 1] = (c1 & 0xC0) | ((scalar >> 6) & 0x3F);
-          dst[shiftOffset + 2] = (c2 & 0xC0) | (scalar & 0x3F);
-          step = 3;
-        } else {
-          step = len;
-        }
-      } else if (c0 < 0xF8) {
-        if (len >= 4) {
-          const c1: number = dst[shiftOffset + 1];
-          const c2: number = dst[shiftOffset + 2];
-          const c3: number = dst[shiftOffset + 3];
-          scalar += (c3 & 0x3F) | ((c2 & 0x3F) << 6) | ((c1 & 0x3F) << 12) | ((c0 & 0x07) << 18);
-          dst[shiftOffset] = 0xF0 | ((scalar >> 18) & 0x07);
-          dst[shiftOffset + 1] = (c1 & 0xC0) | ((scalar >> 12) & 0x3F);
-          dst[shiftOffset + 2] = (c2 & 0xC0) | ((scalar >> 6) & 0x3F);
-          dst[shiftOffset + 3] = (c3 & 0xC0) | (scalar & 0x3F);
-          step = 4;
-        } else {
-          step = len;
-        }
-      }
-      shiftOffset += step;
-      len -= step;
-      if (transformType === 21) {
-        len = 0;
-      }
-    }
+    throw new Error("transformDictionaryWord: transformType 21 and 22 not implemented");
+    // let shiftOffset: number = offset - len;
+    // const param: number = transforms.params[transformIndex];
+    // let scalar: number = (param & 0x7FFF) + (0x1000000 - (param & 0x8000));
+    // while (len > 0) {
+    //   let step = 1;
+    //   const c0: number = dst[shiftOffset] & 0xFF;
+    //   if (c0 < 0x80) {
+    //     scalar += c0;
+    //     dst[shiftOffset] = scalar & 0x7F;
+    //   } else if (c0 < 0xC0) {
+    //   } else if (c0 < 0xE0) {
+    //     if (len >= 2) {
+    //       const c1: number = dst[shiftOffset + 1];
+    //       scalar += (c1 & 0x3F) | ((c0 & 0x1F) << 6);
+    //       dst[shiftOffset] = 0xC0 | ((scalar >> 6) & 0x1F);
+    //       dst[shiftOffset + 1] = (c1 & 0xC0) | (scalar & 0x3F);
+    //       step = 2;
+    //     } else {
+    //       step = len;
+    //     }
+    //   } else if (c0 < 0xF0) {
+    //     if (len >= 3) {
+    //       const c1: number = dst[shiftOffset + 1];
+    //       const c2: number = dst[shiftOffset + 2];
+    //       scalar += (c2 & 0x3F) | ((c1 & 0x3F) << 6) | ((c0 & 0x0F) << 12);
+    //       dst[shiftOffset] = 0xE0 | ((scalar >> 12) & 0x0F);
+    //       dst[shiftOffset + 1] = (c1 & 0xC0) | ((scalar >> 6) & 0x3F);
+    //       dst[shiftOffset + 2] = (c2 & 0xC0) | (scalar & 0x3F);
+    //       step = 3;
+    //     } else {
+    //       step = len;
+    //     }
+    //   } else if (c0 < 0xF8) {
+    //     if (len >= 4) {
+    //       const c1: number = dst[shiftOffset + 1];
+    //       const c2: number = dst[shiftOffset + 2];
+    //       const c3: number = dst[shiftOffset + 3];
+    //       scalar += (c3 & 0x3F) | ((c2 & 0x3F) << 6) | ((c1 & 0x3F) << 12) | ((c0 & 0x07) << 18);
+    //       dst[shiftOffset] = 0xF0 | ((scalar >> 18) & 0x07);
+    //       dst[shiftOffset + 1] = (c1 & 0xC0) | ((scalar >> 12) & 0x3F);
+    //       dst[shiftOffset + 2] = (c2 & 0xC0) | ((scalar >> 6) & 0x3F);
+    //       dst[shiftOffset + 3] = (c3 & 0xC0) | (scalar & 0x3F);
+    //       step = 4;
+    //     } else {
+    //       step = len;
+    //     }
+    //   }
+    //   shiftOffset += step;
+    //   len -= step;
+    //   if (transformType === 21) {
+    //     len = 0;
+    //   }
+    // }
   }
   while (suffix !== suffixEnd) {
     dst[offset++] = prefixSuffixStorage[suffix++];
@@ -1634,12 +1602,12 @@ function prepare(s: State): number {
   s.bitOffset -= 16;
   return 0;
 }
-function reload(s: State): number {
-  if (s.bitOffset === 32) {
-    return prepare(s);
-  }
-  return 0;
-}
+// function reload(s: State): number {
+//   if (s.bitOffset === 32) {
+//     return prepare(s);
+//   }
+//   return 0;
+// }
 function jumpToByteBoundary(s: State): number {
   const padding: number = (32 - s.bitOffset) & 7;
   if (padding !== 0) {
@@ -1657,57 +1625,57 @@ function halfAvailable(s: State): number {
   }
   return limit - s.halfOffset;
 }
-function copyRawBytes(s: State, data: Int8Array, offset: number, length: number): number {
-  let pos: number = offset;
-  let len: number = length;
-  if ((s.bitOffset & 7) !== 0) {
-    return makeError(s, -30);
-  }
-  while ((s.bitOffset !== 32) && (len !== 0)) {
-    data[pos++] = s.accumulator32 >>> s.bitOffset;
-    s.bitOffset += 8;
-    len--;
-  }
-  if (len === 0) {
-    return 0;
-  }
-  const copyNibbles: number = Math.min(halfAvailable(s), len >> 1);
-  if (copyNibbles > 0) {
-    const readOffset: number = s.halfOffset << 1;
-    const delta: number = copyNibbles << 1;
-    data.set(s.byteBuffer.subarray(readOffset, readOffset + delta), pos);
-    pos += delta;
-    len -= delta;
-    s.halfOffset += copyNibbles;
-  }
-  if (len === 0) {
-    return 0;
-  }
-  if (halfAvailable(s) > 0) {
-    if (s.bitOffset >= 16) {
-      s.accumulator32 = (s.shortBuffer[s.halfOffset++] << 16) | (s.accumulator32 >>> 16);
-      s.bitOffset -= 16;
-    }
-    while (len !== 0) {
-      data[pos++] = s.accumulator32 >>> s.bitOffset;
-      s.bitOffset += 8;
-      len--;
-    }
-    return checkHealth(s, 0);
-  }
-  while (len > 0) {
-    const chunkLen: number = readInput(s, data, pos, len);
-    if (chunkLen < -1) {
-      return chunkLen;
-    }
-    if (chunkLen <= 0) {
-      return makeError(s, -16);
-    }
-    pos += chunkLen;
-    len -= chunkLen;
-  }
-  return 0;
-}
+// function copyRawBytes(s: State, data: Int8Array, offset: number, length: number): number {
+//   let pos: number = offset;
+//   let len: number = length;
+//   if ((s.bitOffset & 7) !== 0) {
+//     return makeError(s, -30);
+//   }
+//   while ((s.bitOffset !== 32) && (len !== 0)) {
+//     data[pos++] = s.accumulator32 >>> s.bitOffset;
+//     s.bitOffset += 8;
+//     len--;
+//   }
+//   if (len === 0) {
+//     return 0;
+//   }
+//   const copyNibbles: number = Math.min(halfAvailable(s), len >> 1);
+//   if (copyNibbles > 0) {
+//     const readOffset: number = s.halfOffset << 1;
+//     const delta: number = copyNibbles << 1;
+//     data.set(s.byteBuffer.subarray(readOffset, readOffset + delta), pos);
+//     pos += delta;
+//     len -= delta;
+//     s.halfOffset += copyNibbles;
+//   }
+//   if (len === 0) {
+//     return 0;
+//   }
+//   if (halfAvailable(s) > 0) {
+//     if (s.bitOffset >= 16) {
+//       s.accumulator32 = (s.shortBuffer[s.halfOffset++] << 16) | (s.accumulator32 >>> 16);
+//       s.bitOffset -= 16;
+//     }
+//     while (len !== 0) {
+//       data[pos++] = s.accumulator32 >>> s.bitOffset;
+//       s.bitOffset += 8;
+//       len--;
+//     }
+//     return checkHealth(s, 0);
+//   }
+//   while (len > 0) {
+//     const chunkLen: number = readInput(s, data, pos, len);
+//     if (chunkLen < -1) {
+//       return chunkLen;
+//     }
+//     if (chunkLen <= 0) {
+//       return makeError(s, -16);
+//     }
+//     pos += chunkLen;
+//     len -= chunkLen;
+//   }
+//   return 0;
+// }
 function bytesToNibbles(s: State, byteLen: number): void {
   const byteBuffer: Int8Array = s.byteBuffer;
   const halfLen: number = byteLen >> 1;
@@ -1898,9 +1866,9 @@ class InputStream {
   }
 }
 
-function valueOf(x: number): string {
-  return x.toString();
-}
+// function valueOf(x: number): string {
+//   return x.toString();
+// }
 
 function readInput(s: State, dst: Int8Array, offset: number, length: number): number {
   if (s.input === null) {
@@ -1949,15 +1917,10 @@ type ByteBuffer = Int8Array;
 /**
  * Decodes brotli stream.
  */
-export function brotliDecode(
-    bytes: Int8Array, options?: BrotliDecodeOptions): Int8Array {
+export function brotliDecode(bytes: Int8Array): Int8Array {
   const s = new State();
   s.input = new InputStream(bytes);
   initState(s);
-  if (options) {
-    const customDictionary: Int8Array|null = options.customDictionary;
-    if (customDictionary) attachDictionaryChunk(s, customDictionary);
-  }
   let totalOutput = 0;
   const chunks: Int8Array[] = [];
   while (true) {

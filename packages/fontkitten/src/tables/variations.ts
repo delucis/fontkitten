@@ -5,7 +5,7 @@ import * as r from '@fontkitten/restructure';
  * Variation Store *
  *******************/
 
-let F2DOT14 = new r.Fixed(16, 'BE', 14);
+let F2DOT14 = new r.Fixed(16, 14);
 let RegionAxisCoordinates = new r.Struct({
   startCoord: F2DOT14,
   peakCoord: F2DOT14,

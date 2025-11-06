@@ -30,13 +30,12 @@
     "directory": "packages/fontkitten"
   },
   "dependencies": {
-    "fast-deep-equal": "^3.1.3",
     "tiny-inflate": "^1.0.3"
   },
   "devDependencies": {
+    "@fontkitten/restructure": "^0.0.7",
     "@types/node": "^24.9.2",
     "mocha": "^10.0.0",
-    "@fontkitten/restructure": "^0.0.7",
     "tsdown": "^0.15.11"
   }
 }

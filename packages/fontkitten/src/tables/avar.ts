@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let shortFrac = new r.Fixed(16, 'BE', 14);
+let shortFrac = new r.Fixed(16, 14);
 
 let Correspondence = new r.Struct({
   fromCoord: shortFrac,

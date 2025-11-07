@@ -3,7 +3,10 @@
 	"private": true,
 	"type": "module",
 	"exports": {
-		".": "./dist/index.js"
+		".": {
+			"@fontkitten/src": "./src/index.ts",
+			"default": "./dist/index.js"
+		}
 	},
 	"version": "0.0.7",
 	"scripts": {

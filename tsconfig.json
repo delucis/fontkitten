@@ -6,6 +6,7 @@
     "isolatedDeclarations": true,
     "declaration": true,
     "target": "esnext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "customConditions": ["@fontkitten/src"]
   }
 }

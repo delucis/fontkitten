@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "mocha",
-    "build": "tsdown --dts"
+    "build": "tsdown --dts --no-fixed-extension"
   },
   "type": "module",
   "exports": {
@@ -36,6 +36,6 @@
     "@fontkitten/restructure": "^0.0.7",
     "@types/node": "^24.9.2",
     "mocha": "^10.8.2",
-    "tsdown": "^0.15.11"
+    "tsdown": "^0.16.0"
   }
 }

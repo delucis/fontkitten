@@ -10,10 +10,10 @@
 	},
 	"version": "0.0.7",
 	"scripts": {
-		"build": "tsdown --dts"
+		"build": "tsdown --dts --no-fixed-extension"
 	},
 	"devDependencies": {
 		"@types/node": "^24.9.2",
-		"tsdown": "^0.15.11"
+		"tsdown": "^0.16.0"
 	}
 }

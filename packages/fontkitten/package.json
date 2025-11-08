@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "mocha",
-    "build": "tsdown --dts"
+    "build": "tsdown --dts --no-fixed-extension"
   },
   "type": "module",
   "exports": {

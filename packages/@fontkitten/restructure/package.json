@@ -13,7 +13,7 @@
 		"build": "tsdown --dts --no-fixed-extension"
 	},
 	"devDependencies": {
-		"@types/node": "^24.9.2",
+		"@types/node": "^24.10.0",
 		"tsdown": "^0.16.0"
 	}
 }

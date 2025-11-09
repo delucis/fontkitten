@@ -64,6 +64,16 @@ const collection = create(buffer);
 const font = create(buffer, 'PostScriptName');
 ```
 
+#### Use with `fetch`
+
+When using the fetch API to load remote font files, convert the response’s `ArrayBuffer` before passing it to `create()`:
+
+```javascript
+const response = await fetch('https://example.com/path/to/font.ttf');
+const buffer = new Uint8Array(await response.arrayBuffer());
+const font = create(buffer);
+```
+
 ### `Font` objects
 
 The core of the `fontkitten` API is the `Font` object, which represents a parsed font file.

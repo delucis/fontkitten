@@ -152,7 +152,7 @@ have axis names as keys, and numbers as values (should be in the range specified
 
 ##### `font.getGlyph(glyph_id, codePoints = [])`
 
-Returns a glyph object for the given glyph id. You can pass the array of code points this glyph represents for your use later, and it will be stored in the glyph object.
+Returns a [`Glyph`](#glyph-objects) object for the given glyph id. You can pass the array of code points this glyph represents for your use later, and it will be stored in the glyph object.
 
 ### `FontCollection` objects
 

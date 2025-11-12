@@ -5,9 +5,6 @@
   <a href="https://github.com/delucis/fontkitten/actions/workflows/ci.yml"><img src="https://github.com/delucis/fontkitten/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
 </p>
 
-> [!WARNING]
-> Work in progress. This library is under active development and the API may change slightly before its final release.
-
 Fontkitten is a font data library, focused on font file parsing and metadata extraction.
 
 - 20x smaller install size than `fontkit`

@@ -161,8 +161,6 @@ export default class Glyph implements GlyphType {
     return this._getMetrics().advanceHeight;
   }
 
-  get ligatureCaretPositions() {}
-
   _getName() {
     let { post } = this._font;
     if (!post) {

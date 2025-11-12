@@ -41,6 +41,7 @@ Fontkitten does not include the following Fontkit APIs on parsed fonts:
 - `.layout()` text layout and shaping
 - `.stringsForGlyph()` reverse glyph mapping
 - `.availableFeatures` and `.getAvailableFeatures()` APIs for detecting OpenType feature support
+- The following OpenType tables are not currently parsed: `cvt`, `fpgm`, `prep`, `VORG`, `EBLC`, `BASE`, `GDEF`, `GPOS`, `JSTF`, `DSIG`, `gasp`, `hdmx`, `kern`, `LTSH`, `PCLT`, `VDMX`, `bsln`, `feat`, `just`, `morx`, and `opbd`. [Open an issue](https://github.com/delucis/fontkitten/issues) if you have a use case for one of these.
 
 ## API
 

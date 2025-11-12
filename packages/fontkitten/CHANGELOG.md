@@ -1,5 +1,13 @@
 # fontkitten
 
+## 0.0.11
+
+### Patch Changes
+
+- [#30](https://github.com/delucis/fontkitten/pull/30) [`1549440`](https://github.com/delucis/fontkitten/commit/1549440546e372bb5a8ed954f9a332221b039a93) Thanks [@delucis](https://github.com/delucis)! - Drops parsing for OpenType tables that are not directly used in Fontkitten APIs
+
+  The following OpenType tables are no longer parsed and are not included on parsed font objects: `cvt`, `fpgm`, `prep`, `VORG`, `EBLC`, `BASE`, `GDEF`, `GPOS`, `JSTF`, `DSIG`, `gasp`, `hdmx`, `kern`, `LTSH`, `PCLT`, `VDMX`, `bsln`, `feat`, `just`, `morx`, and `opbd`.
+
 ## 0.0.10
 
 ### Patch Changes

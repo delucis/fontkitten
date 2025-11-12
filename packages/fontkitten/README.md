@@ -5,9 +5,6 @@
   <a href="https://github.com/delucis/fontkitten/actions/workflows/ci.yml"><img src="https://github.com/delucis/fontkitten/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
 </p>
 
-> [!WARNING]
-> Work in progress. This library is under active development and the API may change slightly before its final release.
-
 Fontkitten is a font data library, focused on font file parsing and metadata extraction.
 
 - 20x smaller install size than `fontkit`
@@ -155,7 +152,7 @@ have axis names as keys, and numbers as values (should be in the range specified
 
 ##### `font.getGlyph(glyph_id, codePoints = [])`
 
-Returns a glyph object for the given glyph id. You can pass the array of code points this glyph represents for your use later, and it will be stored in the glyph object.
+Returns a [`Glyph`](#glyph-objects) object for the given glyph id. You can pass the array of code points this glyph represents for your use later, and it will be stored in the glyph object.
 
 ### `FontCollection` objects
 
@@ -184,6 +181,8 @@ You do not create glyph objects directly. They are created by various methods on
 - `bbox` - the glyph’s bounding box, i.e. the rectangle that encloses the glyph outline as tightly as possible.
 - `cbox` - the glyph’s control box. This is often the same as the bounding box, but is faster to compute. Because of the way bezier curves are defined, some of the control points can be outside of the bounding box. Where `bbox` takes this into account, `cbox` does not. Thus, `cbox` is less accurate, but faster to compute. See [here](http://www.freetype.org/freetype2/docs/glyphs/glyphs-6.html#section-2) for a more detailed description.
 - `advanceWidth` - the glyph’s advance width.
+- `isMark` - whether the glyph is a non-spacing combining glyph.
+- `isLigature` - whether the glyph is a multiple character, spacing glyph.
 
 #### Methods
 
@@ -191,41 +190,9 @@ You do not create glyph objects directly. They are created by various methods on
 
 Renders the glyph to the given `Canvas` rendering context, at the specified font size.
 
-#### Color glyphs (e.g. emoji)
-
-Fontkitten has support for several different color emoji font formats. Currently, these include Apple’s SBIX table (as used by the “Apple Color Emoji” font), and Microsoft’s COLR table (supported by Windows 8.1).
-
-##### `glyph.getImageForSize(size)`
-
-For SBIX glyphs, which are bitmap based, this returns an object containing some properties about the image, along with the image data itself (usually PNG).
-
-##### `glyph.layers`
-
-For COLR glyphs, which are vector based, this returns an array of objects representing the glyphs and colors for each layer in render order.
-
 ### `Path` objects
 
 `Path` objects are returned by glyphs and represent the actual vector outlines for each glyph in the font. Paths can be converted to SVG path data strings, or to functions that can be applied to render the path to a graphics context.
-
-#### `path.moveTo(x, y)`
-
-Moves the virtual pen to the given x, y coordinates.
-
-#### `path.lineTo(x, y)`
-
-Adds a line to the path from the current point to the given x, y coordinates.
-
-#### `path.quadraticCurveTo(cpx, cpy, x, y)`
-
-Adds a quadratic curve to the path from the current point to the given x, y coordinates using cpx, cpy as a control point.
-
-#### `path.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)`
-
-Adds a bezier curve to the path from the current point to the given x, y coordinates using cp1x, cp1y and cp2x, cp2y as control points.
-
-#### `path.closePath()`
-
-Closes the current sub-path by drawing a straight line back to the starting point.
 
 #### `path.toFunction()`
 

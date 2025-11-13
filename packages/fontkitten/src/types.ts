@@ -92,9 +92,8 @@ export interface Font {
 
 	/**
 	 * Gets a string from the font's `name` table
-	 * `lang` is a BCP-47 language code.
 	 */
-	getName(key: string, lang: string): string | null;
+	getName(key: string): string | null;
 }
 
 /**

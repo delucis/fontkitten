@@ -86,20 +86,10 @@ export default class TTFFont implements Font {
 
   /**
    * Gets a string from the font's `name` table
-   * `lang` is a BCP-47 language code.
    */
   getName(key: string): string {
-    let record = this.name && this.name.records[key];
-    if (record) {
-      // Attempt to retrieve the entry, depending on which translation is available:
-      return (
-          record['en']
-          || record[Object.keys(record)[0]] // Seriously, ANY language would be fine
-          || null
-      );
-    }
-
-    return null;
+    const record = this.name?.records[key];
+    return record?.['en'] || record?.[Object.keys(record)[0]] || null;
   }
 
   /**

@@ -19,9 +19,10 @@ export default class WOFF2Font extends TTFFont {
     return asciiDecoder.decode(buffer.slice(0, 4)) === 'wOF2';
   }
 
-  _decodeDirectory(): void {
-    this.directory = WOFF2Directory.decode(this.stream);
+  _decodeDirectory(): any {
+    const directory = WOFF2Directory.decode(this.stream);
     this._dataPos = this.stream.pos;
+    return directory;
   }
 
   #decompress(): void {

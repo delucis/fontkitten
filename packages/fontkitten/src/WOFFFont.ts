@@ -11,8 +11,8 @@ export default class WOFFFont extends TTFFont {
     return asciiDecoder.decode(buffer.slice(0, 4)) === 'wOFF';
   }
 
-  _decodeDirectory(): void {
-    this.directory = WOFFDirectory.decode(this.stream, { _startOffset: 0 });
+  _decodeDirectory(): any {
+    return WOFFDirectory.decode(this.stream, { _startOffset: 0 });
   }
 
   _getTableStream(tag: string): any {

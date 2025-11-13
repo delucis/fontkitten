@@ -1,13 +1,10 @@
 import * as r from '@fontkitten/restructure';
 import TTFFont from './TTFFont';
+import type { Font, FontCollection } from './types';
 
-let DFontName = new r.String(r.uint8);
-let DFontData = new r.Struct({
-  len: r.uint32,
-  buf: new r.Buffer('len')
-});
+const DFontName = new r.String(r.uint8);
 
-let Ref = new r.Struct({
+const Ref = new r.Struct({
   id: r.uint16,
   nameOffset: r.int16,
   attr: r.uint8,
@@ -15,57 +12,56 @@ let Ref = new r.Struct({
   handle: r.uint32
 });
 
-let Type = new r.Struct({
+const Type = new r.Struct({
   name: new r.String(4),
   maxTypeIndex: r.uint16,
   refList: new r.Pointer(r.uint16, new r.Array(Ref, t => t.maxTypeIndex + 1), { type: 'parent' })
 });
 
-let TypeList = new r.Struct({
+const TypeList = new r.Struct({
   length: r.uint16,
   types: new r.Array(Type, t => t.length + 1)
 });
 
-let DFontMap = new r.Struct({
+const DFontMap = new r.Struct({
   reserved: new r.Reserved(r.uint8, 24),
   typeList: new r.Pointer(r.uint16, TypeList),
   nameListOffset: new r.Pointer(r.uint16, 'void')
 });
 
-let DFontHeader = new r.Struct({
+const DFontHeader = new r.Struct({
   dataOffset: r.uint32,
   map: new r.Pointer(r.uint32, DFontMap),
   dataLength: r.uint32,
   mapLength: r.uint32
 });
 
-export default class DFont {
-  type = 'DFont';
+export default class DFont implements FontCollection {
+  type = 'DFont' as const;
+  header: any;
+  sfnt: any;
 
-  static probe(buffer) {
-    let stream = new r.DecodeStream(buffer);
-
+  static probe(buffer: Buffer): boolean {
+    const stream = new r.DecodeStream(buffer);
+    let header;
     try {
-      var header = DFontHeader.decode(stream);
-    } catch (e) {
+      header = DFontHeader.decode(stream);
+    } catch {
       return false;
     }
-
-    for (let type of header.map.typeList.types) {
+    for (const type of header.map.typeList.types) {
       if (type.name === 'sfnt') {
         return true;
       }
     }
-
     return false;
   }
 
-  constructor(stream) {
-    this.stream = stream;
+  constructor(public stream: r.DecodeStream) {
     this.header = DFontHeader.decode(this.stream);
 
-    for (let type of this.header.map.typeList.types) {
-      for (let ref of type.refList) {
+    for (const type of this.header.map.typeList.types) {
+      for (const ref of type.refList) {
         if (ref.nameOffset >= 0) {
           this.stream.pos = ref.nameOffset + this.header.map.nameListOffset;
           ref.name = DFontName.decode(this.stream);
@@ -80,15 +76,15 @@ export default class DFont {
     }
   }
 
-  getFont(name) {
+  getFont(name: string | Uint8Array): Font | null {
     if (!this.sfnt) {
       return null;
     }
 
-    for (let ref of this.sfnt.refList) {
-      let pos = this.header.dataOffset + ref.dataOffset + 4;
-      let stream = new r.DecodeStream(this.stream.buffer.slice(pos));
-      let font = new TTFFont(stream);
+    for (const ref of this.sfnt.refList) {
+      const pos = this.header.dataOffset + ref.dataOffset + 4;
+      const stream = new r.DecodeStream(this.stream.buffer.slice(pos));
+      const font = new TTFFont(stream);
       if (
         font.postscriptName === name ||
         (
@@ -104,14 +100,13 @@ export default class DFont {
     return null;
   }
 
-  get fonts() {
-    let fonts = [];
-    for (let ref of this.sfnt.refList) {
-      let pos = this.header.dataOffset + ref.dataOffset + 4;
-      let stream = new r.DecodeStream(this.stream.buffer.slice(pos));
+  get fonts(): Font[] {
+    const fonts = [];
+    for (const ref of this.sfnt.refList) {
+      const pos = this.header.dataOffset + ref.dataOffset + 4;
+      const stream = new r.DecodeStream(this.stream.buffer.slice(pos));
       fonts.push(new TTFFont(stream));
     }
-
     return fonts;
   }
 }

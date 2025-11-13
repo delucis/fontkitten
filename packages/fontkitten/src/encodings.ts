@@ -2,12 +2,10 @@
  * Gets an encoding name from platform, encoding, and language ids.
  * Returned encoding names can be used in iconv-lite to decode text.
  */
-export function getEncoding(platformID, encodingID, languageID = 0) {
-  if (platformID === 1 && MAC_LANGUAGE_ENCODINGS[languageID]) {
-    return MAC_LANGUAGE_ENCODINGS[languageID];
-  }
-  
-  return ENCODINGS[platformID][encodingID];
+export function getEncoding(platformID: number, encodingID: number, languageID = 0): string | null | undefined {
+  return platformID === 1 && MAC_LANGUAGE_ENCODINGS[languageID]
+    ? MAC_LANGUAGE_ENCODINGS[languageID]
+    : ENCODINGS[platformID][encodingID];
 }
 
 const SINGLE_BYTE_ENCODINGS = new Set(['x-mac-roman', 'x-mac-cyrillic', 'iso-8859-6', 'iso-8859-8']);
@@ -22,18 +20,18 @@ const MAC_ENCODINGS = {
   'x-mac-turkish': 'ÄÅÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûü†°¢£§•¶ß®©™´¨≠ÆØ∞±≤≥¥µ∂∑∏π∫ªºΩæø¿¡¬√ƒ≈∆«»… ÀÃÕŒœ–—“”‘’÷◊ÿŸĞğİıŞş‡·‚„‰ÂÊÁËÈÍÎÏÌÓÔÒÚÛÙˆ˜¯˘˙˚¸˝˛ˇ'
 };
 
-const encodingCache = new Map();
+const encodingCache = new Map<string, Map<number, number>>();
 
-export function getEncodingMapping(encoding) {
-  let cached = encodingCache.get(encoding);
+export function getEncodingMapping(encoding: string): Map<number, number> | undefined {
+  const cached = encodingCache.get(encoding);
   if (cached) {
     return cached;
   }
 
   // These encodings aren't supported by TextDecoder.
-  let mapping = MAC_ENCODINGS[encoding];
+  const mapping = MAC_ENCODINGS[encoding];
   if (mapping) {
-    let res = new Map();
+    const res = new Map<number, number>();
     for (let i = 0; i < mapping.length; i++) {
       res.set(mapping.charCodeAt(i), 0x80 + i);
     }
@@ -46,14 +44,14 @@ export function getEncodingMapping(encoding) {
   if (SINGLE_BYTE_ENCODINGS.has(encoding)) {
     // TextEncoder only supports utf8, whereas TextDecoder supports legacy encodings.
     // Use this to create a mapping of code points.
-    let decoder = new TextDecoder(encoding);
-    let mapping = new Uint8Array(0x80);
+    const decoder = new TextDecoder(encoding);
+    const mapping = new Uint8Array(0x80);
     for (let i = 0; i < 0x80; i++) {
       mapping[i] = 0x80 + i;
     }
 
-    let res = new Map();
-    let s = decoder.decode(mapping);
+    const res = new Map<number, number>();
+    const s = decoder.decode(mapping);
     for (let i = 0; i < 0x80; i++) {
       res.set(s.charCodeAt(i), 0x80 + i);
     }
@@ -99,7 +97,7 @@ const ENCODINGS = [
   // windows
   // Docs here: http://msdn.microsoft.com/en-us/library/system.text.encoding(v=vs.110).aspx
   ['symbol', 'utf-16be', 'shift-jis', 'gb18030', 'big5', 'euc-kr', 'johab', null, null, null, 'utf-16be']
-];
+] as const;
 
 // Overrides for Mac scripts by language id.
 // See http://unicode.org/Public/MAPPINGS/VENDORS/APPLE/Readme.txt
@@ -216,4 +214,4 @@ export const LANGUAGES = [
     0x1009: 'en-CA',    0x0453: 'km',       0x081A: 'sr-Latn',     
     0x2409: 'en-029',   0x0486: 'quc',      0x046C: 'nso',         
   }
-];
+] as const;

@@ -37,8 +37,8 @@ export default class CmapProcessor {
     // If not unicode cmap was found, take the first table with a supported encoding.
     if (!this.#cmap) {
       for (let cmap of cmapTable.tables) {
-        let encoding = getEncoding(cmap.platformID, cmap.encodingID, cmap.table.language - 1);
-        let mapping = getEncodingMapping(encoding);
+        const encoding = getEncoding(cmap.platformID, cmap.encodingID, cmap.table.language - 1);
+        const mapping = getEncodingMapping(encoding);
         if (mapping) {
           this.#cmap = cmap.table;
           this.#encoding = mapping;
@@ -162,9 +162,9 @@ export default class CmapProcessor {
       return 0;
     }
 
-    let selectors = this.#uvs.varSelectors.toArray();
+    const selectors = this.#uvs.varSelectors.toArray();
     let i = binarySearch(selectors, (x) => variationSelector - x.varSelector);
-    let sel = selectors[i];
+    const sel = selectors[i];
 
     if (i !== -1 && sel.defaultUVS) {
       i = binarySearch(sel.defaultUVS, (x) =>
@@ -184,21 +184,15 @@ export default class CmapProcessor {
 
   @cache
   getCharacterSet(): number[] {
-    let cmap = this.#cmap;
+    const cmap = this.#cmap;
     switch (cmap.version) {
       case 0:
         return range(0, cmap.codeMap.length);
 
       case 4: {
-        let res = [];
-        let endCodes = cmap.endCode.toArray();
-        for (let i = 0; i < endCodes.length; i++) {
-          let tail = endCodes[i] + 1;
-          let start = cmap.startCode.get(i);
-          res.push(...range(start, tail));
-        }
-
-        return res;
+        return cmap.endCode.toArray().flatMap((endCode: number, i: number) =>
+          range(cmap.startCode.get(i), endCode + 1)
+        );
       }
 
       case 8:
@@ -210,12 +204,9 @@ export default class CmapProcessor {
 
       case 12:
       case 13: {
-        let res = [];
-        for (let group of cmap.groups.toArray()) {
-          res.push(...range(group.startCharCode, group.endCharCode + 1));
-        }
-
-        return res;
+        return cmap.groups.toArray().flatMap((group: any) =>
+          range(group.startCharCode, group.endCharCode + 1)
+        );
       }
 
       case 14:

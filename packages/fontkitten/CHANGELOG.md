@@ -1,5 +1,11 @@
 # fontkitten
 
+## 0.0.12
+
+### Patch Changes
+
+- [`006e599`](https://github.com/delucis/fontkitten/commit/006e599fcaf1c1fb9f4e17c1e5a05d8e84c5218e) Thanks [@delucis](https://github.com/delucis)! - Fixes type of `Font#getName()` method to reflect removal of second parameter
+
 ## 0.0.11
 
 ### Patch Changes

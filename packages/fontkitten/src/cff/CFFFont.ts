@@ -42,7 +42,7 @@ class CFFFont {
   }
 
   get postscriptName(): string | null {
-    return (this.version < 2) ? this.nameIndex[0] : null;
+    return this.version < 2 ? this.nameIndex[0] : null;
   }
 
   get fullName(): string | null {

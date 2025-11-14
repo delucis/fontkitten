@@ -54,13 +54,10 @@ export default class TrueTypeCollection implements FontCollection {
   }
 
   get fonts(): Font[] {
-    const fonts = [];
-    for (const offset of this.header.offsets) {
+    return this.header.offsets.map((offset: number) => {
       const stream = new r.DecodeStream(this.stream.buffer);
       stream.pos = offset;
-      fonts.push(new TTFFont(stream));
-    }
-
-    return fonts;
+      return new TTFFont(stream);
+    });
   }
 }

@@ -101,12 +101,10 @@ export default class DFont implements FontCollection {
   }
 
   get fonts(): Font[] {
-    const fonts = [];
-    for (const ref of this.sfnt.refList) {
+    return this.sfnt.refList.map((ref: { dataOffset: number }) => {
       const pos = this.header.dataOffset + ref.dataOffset + 4;
       const stream = new r.DecodeStream(this.stream.buffer.slice(pos));
-      fonts.push(new TTFFont(stream));
-    }
-    return fonts;
+      return new TTFFont(stream);
+    });
   }
 }

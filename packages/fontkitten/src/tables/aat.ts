@@ -2,11 +2,10 @@ import * as r from '@fontkitten/restructure';
 
 class UnboundedArrayAccessor {
   base: number;
-  _items: any[];
+  _items: any[] = [];
 
   constructor(public type: any, public stream: r.DecodeStream, public parent: any) {
     this.base = this.stream.pos;
-    this._items = [];
   }
 
   getItem(index: number): any {

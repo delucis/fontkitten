@@ -38,8 +38,8 @@ const DFontHeader = new r.Struct({
 
 export default class DFont implements FontCollection {
   type = 'DFont' as const;
-  header: any;
-  sfnt: any;
+  declare header: any;
+  declare sfnt: any;
 
   static probe(buffer: Buffer): boolean {
     const stream = new r.DecodeStream(buffer);

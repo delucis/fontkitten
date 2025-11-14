@@ -1,22 +1,22 @@
 import * as r from '@fontkitten/restructure';
 
 class UnboundedArrayAccessor {
-  base: number;
-  _items: any[] = [];
+  #base: number;
+  #items: any[] = [];
 
   constructor(public type: any, public stream: r.DecodeStream, public parent: any) {
-    this.base = this.stream.pos;
+    this.#base = this.stream.pos;
   }
 
   getItem(index: number): any {
-    if (this._items[index] == null) {
+    if (this.#items[index] == null) {
       const pos = this.stream.pos;
-      this.stream.pos = this.base + this.type.size(null, this.parent) * index;
-      this._items[index] = this.type.decode(this.stream, this.parent);
+      this.stream.pos = this.#base + this.type.size(null, this.parent) * index;
+      this.#items[index] = this.type.decode(this.stream, this.parent);
       this.stream.pos = pos;
     }
 
-    return this._items[index];
+    return this.#items[index];
   }
 
   inspect() {

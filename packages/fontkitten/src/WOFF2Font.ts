@@ -112,14 +112,14 @@ export default class WOFF2Font extends TTFFont {
 
 // Special class that accepts a length and returns a sub-stream for that data
 class Substream {
-  _buf: any;
+  #buf: any;
 
   constructor(public length: string) {
-    this._buf = new r.Buffer(length);
+    this.#buf = new r.Buffer(length);
   }
 
   decode(stream: r.DecodeStream, parent: any): any {
-    return new r.DecodeStream(this._buf.decode(stream, parent));
+    return new r.DecodeStream(this.#buf.decode(stream, parent));
   }
 }
 

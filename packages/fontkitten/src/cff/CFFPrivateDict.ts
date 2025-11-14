@@ -3,7 +3,7 @@ import CFFIndex from './CFFIndex';
 import CFFPointer from './CFFPointer';
 
 class CFFBlendOp {
-  static decode(stream, parent, operands) {
+  static decode(_stream, _parent, operands) {
     let numBlends = operands.pop();
 
     // TODO: actually blend. For now just consume the deltas

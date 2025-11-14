@@ -1,25 +1,20 @@
-import * as r from '@fontkitten/restructure';
-import CFFIndex from './CFFIndex';
+import type * as r from '@fontkitten/restructure';
 import CFFTop from './CFFTop';
-import CFFPrivateDict from './CFFPrivateDict';
 import standardStrings from './CFFStandardStrings';
 
 class CFFFont {
-  constructor(stream) {
-    this.stream = stream;
+  constructor(public stream: r.DecodeStream) {
     this.decode();
   }
 
-  static decode(stream) {
+  static decode(stream: r.DecodeStream): CFFFont {
     return new CFFFont(stream);
   }
 
-  decode() {
-    let start = this.stream.pos;
-    let top = CFFTop.decode(this.stream);
-    for (let key in top) {
-      let val = top[key];
-      this[key] = val;
+  decode(): this {
+    const top = CFFTop.decode(this.stream);
+    for (const key in top) {
+      this[key] = top[key];
     }
 
     if (this.version < 2) {
@@ -34,7 +29,7 @@ class CFFFont {
     return this;
   }
 
-  string(sid) {
+  string(sid: number): string | null {
     if (this.version >= 2) {
       return null;
     }
@@ -46,39 +41,31 @@ class CFFFont {
     return this.stringIndex[sid - standardStrings.length];
   }
 
-  get postscriptName() {
-    if (this.version < 2) {
-      return this.nameIndex[0];
-    }
-
-    return null;
+  get postscriptName(): string | null {
+    return (this.version < 2) ? this.nameIndex[0] : null;
   }
 
-  get fullName() {
+  get fullName(): string | null {
     return this.string(this.topDict.FullName);
   }
 
-  get familyName() {
+  get familyName(): string | null {
     return this.string(this.topDict.FamilyName);
   }
 
-  getCharString(glyph) {
+  getCharString(glyph: number): Uint8Array {
     this.stream.pos = this.topDict.CharStrings[glyph].offset;
     return this.stream.readBuffer(this.topDict.CharStrings[glyph].length);
   }
 
-  getGlyphName(gid) {
-    // CFF2 glyph names are in the post table.
-    if (this.version >= 2) {
+  getGlyphName(gid: number): string | null {
+    // - CFF2 glyph names are in the post table.
+    // - CID-keyed fonts don't have glyph names.
+    if (this.version >= 2 || this.isCIDFont) {
       return null;
     }
 
-    // CID-keyed fonts don't have glyph names
-    if (this.isCIDFont) {
-      return null;
-    }
-
-    let { charset } = this.topDict;
+    const { charset } = this.topDict;
     if (Array.isArray(charset)) {
       return charset[gid];
     }
@@ -107,7 +94,7 @@ class CFFFont {
     return null;
   }
 
-  fdForGlyph(gid) {
+  fdForGlyph(gid: number): number | null {
     if (!this.topDict.FDSelect) {
       return null;
     }
@@ -118,12 +105,12 @@ class CFFFont {
 
       case 3:
       case 4:
-        let { ranges } = this.topDict.FDSelect;
+        const { ranges } = this.topDict.FDSelect;
         let low = 0;
         let high = ranges.length - 1;
 
         while (low <= high) {
-          let mid = (low + high) >> 1;
+          const mid = (low + high) >> 1;
 
           if (gid < ranges[mid].first) {
             high = mid - 1;
@@ -138,9 +125,9 @@ class CFFFont {
     }
   }
 
-  privateDictForGlyph(gid) {
+  privateDictForGlyph(gid: number): any | null {
     if (this.topDict.FDSelect) {
-      let fd = this.fdForGlyph(gid);
+      const fd = this.fdForGlyph(gid);
       if (this.topDict.FDArray[fd]) {
         return this.topDict.FDArray[fd].Private;
       }

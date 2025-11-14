@@ -1,17 +1,17 @@
 import CFFOperand from './CFFOperand';
-import { PropertyDescriptor } from '@fontkitten/restructure';
+import { type DecodeStream, PropertyDescriptor } from '@fontkitten/restructure';
 
 export default class CFFDict {
-  constructor(ops = []) {
-    this.ops = ops;
-    this.fields = {};
-    for (let field of ops) {
-      let key = Array.isArray(field[0]) ? field[0][0] << 8 | field[0][1] : field[0];
+  fields: Record<number, any> = {};
+
+  constructor(public ops: any[] = []) {
+    for (const field of ops) {
+      const key = Array.isArray(field[0]) ? field[0][0] << 8 | field[0][1] : field[0];
       this.fields[key] = field;
     }
   }
 
-  decodeOperands(type, stream, ret, operands) {
+  decodeOperands(type, stream: DecodeStream, ret, operands: any[]) {
     if (Array.isArray(type)) {
       return operands.map((op, i) => this.decodeOperands(type[i], stream, ret, [op]));
     } else if (type.decode != null) {
@@ -30,10 +30,10 @@ export default class CFFDict {
     }
   }
 
-  decode(stream, parent) {
-    let end = stream.pos + parent.length;
-    let ret = {};
-    let operands = [];
+  decode(stream: DecodeStream, parent: any) {
+    const end = stream.pos + parent.length;
+    const ret: Record<string, any> = {};
+    let operands: any[] = [];
 
     // define hidden properties
     Object.defineProperties(ret, {
@@ -42,8 +42,8 @@ export default class CFFDict {
     });
 
     // fill in defaults
-    for (let key in this.fields) {
-      let field = this.fields[key];
+    for (const key in this.fields) {
+      const field = this.fields[key];
       ret[field[1]] = field[3];
     }
 
@@ -54,12 +54,12 @@ export default class CFFDict {
           b = (b << 8) | stream.readUInt8();
         }
 
-        let field = this.fields[b];
+        const field = this.fields[b];
         if (!field) {
           throw new Error(`Unknown operator ${b}`);
         }
 
-        let val = this.decodeOperands(field[2], stream, ret, operands);
+        const val = this.decodeOperands(field[2], stream, ret, operands);
         if (val != null) {
           if (val instanceof PropertyDescriptor) {
             Object.defineProperty(ret, field[1], val);

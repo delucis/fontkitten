@@ -9,11 +9,11 @@ export default class CFFPointer extends r.Pointer {
     super(null, type, options);
   }
 
-  decode(stream, parent, operands) {
+  decode(stream: r.DecodeStream, parent: any, operands: number[]): unknown {
     this.offsetType = {
       decode: () => operands[0]
     };
 
-    return super.decode(stream, parent, operands);
+    return super.decode(stream, parent);
   }
 }

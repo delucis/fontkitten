@@ -2,13 +2,13 @@ import CFFOperand from './CFFOperand';
 import { type DecodeStream, PropertyDescriptor } from '@fontkitten/restructure';
 
 export default class CFFDict {
-  fields: Record<number, any> = {};
+  declare fields: Record<number, any>;
 
   constructor(public ops: any[] = []) {
-    for (const field of ops) {
+    this.fields = Object.fromEntries(ops.map(field => {
       const key = Array.isArray(field[0]) ? field[0][0] << 8 | field[0][1] : field[0];
-      this.fields[key] = field;
-    }
+      return [key, field];
+    }));
   }
 
   decodeOperands(type, stream: DecodeStream, ret, operands: any[]) {

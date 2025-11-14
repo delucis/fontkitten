@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let DeviceRecord = new r.Struct({
+const DeviceRecord = new r.Struct({
   pixelSize:      r.uint8,
   maximumWidth:   r.uint8,
   widths:         new r.Array(r.uint8, t => t.parent.parent.maxp.numGlyphs)

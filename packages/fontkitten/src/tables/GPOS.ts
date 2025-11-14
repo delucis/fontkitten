@@ -2,14 +2,14 @@ import * as r from '@fontkitten/restructure';
 import {ScriptList, FeatureList, LookupList, Coverage, ClassDef, Device, Context, ChainingContext} from './opentype';
 import {FeatureVariations} from './variations';
 
-let ValueFormat = new r.Bitfield(r.uint16, [
+const ValueFormat = new r.Bitfield(r.uint16, [
   'xPlacement', 'yPlacement',
   'xAdvance', 'yAdvance',
   'xPlaDevice', 'yPlaDevice',
   'xAdvDevice', 'yAdvDevice'
 ]);
 
-let types = {
+const types = {
   xPlacement: r.int16,
   yPlacement: r.int16,
   xAdvance:   r.int16,
@@ -33,11 +33,11 @@ class ValueRecord {
 
     if (!struct[this.key]) return;
 
-    let fields = {};
+    const fields = {};
     fields.rel = () => struct._startOffset;
 
-    let format = struct[this.key];
-    for (let key in format) {
+    const format = struct[this.key];
+    for (const key in format) {
       if (format[key]) {
         fields[key] = types[key];
       }
@@ -51,26 +51,26 @@ class ValueRecord {
   }
 
   decode(stream, parent) {
-    let res = this.buildStruct(parent).decode(stream, parent);
+    const res = this.buildStruct(parent).decode(stream, parent);
     delete res.rel;
     return res;
   }
 }
 
-let PairValueRecord = new r.Struct({
+const PairValueRecord = new r.Struct({
   secondGlyph:    r.uint16,
   value1:         new ValueRecord('valueFormat1'),
   value2:         new ValueRecord('valueFormat2')
 });
 
-let PairSet = new r.Array(PairValueRecord, r.uint16);
+const PairSet = new r.Array(PairValueRecord, r.uint16);
 
-let Class2Record = new r.Struct({
+const Class2Record = new r.Struct({
   value1: new ValueRecord('valueFormat1'),
   value2: new ValueRecord('valueFormat2')
 });
 
-let Anchor = new r.VersionedStruct(r.uint16, {
+const Anchor = new r.VersionedStruct(r.uint16, {
   1: { // Design units only
     xCoordinate:    r.int16,
     yCoordinate:    r.int16
@@ -90,26 +90,26 @@ let Anchor = new r.VersionedStruct(r.uint16, {
   }
 });
 
-let EntryExitRecord = new r.Struct({
+const EntryExitRecord = new r.Struct({
   entryAnchor:    new r.Pointer(r.uint16, Anchor, {type: 'parent'}),
   exitAnchor:     new r.Pointer(r.uint16, Anchor, {type: 'parent'})
 });
 
-let MarkRecord = new r.Struct({
+const MarkRecord = new r.Struct({
   class:      r.uint16,
   markAnchor: new r.Pointer(r.uint16, Anchor, {type: 'parent'})
 });
 
-let MarkArray = new r.Array(MarkRecord, r.uint16);
+const MarkArray = new r.Array(MarkRecord, r.uint16);
 
-let BaseRecord  = new r.Array(new r.Pointer(r.uint16, Anchor), t => t.parent.classCount);
-let BaseArray   = new r.Array(BaseRecord, r.uint16);
+const BaseRecord  = new r.Array(new r.Pointer(r.uint16, Anchor), t => t.parent.classCount);
+const BaseArray   = new r.Array(BaseRecord, r.uint16);
 
-let ComponentRecord = new r.Array(new r.Pointer(r.uint16, Anchor), t => t.parent.parent.classCount);
-let LigatureAttach  = new r.Array(ComponentRecord, r.uint16);
-let LigatureArray   = new r.Array(new r.Pointer(r.uint16, LigatureAttach), r.uint16);
+const ComponentRecord = new r.Array(new r.Pointer(r.uint16, Anchor), t => t.parent.parent.classCount);
+const LigatureAttach  = new r.Array(ComponentRecord, r.uint16);
+const LigatureArray   = new r.Array(new r.Pointer(r.uint16, LigatureAttach), r.uint16);
 
-let GPOSLookup = new r.VersionedStruct('lookupType', {
+const GPOSLookup = new r.VersionedStruct('lookupType', {
   1: new r.VersionedStruct(r.uint16, { // Single Adjustment
     1: { // Single positioning value
       coverage:       new r.Pointer(r.uint16, Coverage),

@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let ColorRecord = new r.Struct({
+const ColorRecord = new r.Struct({
   blue: r.uint8,
   green: r.uint8,
   red: r.uint8,

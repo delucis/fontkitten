@@ -4,11 +4,12 @@ import { ItemVariationStore } from './variations';
 
 // TODO: add this to restructure
 class VariableSizeNumber {
-  constructor(size) {
-    this._size = size;
+  #size: (ctx: any) => number;
+  constructor(size: (ctx: any) => number) {
+    this.#size = size;
   }
 
-  decode(stream, parent) {
+  decode(stream: r.DecodeStream, parent: any) {
     switch (this.size(0, parent)) {
       case 1: return stream.readUInt8();
       case 2: return stream.readUInt16BE();
@@ -17,18 +18,18 @@ class VariableSizeNumber {
     }
   }
 
-  size(val, parent) {
-    return resolveLength(this._size, null, parent);
+  size(_val: number, parent: any) {
+    return resolveLength(this.#size, null, parent);
   }
 }
 
-let MapDataEntry = new r.Struct({
+const MapDataEntry = new r.Struct({
   entry: new VariableSizeNumber(t => ((t.parent.entryFormat & 0x0030) >> 4) + 1),
   outerIndex: t => t.entry >> ((t.parent.entryFormat & 0x000F) + 1),
   innerIndex: t => t.entry & ((1 << ((t.parent.entryFormat & 0x000F) + 1)) - 1)
 });
 
-let DeltaSetIndexMap = new r.Struct({
+const DeltaSetIndexMap = new r.Struct({
   entryFormat: r.uint16,
   mapCount: r.uint16,
   mapData: new r.Array(MapDataEntry, 'mapCount')

@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-var OS2 = new r.VersionedStruct(r.uint16, {
+const OS2 = new r.VersionedStruct(r.uint16, {
   header: {
     xAvgCharWidth:          r.int16,   // average weighted advance width of lower case letters and space
     usWeightClass:          r.uint16,  // visual weight of stroke in glyphs
@@ -78,7 +78,7 @@ var OS2 = new r.VersionedStruct(r.uint16, {
   }
 });
 
-let versions = OS2.versions;
+const versions = OS2.versions;
 versions[3] = versions[4] = versions[2];
 
 export default OS2;

@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let VmtxEntry = new r.Struct({
+const VmtxEntry = new r.Struct({
   advance: r.uint16,  // The advance height of the glyph
   bearing: r.int16    // The top sidebearing of the glyph
 });

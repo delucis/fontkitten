@@ -1,17 +1,17 @@
 import * as r from '@fontkitten/restructure';
 
 class UnboundedArrayAccessor {
-  constructor(type, stream, parent) {
-    this.type = type;
-    this.stream = stream;
-    this.parent = parent;
+  base: number;
+  _items: any[];
+
+  constructor(public type: any, public stream: r.DecodeStream, public parent: any) {
     this.base = this.stream.pos;
     this._items = [];
   }
 
-  getItem(index) {
+  getItem(index: number): any {
     if (this._items[index] == null) {
-      let pos = this.stream.pos;
+      const pos = this.stream.pos;
       this.stream.pos = this.base + this.type.size(null, this.parent) * index;
       this._items[index] = this.type.decode(this.stream, this.parent);
       this.stream.pos = pos;
@@ -25,24 +25,22 @@ class UnboundedArrayAccessor {
   }
 }
 
-export class UnboundedArray extends r.Array {
-  constructor(type) {
+export class UnboundedArray<T extends any[]> extends r.Array<T> {
+  constructor(type: any) {
     super(type, 0);
   }
 
-  decode(stream, parent) {
+  decode(stream: r.DecodeStream, parent: any): UnboundedArrayAccessor {
     return new UnboundedArrayAccessor(this.type, stream, parent);
   }
 }
 
-export let LookupTable = function(ValueType = r.uint16) {
+export function LookupTable(ValueType = r.uint16) {
   // Helper class that makes internal structures invisible to pointers
   class Shadow {
-    constructor(type) {
-      this.type = type;
-    }
+    constructor(public type: any) {}
 
-    decode(stream, ctx) {
+    decode(stream: r.DecodeStream, ctx: any) {
       ctx = ctx.parent.parent;
       return this.type.decode(stream, ctx);
     }
@@ -50,7 +48,7 @@ export let LookupTable = function(ValueType = r.uint16) {
 
   ValueType = new Shadow(ValueType);
 
-  let BinarySearchHeader = new r.Struct({
+  const BinarySearchHeader = new r.Struct({
     unitSize: r.uint16,
     nUnits: r.uint16,
     searchRange: r.uint16,
@@ -58,19 +56,19 @@ export let LookupTable = function(ValueType = r.uint16) {
     rangeShift: r.uint16
   });
 
-  let LookupSegmentSingle = new r.Struct({
+  const LookupSegmentSingle = new r.Struct({
     lastGlyph: r.uint16,
     firstGlyph: r.uint16,
     value: ValueType
   });
 
-  let LookupSegmentArray = new r.Struct({
+  const LookupSegmentArray = new r.Struct({
     lastGlyph: r.uint16,
     firstGlyph: r.uint16,
     values: new r.Pointer(r.uint16, new r.Array(ValueType, t => t.lastGlyph - t.firstGlyph + 1), {type: 'parent'})
   });
 
-  let LookupSingle = new r.Struct({
+  const LookupSingle = new r.Struct({
     glyph: r.uint16,
     value: ValueType
   });
@@ -99,18 +97,17 @@ export let LookupTable = function(ValueType = r.uint16) {
   });
 };
 
-export function StateTable(entryData = {}, lookupType = r.uint16) {
-  let entry = Object.assign({
+export function StateTable(entryData = {}) {
+  const Entry = new r.Struct({
     newState: r.uint16,
-    flags: r.uint16
-  }, entryData);
+    flags: r.uint16,
+    ...entryData,
+  });
+  const StateArray = new UnboundedArray(new r.Array(r.uint16, t => t.nClasses));
 
-  let Entry = new r.Struct(entry);
-  let StateArray = new UnboundedArray(new r.Array(r.uint16, t => t.nClasses));
-
-  let StateHeader = new r.Struct({
+  const StateHeader = new r.Struct({
     nClasses: r.uint32,
-    classTable: new r.Pointer(r.uint32, new LookupTable(lookupType)),
+    classTable: new r.Pointer(r.uint32, new LookupTable(r.uint16)),
     stateArray: new r.Pointer(r.uint32, StateArray),
     entryTable: new r.Pointer(r.uint32, new UnboundedArray(Entry))
   });
@@ -119,24 +116,23 @@ export function StateTable(entryData = {}, lookupType = r.uint16) {
 }
 
 // This is the old version of the StateTable structure
-export function StateTable1(entryData = {}, lookupType = r.uint16) {
-  let ClassLookupTable = new r.Struct({
+export function StateTable1(entryData = {}) {
+  const ClassLookupTable = new r.Struct({
     version() { return 8; }, // simulate LookupTable
     firstGlyph: r.uint16,
     values: new r.Array(r.uint8, r.uint16)
   });
 
-  let entry = Object.assign({
+  const Entry = new r.Struct({
     newStateOffset: r.uint16,
     // convert offset to stateArray index
     newState: t => (t.newStateOffset - (t.parent.stateArray.base - t.parent._startOffset)) / t.parent.nClasses,
-    flags: r.uint16
-  }, entryData);
+    flags: r.uint16,
+    ...entryData,
+  });
+  const StateArray = new UnboundedArray(new r.Array(r.uint8, t => t.nClasses));
 
-  let Entry = new r.Struct(entry);
-  let StateArray = new UnboundedArray(new r.Array(r.uint8, t => t.nClasses));
-
-  let StateHeader1 = new r.Struct({
+  const StateHeader1 = new r.Struct({
     nClasses: r.uint16,
     classTable: new r.Pointer(r.uint16, ClassLookupTable),
     stateArray: new r.Pointer(r.uint16, StateArray),

@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let HmtxEntry = new r.Struct({
+const HmtxEntry = new r.Struct({
   advance: r.uint16,
   bearing: r.int16
 });

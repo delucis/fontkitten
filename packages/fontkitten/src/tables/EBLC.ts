@@ -1,7 +1,7 @@
 import * as r from '@fontkitten/restructure';
 import {BigMetrics} from './EBDT';
 
-let SBitLineMetrics = new r.Struct({
+const SBitLineMetrics = new r.Struct({
   ascender: r.int8,
   descender: r.int8,
   widthMax: r.uint8,
@@ -15,12 +15,12 @@ let SBitLineMetrics = new r.Struct({
   pad: new r.Reserved(r.int8, 2)
 });
 
-let CodeOffsetPair = new r.Struct({
+const CodeOffsetPair = new r.Struct({
   glyphCode: r.uint16,
   offset: r.uint16
 });
 
-let IndexSubtable = new r.VersionedStruct(r.uint16, {
+const IndexSubtable = new r.VersionedStruct(r.uint16, {
   header: {
     imageFormat: r.uint16,
     imageDataOffset: r.uint32
@@ -52,13 +52,13 @@ let IndexSubtable = new r.VersionedStruct(r.uint16, {
   }
 });
 
-let IndexSubtableArray = new r.Struct({
+const IndexSubtableArray = new r.Struct({
   firstGlyphIndex: r.uint16,
   lastGlyphIndex: r.uint16,
   subtable: new r.Pointer(r.uint32, IndexSubtable)
 });
 
-let BitmapSizeTable = new r.Struct({
+const BitmapSizeTable = new r.Struct({
   indexSubTableArray: new r.Pointer(r.uint32, new r.Array(IndexSubtableArray, 1), { type: 'parent' }),
   indexTablesSize: r.uint32,
   numberOfIndexSubTables: r.uint32,

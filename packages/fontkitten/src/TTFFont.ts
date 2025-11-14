@@ -336,21 +336,14 @@ export default class TTFFont implements Font {
    */
   @cache
   get variationAxes(): Record<string, { name: string; min: number; default: number; max: number }> {
-    const res: Record<string, { name: string; min: number; default: number; max: number }> = {};
-    if (!this.fvar) {
-      return res;
-    }
-
-    for (const axis of this.fvar.axis) {
-      res[axis.axisTag.trim()] = {
+    return Object.fromEntries(
+      this.fvar?.axis.map((axis) => [axis.axisTag.trim(), {
         name: axis.name.en,
         min: axis.minValue,
         default: axis.defaultValue,
-        max: axis.maxValue
-      };
-    }
-
-    return res;
+        max: axis.maxValue,
+      }]) || []
+    );
   }
 
   /**
@@ -360,22 +353,14 @@ export default class TTFFont implements Font {
    */
   @cache
   get namedVariations(): Record<string, Record<string, number>> {
-    const res: Record<string, Record<string, number>> = {};
-    if (!this.fvar) {
-      return res;
-    }
-
-    for (const instance of this.fvar.instance) {
+    return Object.fromEntries(this.fvar?.instance.map((instance) => {
       const settings: Record<string, number> = {};
       for (let i = 0; i < this.fvar.axis.length; i++) {
         const axis = this.fvar.axis[i];
         settings[axis.axisTag.trim()] = instance.coord[i];
       }
-
-      res[instance.name.en] = settings;
-    }
-
-    return res;
+      return [instance.name.en, settings];
+    }) || []);
   }
 
   /**

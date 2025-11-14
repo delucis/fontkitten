@@ -102,7 +102,7 @@ const ClassRangeRecord = new r.Struct({
   class:  r.uint16
 });
 
-export const ClassDef = new r.VersionedStruct(r.uint16, {
+const ClassDef = new r.VersionedStruct(r.uint16, {
   1: { // Class array
     startGlyph:       r.uint16,
     glyphCount:       r.uint16,
@@ -118,11 +118,11 @@ export const ClassDef = new r.VersionedStruct(r.uint16, {
 // Device Table #
 //###############
 
-export const Device = new r.Struct({
-  a: r.uint16, // startSize for hinting Device, outerIndex for VariationIndex
-  b: r.uint16, // endSize for Device, innerIndex for VariationIndex
-  deltaFormat: r.uint16
-});
+// const Device = new r.Struct({
+//   a: r.uint16, // startSize for hinting Device, outerIndex for VariationIndex
+//   b: r.uint16, // endSize for Device, innerIndex for VariationIndex
+//   deltaFormat: r.uint16
+// });
 
 //#############################################
 // Contextual Substitution/Positioning Tables #

@@ -1,7 +1,7 @@
 import * as r from '@fontkitten/restructure';
 import {getEncoding, LANGUAGES} from '../encodings';
 
-let NameRecord = new r.Struct({
+const NameRecord = new r.Struct({
   platformID: r.uint16,
   encodingID: r.uint16,
   languageID: r.uint16,
@@ -13,12 +13,12 @@ let NameRecord = new r.Struct({
   )
 });
 
-let LangTagRecord = new r.Struct({
+const LangTagRecord = new r.Struct({
   length:  r.uint16,
   tag:     new r.Pointer(r.uint16, new r.String('length', 'utf16-be'), {type: 'parent', relativeTo: ctx => ctx.stringOffset})
 });
 
-var NameTable = new r.VersionedStruct(r.uint16, {
+const NameTable = new r.VersionedStruct(r.uint16, {
   0: {
     count:          r.uint16,
     stringOffset:   r.uint16,
@@ -62,8 +62,8 @@ const NAMES = [
 ];
 
 NameTable.process = function(stream) {
-  var records = {};
-  for (let record of this.records) {
+  const records = {};
+  for (const record of this.records) {
     // find out what language this is for
     let language = LANGUAGES[record.platformID][record.languageID];
 
@@ -76,7 +76,7 @@ NameTable.process = function(stream) {
     }
 
     // if the nameID is >= 256, it is a font feature record (AAT)
-    let key = record.nameID >= 256 ? 'fontFeatures' : (NAMES[record.nameID] || record.nameID);
+    const key = record.nameID >= 256 ? 'fontFeatures' : (NAMES[record.nameID] || record.nameID);
     if (records[key] == null) {
       records[key] = {};
     }

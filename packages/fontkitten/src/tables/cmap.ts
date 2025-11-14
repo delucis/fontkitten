@@ -1,38 +1,38 @@
 import * as r from '@fontkitten/restructure';
 
-let SubHeader = new r.Struct({
+const SubHeader = new r.Struct({
   firstCode:      r.uint16,
   entryCount:     r.uint16,
   idDelta:        r.int16,
   idRangeOffset:  r.uint16
 });
 
-let CmapGroup = new r.Struct({
+const CmapGroup = new r.Struct({
   startCharCode:  r.uint32,
   endCharCode:    r.uint32,
   glyphID:        r.uint32
 });
 
-let UnicodeValueRange = new r.Struct({
+const UnicodeValueRange = new r.Struct({
   startUnicodeValue:  r.uint24,
   additionalCount:    r.uint8
 });
 
-let UVSMapping = new r.Struct({
+const UVSMapping = new r.Struct({
   unicodeValue: r.uint24,
   glyphID:      r.uint16
 });
 
-let DefaultUVS = new r.Array(UnicodeValueRange, r.uint32);
-let NonDefaultUVS = new r.Array(UVSMapping, r.uint32);
+const DefaultUVS = new r.Array(UnicodeValueRange, r.uint32);
+const NonDefaultUVS = new r.Array(UVSMapping, r.uint32);
 
-let VarSelectorRecord = new r.Struct({
+const VarSelectorRecord = new r.Struct({
   varSelector:    r.uint24,
   defaultUVS:     new r.Pointer(r.uint32, DefaultUVS, {type: 'parent'}),
   nonDefaultUVS:  new r.Pointer(r.uint32, NonDefaultUVS, {type: 'parent'})
 });
 
-let CmapSubtable = new r.VersionedStruct(r.uint16, {
+const CmapSubtable = new r.VersionedStruct(r.uint16, {
   0: { // Byte encoding
     length:     r.uint16,   // Total table length in bytes (set to 262 for format 0)
     language:   r.uint16,   // Language code for this encoding subtable, or zero if language-independent
@@ -113,7 +113,7 @@ let CmapSubtable = new r.VersionedStruct(r.uint16, {
   }
 });
 
-let CmapEntry = new r.Struct({
+const CmapEntry = new r.Struct({
   platformID:  r.uint16,  // Platform identifier
   encodingID:  r.uint16,  // Platform-specific encoding identifier
   table:       new r.Pointer(r.uint32, CmapSubtable, {type: 'parent', lazy: true})

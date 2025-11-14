@@ -1,8 +1,9 @@
 import * as r from '@fontkitten/restructure';
 import TTFFont from './TTFFont';
+import type { Font, FontCollection } from './types';
 import { asciiDecoder } from './utils';
 
-let TTCHeader = new r.VersionedStruct(r.uint32, {
+const TTCHeader = new r.VersionedStruct(r.uint32, {
   0x00010000: {
     numFonts:   r.uint32,
     offsets:    new r.Array(r.uint32, 'numFonts')
@@ -16,15 +17,15 @@ let TTCHeader = new r.VersionedStruct(r.uint32, {
   }
 });
 
-export default class TrueTypeCollection {
-  type = 'TTC';
+export default class TrueTypeCollection implements FontCollection {
+  type = 'TTC' as const;
+  declare header: any;
 
-  static probe(buffer) {
+  static probe(buffer: Buffer): boolean {
     return asciiDecoder.decode(buffer.slice(0, 4)) === 'ttcf';
   }
 
-  constructor(stream) {
-    this.stream = stream;
+  constructor(public stream: r.DecodeStream) {
     if (stream.readString(4) !== 'ttcf') {
       throw new Error('Not a TrueType collection');
     }
@@ -32,11 +33,11 @@ export default class TrueTypeCollection {
     this.header = TTCHeader.decode(stream);
   }
 
-  getFont(name: string) {
-    for (let offset of this.header.offsets) {
-      let stream = new r.DecodeStream(this.stream.buffer);
+  getFont(name: string | Uint8Array): Font | null {
+    for (const offset of this.header.offsets) {
+      const stream = new r.DecodeStream(this.stream.buffer);
       stream.pos = offset;
-      let font = new TTFFont(stream);
+      const font = new TTFFont(stream);
       if (
         font.postscriptName === name ||
         (
@@ -52,14 +53,11 @@ export default class TrueTypeCollection {
     return null;
   }
 
-  get fonts() {
-    let fonts = [];
-    for (let offset of this.header.offsets) {
-      let stream = new r.DecodeStream(this.stream.buffer);
+  get fonts(): Font[] {
+    return this.header.offsets.map((offset: number) => {
+      const stream = new r.DecodeStream(this.stream.buffer);
       stream.pos = offset;
-      fonts.push(new TTFFont(stream));
-    }
-
-    return fonts;
+      return new TTFFont(stream);
+    });
   }
 }

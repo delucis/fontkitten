@@ -1,14 +1,14 @@
 import * as r from '@fontkitten/restructure';
 import { LookupTable, StateTable1 } from './aat';
 
-let ClassTable = new r.Struct({
+const ClassTable = new r.Struct({
   length: r.uint16,
   coverage: r.uint16,
   subFeatureFlags: r.uint32,
   stateTable: new StateTable1
 });
 
-let WidthDeltaRecord = new r.Struct({
+const WidthDeltaRecord = new r.Struct({
   justClass: r.uint32,
   beforeGrowLimit: r.fixed32,
   beforeShrinkLimit: r.fixed32,
@@ -18,9 +18,9 @@ let WidthDeltaRecord = new r.Struct({
   shrinkFlags: r.uint16
 });
 
-let WidthDeltaCluster = new r.Array(WidthDeltaRecord, r.uint32);
+const WidthDeltaCluster = new r.Array(WidthDeltaRecord, r.uint32);
 
-let ActionData = new r.VersionedStruct('actionType', {
+const ActionData = new r.VersionedStruct('actionType', {
   0: { // Decomposition action
     lowerLimit: r.fixed32,
     upperLimit: r.fixed32,
@@ -53,7 +53,7 @@ let ActionData = new r.VersionedStruct('actionType', {
   }
 });
 
-let Action = new r.Struct({
+const Action = new r.Struct({
   actionClass: r.uint16,
   actionType: r.uint16,
   actionLength: r.uint32,
@@ -61,12 +61,12 @@ let Action = new r.Struct({
   padding: new r.Reserved(r.uint8, t => t.actionLength - t._currentOffset)
 });
 
-let PostcompensationAction = new r.Array(Action, r.uint32);
-let PostCompensationTable = new r.Struct({
+const PostcompensationAction = new r.Array(Action, r.uint32);
+const PostCompensationTable = new r.Struct({
   lookupTable: new LookupTable(new r.Pointer(r.uint16, PostcompensationAction))
 });
 
-let JustificationTable = new r.Struct({
+const JustificationTable = new r.Struct({
   classTable: new r.Pointer(r.uint16, ClassTable, { type: 'parent' }),
   wdcOffset: r.uint16,
   postCompensationTable: new r.Pointer(r.uint16, PostCompensationTable, { type: 'parent' }),

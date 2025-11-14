@@ -1,4 +1,4 @@
-export let ISOAdobeCharset = [
+export const ISOAdobeCharset: string[] = [
   '.notdef', 'space', 'exclam', 'quotedbl', 'numbersign', 'dollar',
   'percent', 'ampersand', 'quoteright', 'parenleft', 'parenright',
   'asterisk', 'plus', 'comma', 'hyphen', 'period', 'slash', 'zero',
@@ -35,7 +35,7 @@ export let ISOAdobeCharset = [
   'ugrave', 'yacute', 'ydieresis', 'zcaron'
 ];
 
-export let ExpertCharset = [
+export const ExpertCharset: string[] = [
   '.notdef', 'space', 'exclamsmall', 'Hungarumlautsmall', 'dollaroldstyle',
   'dollarsuperior', 'ampersandsmall', 'Acutesmall', 'parenleftsuperior',
   'parenrightsuperior', 'twodotenleader', 'onedotenleader', 'comma',
@@ -75,7 +75,7 @@ export let ExpertCharset = [
   'Ydieresissmall'
 ];
 
-export let ExpertSubsetCharset = [
+export const ExpertSubsetCharset: string[] = [
   '.notdef', 'space', 'dollaroldstyle', 'dollarsuperior',
   'parenleftsuperior', 'parenrightsuperior', 'twodotenleader',
   'onedotenleader', 'comma', 'hyphen', 'period', 'fraction',

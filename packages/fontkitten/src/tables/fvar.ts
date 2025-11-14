@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let Axis = new r.Struct({
+const Axis = new r.Struct({
   axisTag: new r.String(4),
   minValue: r.fixed32,
   defaultValue: r.fixed32,
@@ -10,7 +10,7 @@ let Axis = new r.Struct({
   name: t => t.parent.parent.name.records.fontFeatures[t.nameID]
 });
 
-let Instance = new r.Struct({
+const Instance = new r.Struct({
   nameID: r.uint16,
   name: t => t.parent.parent.name.records.fontFeatures[t.nameID],
   flags: r.uint16,

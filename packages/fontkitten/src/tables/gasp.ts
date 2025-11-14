@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let GaspRange = new r.Struct({
+const GaspRange = new r.Struct({
   rangeMaxPPEM:       r.uint16,                  // Upper limit of range, in ppem
   rangeGaspBehavior:  new r.Bitfield(r.uint16, [ // Flags describing desired rasterizer behavior
     'grayscale', 'gridfit',

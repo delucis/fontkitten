@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-export let BigMetrics = new r.Struct({
+export const BigMetrics = new r.Struct({
   height: r.uint8,
   width: r.uint8,
   horiBearingX: r.int8,

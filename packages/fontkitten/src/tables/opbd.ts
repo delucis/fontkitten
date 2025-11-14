@@ -1,7 +1,7 @@
 import * as r from '@fontkitten/restructure';
 import { LookupTable } from './aat';
 
-let OpticalBounds = new r.Struct({
+const OpticalBounds = new r.Struct({
   left: r.int16,
   top: r.int16,
   right: r.int16,

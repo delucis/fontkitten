@@ -1,15 +1,15 @@
 import * as r from '@fontkitten/restructure';
-import {ScriptList, FeatureList, LookupList, Coverage, ClassDef, Device} from './opentype';
+import {Coverage, ClassDef, Device} from './opentype';
 import {ItemVariationStore} from './variations';
 
-let AttachPoint = new r.Array(r.uint16, r.uint16);
-let AttachList = new r.Struct({
+const AttachPoint = new r.Array(r.uint16, r.uint16);
+const AttachList = new r.Struct({
   coverage:       new r.Pointer(r.uint16, Coverage),
   glyphCount:     r.uint16,
   attachPoints:   new r.Array(new r.Pointer(r.uint16, AttachPoint), 'glyphCount')
 });
 
-let CaretValue = new r.VersionedStruct(r.uint16, {
+const CaretValue = new r.VersionedStruct(r.uint16, {
   1: { // Design units only
     coordinate: r.int16
   },
@@ -24,15 +24,15 @@ let CaretValue = new r.VersionedStruct(r.uint16, {
   }
 });
 
-let LigGlyph = new r.Array(new r.Pointer(r.uint16, CaretValue), r.uint16);
+const LigGlyph = new r.Array(new r.Pointer(r.uint16, CaretValue), r.uint16);
 
-let LigCaretList = new r.Struct({
+const LigCaretList = new r.Struct({
   coverage:       new r.Pointer(r.uint16, Coverage),
   ligGlyphCount:  r.uint16,
   ligGlyphs:      new r.Array(new r.Pointer(r.uint16, LigGlyph), 'ligGlyphCount')
 });
 
-let MarkGlyphSetsDef = new r.Struct({
+const MarkGlyphSetsDef = new r.Struct({
   markSetTableFormat: r.uint16,
   markSetCount:       r.uint16,
   coverage:           new r.Array(new r.Pointer(r.uint32, Coverage), 'markSetCount')

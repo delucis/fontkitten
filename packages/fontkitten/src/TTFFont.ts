@@ -18,7 +18,7 @@ import { BBOX, Font, Glyph, HHEA, Os2Table } from './types';
  */
 export default class TTFFont implements Font {
   type: Font['type'] = 'TTF';
-  stream: any;
+  stream: r.DecodeStream;
   #variationCoords: number[] | null;
   #directoryPos: number;
   #tables: Record<string, {}> = {};
@@ -26,22 +26,35 @@ export default class TTFFont implements Font {
   directory: any;
   'OS/2': Os2Table;
   'hhea': HHEA;
+  // These tables are not in public types but used internally for various purposes.
+  declare post: any;
+  declare name: any;
+  declare head: any;
+  declare maxp: any;
+  declare cmap: any;
+  declare avar: any;
+  declare fvar: any;
+  declare gvar: any;
+  declare CFF2: any;
+  declare HVAR: any;
+  declare sbix: any;
+  declare loca: any;
 
   static probe(buffer: Buffer): boolean {
-    let format = asciiDecoder.decode(buffer.slice(0, 4));
+    const format = asciiDecoder.decode(buffer.slice(0, 4));
     return format === 'true' || format === 'OTTO' || format === String.fromCharCode(0, 1, 0, 0);
   }
 
-  constructor(stream: any, variationCoords = null) {
+  constructor(stream: r.DecodeStream, variationCoords = null) {
     this.stream = stream;
     this.#variationCoords = variationCoords;
 
     this.#directoryPos = this.stream.pos;
-    this._decodeDirectory();
+    this.directory = this._decodeDirectory();
 
     // define properties for each table to lazily parse
     for (const tag in this.directory.tables) {
-      let table = this.directory.tables[tag];
+      const table = this.directory.tables[tag];
       if (tables[tag] && table.length > 0) {
         Object.defineProperty(this, tag, {
           get: this.#getTable.bind(this, table)
@@ -51,35 +64,29 @@ export default class TTFFont implements Font {
   }
 
   #getTable(table: any): any {
-    if (!(table.tag in this.#tables)) {
-      try {
-        this.#tables[table.tag] = this._decodeTable(table);
-      } catch {}
-    }
-
+    try {
+      this.#tables[table.tag] ??= this._decodeTable(table);
+    } catch {}
     return this.#tables[table.tag];
   }
 
-  _getTableStream(tag: string): any {
-    let table = this.directory.tables[tag];
+  _getTableStream(tag: string): r.DecodeStream | null {
+    const table = this.directory.tables[tag];
     if (table) {
       this.stream.pos = table.offset;
       return this.stream;
     }
-
     return null;
   }
 
-  _decodeDirectory(): void {
-    this.directory = Directory.decode(this.stream, {_startOffset: 0});
+  _decodeDirectory(): any {
+    return Directory.decode(this.stream, {_startOffset: 0});
   }
 
   protected _decodeTable(table: any): any {
-    let pos = this.stream.pos;
-
-    let stream = this._getTableStream(table.tag);
-    let result = tables[table.tag].decode(stream, this, table.length);
-
+    const pos = this.stream.pos;
+    const stream = this._getTableStream(table.tag);
+    const result = tables[table.tag].decode(stream, this, table.length);
     this.stream.pos = pos;
     return result;
   }
@@ -190,8 +197,7 @@ export default class TTFFont implements Font {
    * See [here](https://en.wikipedia.org/wiki/X-height) for more details.
    */
   get xHeight(): number {
-    let os2 = this['OS/2'];
-    return os2 ? os2.xHeight : 0;
+    return this['OS/2']?.xHeight ?? 0;
   }
 
   /**
@@ -252,8 +258,8 @@ export default class TTFFont implements Font {
    * This is only a one-to-one mapping from characters to glyphs.
    */
   glyphsForString(string: string): Glyph[] {
-    let glyphs = [];
-    let len = string.length;
+    const glyphs = [];
+    const len = string.length;
     let idx = 0;
     let last = -1;
     let state = -1;
@@ -266,7 +272,7 @@ export default class TTFFont implements Font {
         // Decode the next codepoint from UTF 16
         code = string.charCodeAt(idx++);
         if (0xd800 <= code && code <= 0xdbff && idx < len) {
-          let next = string.charCodeAt(idx);
+          const next = string.charCodeAt(idx);
           if (0xdc00 <= next && next <= 0xdfff) {
             idx++;
             code = ((code & 0x3ff) << 10) + (next & 0x3ff) + 0x10000;
@@ -298,12 +304,10 @@ export default class TTFFont implements Font {
     if (!this._glyphs[glyph]) {
       if (this.directory.tables.glyf) {
         this._glyphs[glyph] = new TTFGlyph(glyph, characters, this);
-
       } else if (this.directory.tables['CFF '] || this.directory.tables.CFF2) {
         this._glyphs[glyph] = new CFFGlyph(glyph, characters, this);
       }
     }
-
     return this._glyphs[glyph] || null;
   }
 
@@ -316,15 +320,12 @@ export default class TTFFont implements Font {
     if (!this._glyphs[glyph]) {
       if (this.directory.tables.sbix) {
         this._glyphs[glyph] = new SBIXGlyph(glyph, characters, this);
-
       } else if ((this.directory.tables.COLR) && (this.directory.tables.CPAL)) {
         this._glyphs[glyph] = new COLRGlyph(glyph, characters, this);
-
       } else {
         this._getBaseGlyph(glyph, characters);
       }
     }
-
     return this._glyphs[glyph] || null;
   }
 
@@ -335,21 +336,14 @@ export default class TTFFont implements Font {
    */
   @cache
   get variationAxes(): Record<string, { name: string; min: number; default: number; max: number }> {
-    let res: Record<string, { name: string; min: number; default: number; max: number }> = {};
-    if (!this.fvar) {
-      return res;
-    }
-
-    for (let axis of this.fvar.axis) {
-      res[axis.axisTag.trim()] = {
+    return Object.fromEntries(
+      this.fvar?.axis.map((axis) => [axis.axisTag.trim(), {
         name: axis.name.en,
         min: axis.minValue,
         default: axis.defaultValue,
-        max: axis.maxValue
-      };
-    }
-
-    return res;
+        max: axis.maxValue,
+      }]) || []
+    );
   }
 
   /**
@@ -359,22 +353,14 @@ export default class TTFFont implements Font {
    */
   @cache
   get namedVariations(): Record<string, Record<string, number>> {
-    let res: Record<string, Record<string, number>> = {};
-    if (!this.fvar) {
-      return res;
-    }
-
-    for (let instance of this.fvar.instance) {
-      let settings: Record<string, number> = {};
+    return Object.fromEntries(this.fvar?.instance.map((instance) => {
+      const settings: Record<string, number> = {};
       for (let i = 0; i < this.fvar.axis.length; i++) {
-        let axis = this.fvar.axis[i];
+        const axis = this.fvar.axis[i];
         settings[axis.axisTag.trim()] = instance.coord[i];
       }
-
-      res[instance.name.en] = settings;
-    }
-
-    return res;
+      return [instance.name.en, settings];
+    }) || []);
   }
 
   /**
@@ -399,8 +385,8 @@ export default class TTFFont implements Font {
     }
 
     // normalize the coordinates
-    let coords = this.fvar.axis.map((axis, i) => {
-      let axisTag = axis.axisTag.trim();
+    const coords = this.fvar.axis.map((axis) => {
+      const axisTag = axis.axisTag.trim();
       if (axisTag in settings) {
         return Math.max(axis.minValue, Math.min(axis.maxValue, settings[axisTag]));
       } else {
@@ -408,10 +394,10 @@ export default class TTFFont implements Font {
       }
     });
 
-    let stream = new r.DecodeStream(this.stream.buffer);
+    const stream = new r.DecodeStream(this.stream.buffer);
     stream.pos = this.#directoryPos;
 
-    let font = new TTFFont(stream, coords);
+    const font = new TTFFont(stream, coords);
     font.#tables = this.#tables;
 
     return font;
@@ -424,13 +410,12 @@ export default class TTFFont implements Font {
     }
 
     let variationCoords = this.#variationCoords;
-
-    // Ignore if no variation coords and not CFF2
-    if (!variationCoords && !this.CFF2) {
-      return null;
-    }
-
     if (!variationCoords) {
+      // Ignore if no variation coords and not CFF2
+      if (!this.CFF2) {
+        return null;
+      }
+      // Otherwise use default values from fvar axes
       variationCoords = this.fvar.axis.map(axis => axis.defaultValue);
     }
 

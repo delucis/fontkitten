@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let TableEntry = new r.Struct({
+const TableEntry = new r.Struct({
   tag:        new r.String(4),
   checkSum:   r.uint32,
   offset:     new r.Pointer(r.uint32, 'void', { type: 'global' }),
@@ -17,12 +17,7 @@ const Directory = new r.Struct({
 });
 
 Directory.process = function() {
-  let tables = {};
-  for (let table of this.tables) {
-    tables[table.tag] = table;
-  }
-
-  this.tables = tables;
+  this.tables = Object.fromEntries(this.tables.map(table => [table.tag, table]));
 };
 
 export default Directory;

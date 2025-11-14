@@ -1,5 +1,4 @@
 import * as r from '@fontkitten/restructure';
-import tables from '.';
 
 let WOFFDirectoryEntry = new r.Struct({
   tag:          new r.String(4),
@@ -27,12 +26,7 @@ let WOFFDirectory = new r.Struct({
 });
 
 WOFFDirectory.process = function() {
-  let tables = {};
-  for (let table of this.tables) {
-    tables[table.tag] = table;
-  }
-
-  this.tables = tables;
+  this.tables = Object.fromEntries(this.tables.map(table => [table.tag, table]));
 };
 
 export default WOFFDirectory;

@@ -1,18 +1,13 @@
+import type { DecodeStream } from "@fontkitten/restructure";
+
 const FLOAT_EOF = 0xf;
 const FLOAT_LOOKUP = [
   '0', '1', '2', '3', '4', '5', '6', '7',
   '8', '9', '.', 'E', 'E-', null, '-'
 ];
 
-const FLOAT_ENCODE_LOOKUP = {
-  '.': 10,
-  'E': 11,
-  'E-': 12,
-  '-': 14
-};
-
 export default class CFFOperand {
-  static decode(stream, value) {
+  static decode(stream: DecodeStream, value: number): number | null {
     if (32 <= value && value <= 246) {
       return value - 139;
     }
@@ -36,13 +31,13 @@ export default class CFFOperand {
     if (value === 30) {
       let str = '';
       while (true) {
-        let b = stream.readUInt8();
+        const b = stream.readUInt8();
 
-        let n1 = b >> 4;
+        const n1 = b >> 4;
         if (n1 === FLOAT_EOF) { break; }
         str += FLOAT_LOOKUP[n1];
 
-        let n2 = b & 15;
+        const n2 = b & 15;
         if (n2 === FLOAT_EOF) { break; }
         str += FLOAT_LOOKUP[n2];
       }

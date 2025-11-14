@@ -68,4 +68,4 @@ export default [
   "Ucircumflexsmall", "Udieresissmall", "Yacutesmall", "Thornsmall",
   "Ydieresissmall", "001.000", "001.001", "001.002", "001.003", "Black",
   "Bold", "Book", "Light", "Medium", "Regular", "Roman", "Semibold"
-];
+] as string[];

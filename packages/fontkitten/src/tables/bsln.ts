@@ -1,7 +1,7 @@
 import * as r from '@fontkitten/restructure';
 import { LookupTable } from './aat';
 
-let BslnSubtable = new r.VersionedStruct('format', {
+const BslnSubtable = new r.VersionedStruct('format', {
   0: { // Distance-based, no mapping
     deltas: new r.Array(r.int16, 32)
   },

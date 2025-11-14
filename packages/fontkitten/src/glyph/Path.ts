@@ -21,12 +21,11 @@ export default class Path implements PathInstance {
   /**
    * Compiles the path to a JavaScript function that can be applied with
    * a graphics context in order to render the path.
-   * @return {string}
    */
-  toFunction() {
+  toFunction(): (ctx: CanvasRenderingContext2D) => void {
     return ctx => {
       this.commands.forEach(c => {
-        return ctx[c.command].apply(ctx, c.args)
+        return ctx[c.command](...c.args)
       })
     };
   }
@@ -35,8 +34,8 @@ export default class Path implements PathInstance {
    * Converts the path to an SVG path data string
    */
   toSVG(): string {
-    let cmds = this.commands.map(c => {
-      let args = c.args.map(arg => Math.round(arg * 100) / 100);
+    const cmds = this.commands.map(c => {
+      const args = c.args.map(arg => Math.round(arg * 100) / 100);
       return `${SVG_COMMANDS[c.command]}${args.join(' ')}`;
     });
 
@@ -51,8 +50,8 @@ export default class Path implements PathInstance {
    */
   get cbox(): BBox {
     if (!this._cbox) {
-      let cbox = new BBox;
-      for (let command of this.commands) {
+      const cbox = new BBox;
+      for (const command of this.commands) {
         for (let i = 0; i < command.args.length; i += 2) {
           cbox.addPoint(command.args[i], command.args[i + 1]);
         }
@@ -73,21 +72,21 @@ export default class Path implements PathInstance {
       return this._bbox;
     }
 
-    let bbox = new BBox;
+    const bbox = new BBox;
     let cx = 0, cy = 0;
 
-    let f = (t: number) => (
+    const f = (t: number) => (
       Math.pow(1 - t, 3) * p0[i]
         + 3 * Math.pow(1 - t, 2) * t * p1[i]
         + 3 * (1 - t) * Math.pow(t, 2) * p2[i]
         + Math.pow(t, 3) * p3[i]
     );
 
-    for (let c of this.commands) {
+    for (const c of this.commands) {
       switch (c.command) {
         case 'moveTo':
         case 'lineTo':
-          let [x, y] = c.args;
+          const [x, y] = c.args;
           bbox.addPoint(x, y);
           cx = x;
           cy = y;
@@ -109,12 +108,12 @@ export default class Path implements PathInstance {
           // http://blog.hackers-cafe.net/2009/06/how-to-calculate-bezier-curves-bounding.html
           bbox.addPoint(p3x, p3y);
 
-          var p0 = [cx, cy];
-          var p1 = [cp1x, cp1y];
-          var p2 = [cp2x, cp2y];
-          var p3 = [p3x, p3y];
+          let p0 = [cx, cy];
+          let p1 = [cp1x, cp1y];
+          let p2 = [cp2x, cp2y];
+          let p3 = [p3x, p3y];
 
-          for (var i = 0; i <= 1; i++) {
+          for (let i = 0; i <= 1; i++) {
             const b = 6 * p0[i] - 12 * p1[i] + 6 * p2[i];
             const a = -3 * p0[i] + 9 * p1[i] - 9 * p2[i] + 3 * p3[i];
             const c = 3 * p1[i] - 3 * p0[i];
@@ -171,16 +170,14 @@ export default class Path implements PathInstance {
 
   /**
    * Applies a mapping function to each point in the path.
-   * @param {function} fn
-   * @return {Path}
    */
   mapPoints(fn: (x: number, y: number) => [number, number]): PathInstance {
-    let path = new Path;
+    const path = new Path;
 
-    for (let c of this.commands) {
-      let args = [];
+    for (const c of this.commands) {
+      const args = [];
       for (let i = 0; i < c.args.length; i += 2) {
-        let [x, y] = fn(c.args[i], c.args[i + 1]);
+        const [x, y] = fn(c.args[i], c.args[i + 1]);
         args.push(x, y);
       }
 
@@ -212,8 +209,8 @@ export default class Path implements PathInstance {
    * Rotates the path by the given angle (in radians).
    */
   rotate(angle: number): PathInstance {
-    let cos = Math.cos(angle);
-    let sin = Math.sin(angle);
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
     return this.transform(cos, sin, -sin, cos, 0, 0);
   }
 
@@ -226,13 +223,9 @@ export default class Path implements PathInstance {
 }
 
 for (let command of ['moveTo', 'lineTo', 'quadraticCurveTo', 'bezierCurveTo', 'closePath']) {
-  Path.prototype[command] = function(...args) {
+  Path.prototype[command] = function(...args: any[]): Path {
     this._bbox = this._cbox = null;
-    this.commands.push({
-      command,
-      args
-    });
-
+    this.commands.push({ command, args });
     return this;
   };
 }

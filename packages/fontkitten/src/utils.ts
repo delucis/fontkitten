@@ -25,4 +25,4 @@ export function range(index: number, end: number): number[] {
 	return range;
 }
 
-export const asciiDecoder = new TextDecoder('ascii');
+export const asciiDecoder: TextDecoder = new TextDecoder('ascii');

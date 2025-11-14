@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let VerticalOrigin = new r.Struct({
+const VerticalOrigin = new r.Struct({
   glyphIndex:   r.uint16,
   vertOriginY:  r.int16
 });

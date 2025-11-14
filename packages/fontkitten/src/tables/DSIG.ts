@@ -1,12 +1,12 @@
 import * as r from '@fontkitten/restructure';
 
-let Signature = new r.Struct({
+const Signature = new r.Struct({
   format: r.uint32,
   length: r.uint32,
   offset: r.uint32
 });
 
-let SignatureBlock = new r.Struct({
+const SignatureBlock = new r.Struct({
   reserved:       new r.Reserved(r.uint16, 2),
   cbSignature:    r.uint32,  // Length (in bytes) of the PKCS#7 packet in pbSignature
   signature:      new r.Buffer('cbSignature')

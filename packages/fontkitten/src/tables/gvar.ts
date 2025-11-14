@@ -1,8 +1,8 @@
 import * as r from '@fontkitten/restructure';
 
-let shortFrac = new r.Fixed(16, 14);
+const shortFrac = new r.Fixed(16, 14);
 class Offset {
-  static decode(stream, parent) {
+  static decode(stream: r.DecodeStream, parent: any): number {
     // In short format, offsets are multiplied by 2.
     // This doesn't seem to be documented by Apple, but it
     // is implemented this way in Freetype.
@@ -12,7 +12,7 @@ class Offset {
   }
 }
 
-let gvar = new r.Struct({
+const gvar = new r.Struct({
   version: r.uint16,
   reserved: new r.Reserved(r.uint16),
   axisCount: r.uint16,

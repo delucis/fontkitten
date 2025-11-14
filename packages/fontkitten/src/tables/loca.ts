@@ -1,6 +1,6 @@
 import * as r from '@fontkitten/restructure';
 
-let loca = new r.VersionedStruct('head.indexToLocFormat', {
+const loca = new r.VersionedStruct('head.indexToLocFormat', {
   0: {
     offsets: new r.Array(r.uint16)
   },

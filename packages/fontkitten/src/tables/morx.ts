@@ -1,25 +1,25 @@
 import * as r from '@fontkitten/restructure';
 import { UnboundedArray, LookupTable, StateTable } from './aat';
 
-let LigatureData = {
+const LigatureData = {
   action: r.uint16
 };
 
-let ContextualData = {
+const ContextualData = {
   markIndex: r.uint16,
   currentIndex: r.uint16
 };
 
-let InsertionData = {
+const InsertionData = {
   currentInsertIndex: r.uint16,
   markedInsertIndex: r.uint16
 };
 
-let SubstitutionTable = new r.Struct({
+const SubstitutionTable = new r.Struct({
   items: new UnboundedArray(new r.Pointer(r.uint32, new LookupTable))
 });
 
-let SubtableData = new r.VersionedStruct('type', {
+const SubtableData = new r.VersionedStruct('type', {
   0: { // Indic Rearrangement Subtable
     stateTable: new StateTable
   },
@@ -46,7 +46,7 @@ let SubtableData = new r.VersionedStruct('type', {
   }
 });
 
-let Subtable = new r.Struct({
+const Subtable = new r.Struct({
   length: r.uint32,
   coverage: r.uint24,
   type: r.uint8,
@@ -55,14 +55,14 @@ let Subtable = new r.Struct({
   padding: new r.Reserved(r.uint8, t => t.length - t._currentOffset)
 });
 
-let FeatureEntry = new r.Struct({
+const FeatureEntry = new r.Struct({
   featureType:    r.uint16,
   featureSetting: r.uint16,
   enableFlags:    r.uint32,
   disableFlags:   r.uint32
 });
 
-let MorxChain = new r.Struct({
+const MorxChain = new r.Struct({
   defaultFlags:     r.uint32,
   chainLength:      r.uint32,
   nFeatureEntries:  r.uint32,

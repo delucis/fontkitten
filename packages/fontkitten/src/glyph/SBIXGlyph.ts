@@ -1,7 +1,7 @@
-import TTFGlyph from './TTFGlyph';
 import * as r from '@fontkitten/restructure';
+import TTFGlyph from './TTFGlyph';
 
-let SBIXImage = new r.Struct({
+const SBIXImage = new r.Struct({
   originX: r.uint16,
   originY: r.uint16,
   type: new r.String(4),
@@ -18,19 +18,16 @@ export default class SBIXGlyph extends TTFGlyph {
    * Returns an object representing a glyph image at the given point size.
    * The object has a data property with a Buffer containing the actual image data,
    * along with the image type, and origin.
-   *
-   * @param {number} size
-   * @return {object}
    */
-  getImageForSize(size) {
+  getImageForSize(size: number): {originX: number, originY: number, type: string, data: Buffer} | null {
     for (let i = 0; i < this._font.sbix.imageTables.length; i++) {
       var table = this._font.sbix.imageTables[i];
       if (table.ppem >= size) { break; }
     }
 
-    let offsets = table.imageOffsets;
-    let start = offsets[this.id];
-    let end = offsets[this.id + 1];
+    const offsets = table.imageOffsets;
+    const start = offsets[this.id];
+    const end = offsets[this.id + 1];
 
     if (start === end) {
       return null;
@@ -40,7 +37,7 @@ export default class SBIXGlyph extends TTFGlyph {
     return SBIXImage.decode(this._font.stream, {buflen: end - start});
   }
 
-  render(ctx, size) {
+  render(ctx: CanvasRenderingContext2D, size: number): void {
     let img = this.getImageForSize(size);
     if (img != null) {
       let scale = size / this._font.unitsPerEm;

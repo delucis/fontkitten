@@ -7,7 +7,7 @@ import Path from './Path';
 export default class CFFGlyph extends Glyph {
   type = 'CFF';
 
-  _getName() {
+  _getName(): string {
     if (this._font.CFF2) {
       return super._getName();
     }
@@ -15,28 +15,22 @@ export default class CFFGlyph extends Glyph {
     return this._font['CFF '].getGlyphName(this.id);
   }
 
-  bias(s) {
-    if (s.length < 1240) {
-      return 107;
-    } else if (s.length < 33900) {
-      return 1131;
-    } else {
-      return 32768;
-    }
+  bias(s: any[]): number {
+    return s.length < 1240 ? 107 : s.length < 33900 ? 1131 : 32768;
   }
 
-  _getPath() {
-    let cff = this._font.CFF2 || this._font['CFF '];
-    let { stream } = cff;
-    let str = cff.topDict.CharStrings[this.id];
+  _getPath(): Path {
+    const cff = this._font.CFF2 || this._font['CFF '];
+    const { stream } = cff;
+    const str = cff.topDict.CharStrings[this.id];
     let end = str.offset + str.length;
     stream.pos = str.offset;
 
-    let path = new Path;
-    let stack = [];
-    let trans = [];
+    const path = new Path;
+    const stack: number[] = [];
+    const trans = [];
 
-    let width = null;
+    let width: number | null = null;
     let nStems = 0;
     let x = 0, y = 0;
     let usedGsubrs;
@@ -46,24 +40,22 @@ export default class CFFGlyph extends Glyph {
     this._usedGsubrs = usedGsubrs = {};
     this._usedSubrs = usedSubrs = {};
 
-    let gsubrs = cff.globalSubrIndex || [];
-    let gsubrsBias = this.bias(gsubrs);
+    const gsubrs = cff.globalSubrIndex || [];
+    const gsubrsBias = this.bias(gsubrs);
 
-    let privateDict = cff.privateDictForGlyph(this.id) || {};
-    let subrs = privateDict.Subrs || [];
-    let subrsBias = this.bias(subrs);
+    const privateDict = cff.privateDictForGlyph(this.id) || {};
+    const subrs = privateDict.Subrs || [];
+    const subrsBias = this.bias(subrs);
 
-    let vstore = cff.topDict.vstore && cff.topDict.vstore.itemVariationStore;
-    let vsindex = privateDict.vsindex;
-    let variationProcessor = this._font._variationProcessor;
+    const vstore = cff.topDict.vstore?.itemVariationStore;
+    let {vsindex} = privateDict;
+    const variationProcessor = this._font._variationProcessor;
 
-    function checkWidth() {
-      if (width == null) {
-        width = stack.shift() + privateDict.nominalWidthX;
-      }
+    const checkWidth = () => {
+      width ??= stack.shift() + privateDict.nominalWidthX;
     }
 
-    function parseStems() {
+    const parseStems = () => {
       if (stack.length % 2 !== 0) {
         checkWidth();
       }
@@ -72,7 +64,7 @@ export default class CFFGlyph extends Glyph {
       return stack.length = 0;
     }
 
-    function moveTo(x, y) {
+    const moveTo = (x: number, y: number) => {
       if (open) {
         path.closePath();
       }
@@ -81,7 +73,7 @@ export default class CFFGlyph extends Glyph {
       open = true;
     }
 
-    let parse = function () {
+    const parse = () => {
       while (stream.pos < end) {
         let op = stream.readUInt8();
         if (op < 32) {
@@ -147,8 +139,8 @@ export default class CFFGlyph extends Glyph {
               subr = subrs[index];
               if (subr) {
                 usedSubrs[index] = true;
-                let p = stream.pos;
-                let e = end;
+                const p = stream.pos;
+                const e = end;
                 stream.pos = subr.offset;
                 end = subr.offset + subr.length;
                 parse();
@@ -196,11 +188,11 @@ export default class CFFGlyph extends Glyph {
                 throw new Error('blend operator in non-variation font');
               }
 
-              let blendVector = variationProcessor.getBlendVector(vstore, vsindex);
-              let numBlends = stack.pop();
+              const blendVector = variationProcessor.getBlendVector(vstore, vsindex);
+              const numBlends = stack.pop();
               let numOperands = numBlends * blendVector.length;
               let delta = stack.length - numOperands;
-              let base = delta - numBlends;
+              const base = delta - numBlends;
 
               for (let i = 0; i < numBlends; i++) {
                 let sum = stack[base + i];
@@ -316,8 +308,8 @@ export default class CFFGlyph extends Glyph {
               subr = gsubrs[index];
               if (subr) {
                 usedGsubrs[index] = true;
-                let p = stream.pos;
-                let e = end;
+                const p = stream.pos;
+                const e = end;
                 stream.pos = subr.offset;
                 end = subr.offset + subr.length;
                 parse();
@@ -421,10 +413,10 @@ export default class CFFGlyph extends Glyph {
                   break;
 
                 case 22: // ifelse
-                  let s1 = stack.pop();
-                  let s2 = stack.pop();
-                  let v1 = stack.pop();
-                  let v2 = stack.pop();
+                  const s1 = stack.pop();
+                  const s2 = stack.pop();
+                  const v1 = stack.pop();
+                  const v2 = stack.pop();
                   stack.push(v1 <= v2 ? s1 : s2);
                   break;
 
@@ -466,7 +458,7 @@ export default class CFFGlyph extends Glyph {
                   break;
 
                 case 30: // roll
-                  let n = stack.pop();
+                  const n = stack.pop();
                   let j = stack.pop();
 
                   if (j >= 0) {
@@ -547,8 +539,8 @@ export default class CFFGlyph extends Glyph {
                   break;
 
                 case 37: // flex1
-                  let startx = x;
-                  let starty = y;
+                  const startx = x;
+                  const starty = y;
 
                   pts = [];
                   for (let i = 0; i <= 4; i++) {

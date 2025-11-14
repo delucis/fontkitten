@@ -4,7 +4,7 @@ import BBox from './BBox';
 import * as r from '@fontkitten/restructure';
 
 // The header for both simple and composite glyphs
-let GlyfHeader = new r.Struct({
+const GlyfHeader = new r.Struct({
   numberOfContours: r.int16, // if negative, this is a composite glyph
   xMin:             r.int16,
   yMin:             r.int16,
@@ -44,17 +44,13 @@ export class Point {
 
 // Represents a component in a composite glyph
 class Component {
-  pos: number;
-  scaleX: number;
-  scaleY: number;
-  scale01: number;
-  scale10: number;
+  pos = 0;
+  scaleX = 1;
+  scaleY = 1;
+  scale01 = 0;
+  scale10 = 0;
 
-  constructor(public glyphID: number, public dx: number, public dy: number) {
-    this.pos = 0;
-    this.scaleX = this.scaleY = 1;
-    this.scale01 = this.scale10 = 0;
-  }
+  constructor(public glyphID: number, public dx: number, public dy: number) {}
 }
 
 /**
@@ -64,36 +60,33 @@ export default class TTFGlyph extends Glyph {
   type = 'TTF';
 
   // Parses just the glyph header and returns the bounding box
-  _getCBox(internal) {
+  _getCBox(internal?: boolean): BBox {
     // We need to decode the glyph if variation processing is requested,
     // so it's easier just to recompute the path's cbox after decoding.
     if (this._font._variationProcessor && !internal) {
       return this.path.cbox;
     }
 
-    let stream = this._font._getTableStream('glyf');
+    const stream = this._font._getTableStream('glyf')!;
     stream.pos += this._font.loca.offsets[this.id];
-    let glyph = GlyfHeader.decode(stream);
+    const glyph = GlyfHeader.decode(stream);
 
-    let cbox = new BBox(glyph.xMin, glyph.yMin, glyph.xMax, glyph.yMax);
+    const cbox = new BBox(glyph.xMin, glyph.yMin, glyph.xMax, glyph.yMax);
     return Object.freeze(cbox);
   }
 
   // Parses a single glyph coordinate
-  _parseGlyphCoord(stream, prev, short, same) {
+  _parseGlyphCoord(stream: r.DecodeStream, prev: number, short: boolean, same: boolean): number {
+    let val: number;
     if (short) {
-      var val = stream.readUInt8();
+      val = stream.readUInt8();
       if (!same) {
         val = -val;
       }
 
       val += prev;
     } else {
-      if (same) {
-        var val = prev;
-      } else {
-        var val = prev + stream.readInt16BE();
-      }
+      val = same ? prev : prev + stream.readInt16BE();
     }
 
     return val;
@@ -101,18 +94,18 @@ export default class TTFGlyph extends Glyph {
 
   // Decodes the glyph data into points for simple glyphs,
   // or components for composite glyphs
-  _decode() {
+  _decode(): any | null {
     let glyfPos = this._font.loca.offsets[this.id];
     let nextPos = this._font.loca.offsets[this.id + 1];
 
     // Nothing to do if there is no data for this glyph
     if (glyfPos === nextPos) { return null; }
 
-    let stream = this._font._getTableStream('glyf');
+    const stream = this._font._getTableStream('glyf')!;
     stream.pos += glyfPos;
-    let startPos = stream.pos;
+    const startPos = stream.pos;
 
-    let glyph = GlyfHeader.decode(stream);
+    const glyph = GlyfHeader.decode(stream);
 
     if (glyph.numberOfContours > 0) {
       this._decodeSimple(glyph, stream);
@@ -124,50 +117,50 @@ export default class TTFGlyph extends Glyph {
     return glyph;
   }
 
-  _decodeSimple(glyph, stream) {
+  _decodeSimple(glyph: any, stream: r.DecodeStream): void {
     // this is a simple glyph
     glyph.points = [];
 
-    let endPtsOfContours = new r.Array(r.uint16, glyph.numberOfContours).decode(stream);
+    const endPtsOfContours = new r.Array(r.uint16, glyph.numberOfContours).decode(stream);
     glyph.instructions = new r.Array(r.uint8, r.uint16).decode(stream);
 
-    let flags = [];
-    let numCoords = endPtsOfContours[endPtsOfContours.length - 1] + 1;
+    const flags: number[] = [];
+    const numCoords = endPtsOfContours[endPtsOfContours.length - 1] + 1;
 
     while (flags.length < numCoords) {
-      var flag = stream.readUInt8();
+      const flag = stream.readUInt8();
       flags.push(flag);
 
       // check for repeat flag
       if (flag & REPEAT) {
-        let count = stream.readUInt8();
+        const count = stream.readUInt8();
         for (let j = 0; j < count; j++) {
           flags.push(flag);
         }
       }
     }
 
-    for (var i = 0; i < flags.length; i++) {
-      var flag = flags[i];
-      let point = new Point(!!(flag & ON_CURVE), endPtsOfContours.indexOf(i) >= 0, 0, 0);
+    for (let i = 0; i < flags.length; i++) {
+      const flag = flags[i];
+      const point = new Point(!!(flag & ON_CURVE), endPtsOfContours.indexOf(i) >= 0, 0, 0);
       glyph.points.push(point);
     }
 
     let px = 0;
-    for (var i = 0; i < flags.length; i++) {
-      var flag = flags[i];
+    for (let i = 0; i < flags.length; i++) {
+      const flag = flags[i];
       glyph.points[i].x = px = this._parseGlyphCoord(stream, px, flag & X_SHORT_VECTOR, flag & SAME_X);
     }
 
     let py = 0;
-    for (var i = 0; i < flags.length; i++) {
-      var flag = flags[i];
+    for (let i = 0; i < flags.length; i++) {
+      const flag = flags[i];
       glyph.points[i].y = py = this._parseGlyphCoord(stream, py, flag & Y_SHORT_VECTOR, flag & SAME_Y);
     }
 
     if (this._font._variationProcessor) {
       let points = glyph.points.slice();
-      points.push(...this._getPhantomPoints(glyph));
+      points.push(...this.#getPhantomPoints(glyph));
 
       this._font._variationProcessor.transformPoints(this.id, points);
       glyph.phantomPoints = points.slice(-4);
@@ -176,7 +169,7 @@ export default class TTFGlyph extends Glyph {
     return;
   }
 
-  _decodeComposite(glyph, stream, offset = 0) {
+  _decodeComposite(glyph: any, stream: r.DecodeStream, offset = 0): boolean {
     // this is a composite glyph
     glyph.components = [];
     let haveInstructions = false;
@@ -184,56 +177,53 @@ export default class TTFGlyph extends Glyph {
 
     while (flags & MORE_COMPONENTS) {
       flags = stream.readUInt16BE();
-      let gPos = stream.pos - offset;
-      let glyphID = stream.readUInt16BE();
+      const gPos = stream.pos - offset;
+      const glyphID = stream.readUInt16BE();
       if (!haveInstructions) {
         haveInstructions = (flags & WE_HAVE_INSTRUCTIONS) !== 0;
       }
 
+      let dx: number, dy: number;
       if (flags & ARG_1_AND_2_ARE_WORDS) {
-        var dx = stream.readInt16BE();
-        var dy = stream.readInt16BE();
+        dx = stream.readInt16BE();
+        dy = stream.readInt16BE();
       } else {
-        var dx = stream.readInt8();
-        var dy = stream.readInt8();
+        dx = stream.readInt8();
+        dy = stream.readInt8();
       }
 
-      var component = new Component(glyphID, dx, dy);
+      const component = new Component(glyphID, dx, dy);
       component.pos = gPos;
 
+      const two_30 = 1 << 30;
       if (flags & WE_HAVE_A_SCALE) {
         // fixed number with 14 bits of fraction
         component.scaleX =
-        component.scaleY = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / 1073741824;
+        component.scaleY = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / two_30;
 
       } else if (flags & WE_HAVE_AN_X_AND_Y_SCALE) {
-        component.scaleX = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / 1073741824;
-        component.scaleY = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / 1073741824;
+        component.scaleX = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / two_30;
+        component.scaleY = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / two_30;
 
       } else if (flags & WE_HAVE_A_TWO_BY_TWO) {
-        component.scaleX  = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / 1073741824;
-        component.scale01 = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / 1073741824;
-        component.scale10 = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / 1073741824;
-        component.scaleY  = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / 1073741824;
+        component.scaleX  = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / two_30;
+        component.scale01 = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / two_30;
+        component.scale10 = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / two_30;
+        component.scaleY  = ((stream.readUInt8() << 24) | (stream.readUInt8() << 16)) / two_30;
       }
 
       glyph.components.push(component);
     }
 
     if (this._font._variationProcessor) {
-      let points = [];
-      for (let j = 0; j < glyph.components.length; j++) {
-        var component = glyph.components[j];
-        points.push(new Point(true, true, component.dx, component.dy));
-      }
-
-      points.push(...this._getPhantomPoints(glyph));
+      const points = glyph.components.map(c => new Point(true, true, c.dx, c.dy));
+      points.push(...this.#getPhantomPoints(glyph));
 
       this._font._variationProcessor.transformPoints(this.id, points);
       glyph.phantomPoints = points.splice(-4, 4);
 
       for (let i = 0; i < points.length; i++) {
-        let point = points[i];
+        const point = points[i];
         glyph.components[i].dx = point.x;
         glyph.components[i].dy = point.y;
       }
@@ -242,25 +232,23 @@ export default class TTFGlyph extends Glyph {
     return haveInstructions;
   }
 
-  _getPhantomPoints(glyph) {
-    let cbox = this._getCBox(true);
-    if (this._metrics == null) {
-      this._metrics = Glyph.prototype._getMetrics.call(this, cbox);
-    }
+  #getPhantomPoints(glyph: Glyph) {
+    const cbox = this._getCBox(true);
+    this._metrics ??= Glyph.prototype._getMetrics.call(this, cbox);
 
-    let { advanceWidth, advanceHeight, leftBearing, topBearing } = this._metrics;
+    const { advanceWidth, advanceHeight, leftBearing, topBearing } = this._metrics;
 
     return [
       new Point(false, true, glyph.xMin - leftBearing, 0),
       new Point(false, true, glyph.xMin - leftBearing + advanceWidth, 0),
       new Point(false, true, 0, glyph.yMax + topBearing),
       new Point(false, true, 0, glyph.yMax + topBearing + advanceHeight)
-    ];
+    ] as const;
   }
 
   // Decodes font data, resolves composite glyphs, and returns an array of contours
   _getContours() {
-    let glyph = this._decode();
+    const glyph = this._decode();
     if (!glyph) {
       return [];
     }
@@ -270,13 +258,13 @@ export default class TTFGlyph extends Glyph {
     if (glyph.numberOfContours < 0) {
       // resolve composite glyphs
       for (let component of glyph.components) {
-        let contours = this._font.getGlyph(component.glyphID)._getContours();
+        const contours = this._font.getGlyph(component.glyphID)._getContours();
         for (let i = 0; i < contours.length; i++) {
-          let contour = contours[i];
+          const contour = contours[i];
           for (let j = 0; j < contour.length; j++) {
-            let point = contour[j];
-            let x = point.x * component.scaleX + point.y * component.scale01 + component.dx;
-            let y = point.y * component.scaleY + point.x * component.scale10 + component.dy;
+            const point = contour[j];
+            const x = point.x * component.scaleX + point.y * component.scale01 + component.dx;
+            const y = point.y * component.scaleY + point.x * component.scale10 + component.dy;
             points.push(new Point(point.onCurve, point.endContour, x, y));
           }
         }
@@ -293,10 +281,10 @@ export default class TTFGlyph extends Glyph {
       this._metrics.topBearing    = glyph.phantomPoints[2].y - glyph.yMax;
     }
 
-    let contours = [];
+    const contours = [];
     let cur = [];
     for (let k = 0; k < points.length; k++) {
-      var point = points[k];
+      const point = points[k];
       cur.push(point);
       if (point.endContour) {
         contours.push(cur);
@@ -312,7 +300,7 @@ export default class TTFGlyph extends Glyph {
       return this._metrics;
     }
 
-    let cbox = this._getCBox(true);
+    const cbox = this._getCBox(true);
     super._getMetrics(cbox);
 
     if (this._font._variationProcessor && !this._font.HVAR) {
@@ -325,18 +313,18 @@ export default class TTFGlyph extends Glyph {
 
   // Converts contours to a Path object.
   _getPath() {
-    let contours = this._getContours();
-    let path = new Path;
+    const contours = this._getContours();
+    const path = new Path;
+    let curvePt: Point | null;
 
-    for (let i = 0; i < contours.length; i++) {
-      let contour = contours[i];
+    for (const contour of contours) {
       let firstPt = contour[0];
-      let lastPt = contour[contour.length - 1];
+      const lastPt = contour[contour.length - 1];
       let start = 0;
 
       if (firstPt.onCurve) {
         // The first point will be consumed by the moveTo command, so skip in the loop
-        var curvePt = null;
+        curvePt = null;
         start = 1;
       } else {
         if (lastPt.onCurve) {
@@ -347,31 +335,30 @@ export default class TTFGlyph extends Glyph {
           firstPt = new Point(false, false, (firstPt.x + lastPt.x) / 2, (firstPt.y + lastPt.y) / 2);
         }
 
-        var curvePt = firstPt;
+        curvePt = firstPt;
       }
 
       path.moveTo(firstPt.x, firstPt.y);
 
       for (let j = start; j < contour.length; j++) {
-        let pt = contour[j];
-        let prevPt = j === 0 ? firstPt : contour[j - 1];
+        const pt = contour[j];
+        const prevPt = j === 0 ? firstPt : contour[j - 1];
 
         if (prevPt.onCurve && pt.onCurve) {
           path.lineTo(pt.x, pt.y);
 
         } else if (prevPt.onCurve && !pt.onCurve) {
-          var curvePt = pt;
+          curvePt = pt;
 
         } else if (!prevPt.onCurve && !pt.onCurve) {
-          let midX = (prevPt.x + pt.x) / 2;
-          let midY = (prevPt.y + pt.y) / 2;
+          const midX = (prevPt.x + pt.x) / 2;
+          const midY = (prevPt.y + pt.y) / 2;
           path.quadraticCurveTo(prevPt.x, prevPt.y, midX, midY);
-          var curvePt = pt;
+          curvePt = pt;
 
         } else if (!prevPt.onCurve && pt.onCurve) {
           path.quadraticCurveTo(curvePt.x, curvePt.y, pt.x, pt.y);
-          var curvePt = null;
-
+          curvePt = null;
         } else {
           throw new Error("Unknown TTF path state");
         }

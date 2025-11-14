@@ -191,11 +191,17 @@ export interface PathCommand {
 }
 
 export interface BBOX {
+	/** The minimum X position in the bounding box */
 	minX: number;
+	/** The minimum Y position in the bounding box */
 	minY: number;
+	/** The maximum X position in the bounding box */
 	maxX: number;
+	/** The maximum Y position in the bounding box */
 	maxY: number;
+	/** The width of the bounding box */
 	width: number;
+	/** The height of the bounding box */
 	height: number;
 }
 

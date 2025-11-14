@@ -27,13 +27,18 @@ export default class TTFFont implements Font {
   'OS/2': Os2Table;
   'hhea': HHEA;
   // These tables are not in public types but used internally for various purposes.
-  post: any;
-  name: any;
-  head: any;
-  maxp: any;
-  cmap: any;
-  fvar: any;
-  CFF2: any;
+  declare post: any;
+  declare name: any;
+  declare head: any;
+  declare maxp: any;
+  declare cmap: any;
+  declare avar: any;
+  declare fvar: any;
+  declare gvar: any;
+  declare CFF2: any;
+  declare HVAR: any;
+  declare sbix: any;
+  declare loca: any;
 
   static probe(buffer: Buffer): boolean {
     const format = asciiDecoder.decode(buffer.slice(0, 4));
@@ -419,7 +424,7 @@ export default class TTFFont implements Font {
       return null;
     }
 
-    let variationCoords = this.#variationCoords;    
+    let variationCoords = this.#variationCoords;
     if (!variationCoords) {
       // Ignore if no variation coords and not CFF2
       if (!this.CFF2) {

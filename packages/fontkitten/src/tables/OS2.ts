@@ -1,5 +1,23 @@
 import * as r from '@fontkitten/restructure';
 
+const version1 = {
+  typoAscender:       r.int16,
+  typoDescender:      r.int16,
+  typoLineGap:        r.int16,
+  winAscent:          r.uint16,
+  winDescent:         r.uint16,
+  codePageRange:      new r.Array(r.uint32, 2)
+};
+
+const version2 = {
+  ...version1,
+  xHeight:            r.int16,
+  capHeight:          r.int16,
+  defaultChar:        r.uint16,
+  breakChar:          r.uint16,
+  maxContent:         r.uint16
+}
+
 const OS2 = new r.VersionedStruct(r.uint16, {
   header: {
     xAvgCharWidth:          r.int16,   // average weighted advance width of lower case letters and space
@@ -34,51 +52,15 @@ const OS2 = new r.VersionedStruct(r.uint16, {
   // The Apple version of this table ends here, but the Microsoft one continues on...
   0: {},
 
-  1: {
-    typoAscender:       r.int16,
-    typoDescender:      r.int16,
-    typoLineGap:        r.int16,
-    winAscent:          r.uint16,
-    winDescent:         r.uint16,
-    codePageRange:      new r.Array(r.uint32, 2)
-  },
-
-  2: {
-    // these should be common with version 1 somehow
-    typoAscender:       r.int16,
-    typoDescender:      r.int16,
-    typoLineGap:        r.int16,
-    winAscent:          r.uint16,
-    winDescent:         r.uint16,
-    codePageRange:      new r.Array(r.uint32, 2),
-
-    xHeight:            r.int16,
-    capHeight:          r.int16,
-    defaultChar:        r.uint16,
-    breakChar:          r.uint16,
-    maxContent:         r.uint16
-  },
-
+  1: version1,
+  2: version2,
+  3: version2,
+  4: version2,
   5: {
-    typoAscender:       r.int16,
-    typoDescender:      r.int16,
-    typoLineGap:        r.int16,
-    winAscent:          r.uint16,
-    winDescent:         r.uint16,
-    codePageRange:      new r.Array(r.uint32, 2),
-
-    xHeight:            r.int16,
-    capHeight:          r.int16,
-    defaultChar:        r.uint16,
-    breakChar:          r.uint16,
-    maxContent:         r.uint16,
-
+    ...version2,
     usLowerOpticalPointSize: r.uint16,
     usUpperOpticalPointSize: r.uint16
   }
 });
-
-const versions = OS2.versions;
-versions[3] = versions[4] = versions[2];
 
 export default OS2;

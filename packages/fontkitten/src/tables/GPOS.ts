@@ -33,8 +33,9 @@ class ValueRecord {
 
     if (!struct[this.key]) return;
 
-    const fields = {};
-    fields.rel = () => struct._startOffset;
+    const fields = {
+      rel: () => struct._startOffset,
+    };
 
     const format = struct[this.key];
     for (const key in format) {

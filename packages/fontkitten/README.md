@@ -40,6 +40,8 @@ Fontkitten does not include the following Fontkit APIs on parsed fonts:
 - `.availableFeatures` and `.getAvailableFeatures()` APIs for detecting OpenType feature support
 - The following OpenType tables are not currently parsed: `cvt`, `fpgm`, `prep`, `VORG`, `EBLC`, `BASE`, `GDEF`, `GPOS`, `JSTF`, `DSIG`, `gasp`, `hdmx`, `kern`, `LTSH`, `PCLT`, `VDMX`, `bsln`, `feat`, `just`, `morx`, and `opbd`. [Open an issue](https://github.com/delucis/fontkitten/issues) if you have a use case for one of these.
 
+Fontkitten also excludes the `.render()` method on glyphs and `.toFunction()` method on paths.
+
 ## API
 
 ### `create(buffer, postscriptName?)`
@@ -168,7 +170,7 @@ This property is a lazily-loaded array of all of the fonts in the collection.
 
 ### `Glyph` objects
 
-`Glyph` objects represent a glyph in the font. They have various properties for accessing metrics and the actual vector path the glyph represents, and methods for rendering the glyph to a graphics context.
+`Glyph` objects represent a glyph in the font. They have various properties for accessing metrics and the actual vector path the glyph represents.
 
 You do not create glyph objects directly. They are created by various methods on the [`Font`](#font-objects) object, described above. `Glyph` objects include the following API.
 
@@ -184,19 +186,9 @@ You do not create glyph objects directly. They are created by various methods on
 - `isMark` - whether the glyph is a non-spacing combining glyph.
 - `isLigature` - whether the glyph is a multiple character, spacing glyph.
 
-#### Methods
-
-##### `glyph.render(ctx, fontSize)`
-
-Renders the glyph to the given `Canvas` rendering context, at the specified font size.
-
 ### `Path` objects
 
 `Path` objects are returned by glyphs and represent the actual vector outlines for each glyph in the font. Paths can be converted to SVG path data strings, or to functions that can be applied to render the path to a graphics context.
-
-#### `path.toFunction()`
-
-Compiles the path to a JavaScript function that can be applied with a `Canvas` rendering context in order to render the path.
 
 #### `path.toSVG()`
 

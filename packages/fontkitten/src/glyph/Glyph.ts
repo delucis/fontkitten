@@ -166,21 +166,4 @@ export default class Glyph implements GlyphType {
   get name(): string | null {
     return this._getName();
   }
-
-  /**
-   * Renders the glyph to the given graphics context, at the specified font size.
-   * @param {CanvasRenderingContext2d} ctx
-   * @param {number} size
-   */
-  render(ctx: CanvasRenderingContext2D, size: number): void {
-    ctx.save();
-
-    const scale = 1 / this._font.head.unitsPerEm * size;
-    ctx.scale(scale, scale);
-
-    this.path.toFunction()(ctx);
-    ctx.fill();
-
-    ctx.restore();
-  }
 }

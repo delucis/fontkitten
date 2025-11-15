@@ -36,16 +36,4 @@ export default class SBIXGlyph extends TTFGlyph {
     this._font.stream.pos = start;
     return SBIXImage.decode(this._font.stream, {buflen: end - start});
   }
-
-  render(ctx: CanvasRenderingContext2D, size: number): void {
-    let img = this.getImageForSize(size);
-    if (img != null) {
-      let scale = size / this._font.unitsPerEm;
-      ctx.image(img.data, {height: size, x: img.originX, y: (this.bbox.minY - img.originY) * scale});
-    }
-
-    if (this._font.sbix.flags.renderOutlines) {
-      super.render(ctx, size);
-    }
-  }
 }

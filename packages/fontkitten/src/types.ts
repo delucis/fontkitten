@@ -141,9 +141,6 @@ export interface Glyph {
 	/** is a ligature glyph (multiple character, spacing glyph) */
 	isLigature: boolean;
 
-	/** Renders the glyph to the given graphics context, at the specified font size. */
-	render(ctx: CanvasRenderingContext2D, size: number): void;
-
 	/**  The glyph's name. Commonly the character, or 'space' or UTF**** */
 	name: string;
 }

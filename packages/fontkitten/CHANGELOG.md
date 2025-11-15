@@ -1,5 +1,11 @@
 # fontkitten
 
+## 0.0.13
+
+### Patch Changes
+
+- [#39](https://github.com/delucis/fontkitten/pull/39) [`a96a752`](https://github.com/delucis/fontkitten/commit/a96a75245ce657d0a2928d593fdb2e54716d49de) Thanks [@delucis](https://github.com/delucis)! - Removes the `Glyph#render()` and `Path#toFunction()` APIs, which previously provided a way to render a glyph to a `<canvas>` context
+
 ## 0.0.12
 
 ### Patch Changes

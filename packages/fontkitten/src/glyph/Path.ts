@@ -96,12 +96,12 @@ export default class Path implements PathInstance {
           // http://blog.hackers-cafe.net/2009/06/how-to-calculate-bezier-curves-bounding.html
           bbox.addPoint(p3x, p3y);
 
-          let p0 = [cx, cy];
-          let p1 = [cp1x, cp1y];
-          let p2 = [cp2x, cp2y];
-          let p3 = [p3x, p3y];
+          var p0 = [cx, cy];
+          var p1 = [cp1x, cp1y];
+          var p2 = [cp2x, cp2y];
+          var p3 = [p3x, p3y];
 
-          for (let i = 0; i <= 1; i++) {
+          for (var i = 0; i <= 1; i++) {
             const b = 6 * p0[i] - 12 * p1[i] + 6 * p2[i];
             const a = -3 * p0[i] + 9 * p1[i] - 9 * p2[i] + 3 * p3[i];
             const c = 3 * p1[i] - 3 * p0[i];

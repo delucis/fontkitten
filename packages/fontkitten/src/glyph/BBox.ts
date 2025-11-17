@@ -40,8 +40,4 @@ export default class BBox implements BBOX {
       }
     }
   }
-
-  copy(): BBox {
-    return new BBox(this.minX, this.minY, this.maxX, this.maxY);
-  }
 }

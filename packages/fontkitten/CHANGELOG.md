@@ -1,5 +1,13 @@
 # fontkitten
 
+## 0.0.14
+
+### Patch Changes
+
+- [#43](https://github.com/delucis/fontkitten/pull/43) [`315b336`](https://github.com/delucis/fontkitten/commit/315b3360f6f4cafc4774c9ff660c650f3a025d38) Thanks [@delucis](https://github.com/delucis)! - Fixes `Path#bbox` getter
+
+- [#43](https://github.com/delucis/fontkitten/pull/43) [`315b336`](https://github.com/delucis/fontkitten/commit/315b3360f6f4cafc4774c9ff660c650f3a025d38) Thanks [@delucis](https://github.com/delucis)! - Fixes bounding box access on WOFF2 fonts
+
 ## 0.0.13
 
 ### Patch Changes

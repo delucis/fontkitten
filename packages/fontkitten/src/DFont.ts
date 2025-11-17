@@ -38,6 +38,7 @@ const DFontHeader = new r.Struct({
 
 export default class DFont implements FontCollection {
   type = 'DFont' as const;
+  isCollection: true = true;
   declare header: any;
   declare sfnt: any;
 

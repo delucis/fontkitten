@@ -18,6 +18,7 @@ import { BBOX, Font, Glyph, HHEA, Os2Table } from './types';
  */
 export default class TTFFont implements Font {
   type: Font['type'] = 'TTF';
+  isCollection: false = false;
   stream: r.DecodeStream;
   #variationCoords: number[] | null;
   #directoryPos: number;

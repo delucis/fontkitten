@@ -19,6 +19,7 @@ const TTCHeader = new r.VersionedStruct(r.uint32, {
 
 export default class TrueTypeCollection implements FontCollection {
   type = 'TTC' as const;
+  isCollection: true = true;
   declare header: any;
 
   static probe(buffer: Buffer): boolean {

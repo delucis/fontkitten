@@ -29,11 +29,14 @@ describe('fontkitten fuzz tests', () => {
 				assert.ok(['TTF', 'WOFF', 'WOFF2', 'TTC', 'DFont'].includes(font.type));
 			});
 			it('should have a font instance with the expected API', () => {
-				if (font.type === 'TTC' || font.type === 'DFont') {
+				if (font.isCollection) {
 					// Collection fonts
 					// Contain an array of fonts
 					assert(Array.isArray(font.fonts));
 					assert(font.fonts.length > 0);
+
+					// #isCollection
+					assert.equal(font.isCollection, true);
 
 					// #getFont()
 					const firstPSName = font.fonts[0].postscriptName;
@@ -43,7 +46,7 @@ describe('fontkitten fuzz tests', () => {
 
 					// Each font in the collection should have the same API as regular fonts
 					font.fonts.forEach(testFont);
-				} else if (font.type === 'TTF' || font.type === 'WOFF' || font.type === 'WOFF2') {
+				} else {
 					// Regular fonts
 					testFont(font);
 				}
@@ -59,6 +62,9 @@ function testFont(instance) {
 	// #getName()
 	const fullName = instance.getName('fullName');
 	assert(typeof fullName === 'string' || fullName === null);
+
+	// #isCollection
+	assert.equal(instance.isCollection, false);
 
 	// #namedVariations
 	assert(instance.namedVariations);

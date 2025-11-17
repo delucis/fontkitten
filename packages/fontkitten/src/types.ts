@@ -4,6 +4,7 @@
  */
 export interface Font {
 	type: 'TTF' | 'WOFF' | 'WOFF2';
+	isCollection: false;
 
 	postscriptName: string;
 	fullName: string;
@@ -276,6 +277,7 @@ export interface HHEA {
 
 export interface FontCollection {
 	type: 'TTC' | 'DFont';
+	isCollection: true;
 	getFont(name: string): Font | null;
 	fonts: Font[];
 }

@@ -94,6 +94,7 @@ The following properties describe the general metrics of the font. See [here](ht
 
 - `numGlyphs` - the number of glyphs in the font
 - `characterSet` - an array of all of the unicode code points supported by the font
+- `isCollection` - always `false` for `Font` objects, useful for distinguishing from [`FontCollection`](#fontcollection-objects) objects
 
 #### Character to glyph mapping
 
@@ -144,6 +145,10 @@ Returns a [`Glyph`](#glyph-objects) object for the given glyph id. You can pass 
 ### `FontCollection` objects
 
 For font collection files that contain multiple fonts in a single file, such as TrueType Collection (`.ttc`) and Datafork TrueType (`.dfont`) files, a `FontCollection` object can be returned by Fontkitten.
+
+#### `collection.isCollection`
+
+This property is `true` on `FontCollection` objects. Use it to distinguish between `Font` and `FontCollection` objects returned by `create()`.
 
 #### `collection.getFont(postscriptName)`
 

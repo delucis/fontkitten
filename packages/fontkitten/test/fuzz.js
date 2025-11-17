@@ -231,6 +231,7 @@ function testGlyph(glyph) {
 	// Glyph properties
 	assert.equal(typeof glyph.id, 'number', 'glyph.id should be a number');
 	assert.equal(typeof glyph.advanceWidth, 'number', 'glyph.advanceWidth should be a number');
+	assert.equal(typeof glyph.advanceHeight, 'number', 'glyph.advanceHeight should be a number');
 	assert.equal(typeof glyph.isLigature, 'boolean', 'glyph.isLigature should be a boolean');
 	assert.equal(typeof glyph.isMark, 'boolean', 'glyph.isMark should be a boolean');
 	// TODO: Glyph name is typed as a string but can be null or undefined in practice.

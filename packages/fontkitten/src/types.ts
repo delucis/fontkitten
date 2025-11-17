@@ -135,6 +135,9 @@ export interface Glyph {
 	/** the glyph’s advance width */
 	advanceWidth: number;
 
+	/** the glyph’s advance height */
+	advanceHeight: number;
+
 	/** is a mark glyph (non-spacing combining glyph) */
 	isMark: boolean;
 

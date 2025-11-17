@@ -79,7 +79,7 @@ export default class WOFF2Font extends TTFFont {
 
     for (let index = 0; index < table.numGlyphs; index++) {
       const nContours = table.nContours.readInt16BE();
-      let points: Point[] = [];
+      const glyph = { numberOfContours: nContours };
 
       if (nContours > 0) { // simple glyph
         const nPoints: number[] = [];
@@ -90,20 +90,21 @@ export default class WOFF2Font extends TTFFont {
           nPoints.push(totalPoints);
         }
 
-        points = decodeTriplet(table.flags, table.glyphs, totalPoints);
+        glyph.points = decodeTriplet(table.flags, table.glyphs, totalPoints);
         for (let i = 0; i < nContours; i++) {
-          points[nPoints[i] - 1].endContour = true;
+          glyph.points[nPoints[i] - 1].endContour = true;
         }
 
         read255UInt16(table.glyphs); // Consume instructions
       } else if (nContours < 0) { // composite glyph
-        const haveInstructions = TTFGlyph.prototype._decodeComposite.call({ _font: this }, { numberOfCountours: nContours }, table.composites);
+        // Decode the composite glyph, attaching components to the glyph object
+        const haveInstructions = TTFGlyph.prototype._decodeComposite.call({ _font: this }, glyph, table.composites);
         if (haveInstructions) {
           read255UInt16(table.glyphs); // Consume instructions
         }
       }
 
-      glyphs.push({ numberOfContours: nContours, points });
+      glyphs.push(glyph);
     }
 
     this._transformedGlyphs = glyphs;

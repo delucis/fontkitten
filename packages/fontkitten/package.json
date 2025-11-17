@@ -1,6 +1,6 @@
 {
   "name": "fontkitten",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "A lightweight font data library — fontkit’s little sibling",
   "keywords": [
     "opentype",

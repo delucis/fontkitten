@@ -1,5 +1,15 @@
 # fontkitten
 
+## 0.0.15
+
+### Patch Changes
+
+- [`44ce622`](https://github.com/delucis/fontkitten/commit/44ce622f8e964e5e0d5591dea81c5d2d26a566e7) Thanks [@delucis](https://github.com/delucis)! - Adds a new `isCollection` property to make it easier to discriminate between `Font` and `FontCollection` objects
+
+- [`3a0a308`](https://github.com/delucis/fontkitten/commit/3a0a30892de2768962b4aa6d935493a35be9fac5) Thanks [@delucis](https://github.com/delucis)! - Adds a type definition for the `advanceHeight` property on glyphs
+
+- [`e26d666`](https://github.com/delucis/fontkitten/commit/e26d666802296b533ea1267ed2998b399fa14229) Thanks [@delucis](https://github.com/delucis)! - Removes an unused internal `copy()` method on the `BBox` class
+
 ## 0.0.14
 
 ### Patch Changes

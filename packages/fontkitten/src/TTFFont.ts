@@ -40,6 +40,8 @@ export default class TTFFont implements Font {
   declare HVAR: any;
   declare sbix: any;
   declare loca: any;
+  declare CPAL: any;
+  declare COLR: any;
 
   static probe(buffer: Buffer): boolean {
     const format = asciiDecoder.decode(buffer.slice(0, 4));

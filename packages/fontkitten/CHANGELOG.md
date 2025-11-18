@@ -1,5 +1,11 @@
 # fontkitten
 
+## 1.0.0
+
+### Major Changes
+
+- [`a52ef39`](https://github.com/delucis/fontkitten/commit/a52ef3942affd56ee6e5a2af4ff337364f4778ff) Thanks [@delucis](https://github.com/delucis)! - Welcome to the first stable release of fontkitten. Enjoy! 😺
+
 ## 0.0.16
 
 ### Patch Changes

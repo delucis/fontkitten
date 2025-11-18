@@ -10,7 +10,7 @@
     "glyph"
   ],
   "scripts": {
-    "test": "mocha",
+    "test": "node --test",
     "build": "tsdown --dts --no-fixed-extension"
   },
   "type": "module",
@@ -35,7 +35,6 @@
   "devDependencies": {
     "@fontkitten/restructure": "^0.0.7",
     "@types/node": "^24.10.0",
-    "mocha": "^11.7.5",
     "tsdown": "^0.16.2"
   }
 }

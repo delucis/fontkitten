@@ -1,6 +1,7 @@
 // @ts-check
 
 import { open } from './helpers/util.js';
+import { describe, beforeEach, it } from 'node:test';
 import assert from 'assert';
 
 describe('metadata', function () {

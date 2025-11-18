@@ -1,4 +1,5 @@
 import { open } from './helpers/util.js';
+import { describe, it } from 'node:test';
 
 describe('issues', function () {
     describe('#282 - ReferenceError: Cannot access \'c3x\' before initialization', function () {

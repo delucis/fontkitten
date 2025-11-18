@@ -55,7 +55,8 @@ export default class COLRGlyph extends Glyph {
     // default to normal glyph from glyf or CFF
     if (baseLayer == null) {
       const g = this._font._getBaseGlyph(this.id);
-      return [COLRLayer(g, Black)];
+      // if base glyph is same instance, return empty layers to avoid infinite recursion
+      return g === this ? [] : [COLRLayer(g, Black)];
     }
 
     // otherwise, return an array of all the layers

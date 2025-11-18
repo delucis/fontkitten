@@ -1,5 +1,6 @@
 import { open } from './helpers/util.js';
 import assert from 'assert';
+import { describe, beforeEach, it } from 'node:test';
 
 describe('character to glyph mapping', function () {
   describe('basic cmap handling', () => {

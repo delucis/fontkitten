@@ -1,6 +1,6 @@
 import { create } from 'fontkitten';
 import { readdirSync, readFileSync } from 'fs';
-import { describe, it } from 'mocha';
+import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 const dataDir = new URL('./data/', import.meta.url);

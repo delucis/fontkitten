@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { open } from './helpers/util.js';
+import { describe, it } from 'node:test';
 
 describe('fontkitten', function () {
   it('should open a font from the file system', async () => {
@@ -39,14 +40,14 @@ describe('fontkitten', function () {
   });
 
   it('should error when opening an invalid font asynchronously', async () => {
-    assert.rejects(
+    await assert.rejects(
       open(new URL(import.meta.url)),
-      'Unknown font format'
+      { message: 'Unknown font format' }
     );
   });
 
   it('should error when opening an invalid font synchronously', async () => {
-    assert.rejects(async () => await open(new URL(import.meta.url)), /Unknown font format/);
+    await assert.rejects(async () => await open(new URL(import.meta.url)), /Unknown font format/);
   });
 
   it('should get collection objects for ttc fonts', async () => {

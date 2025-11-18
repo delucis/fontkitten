@@ -1,18 +1,19 @@
 import { open } from './helpers/util.js';
 import assert from 'assert';
 import fs from 'fs';
+import { describe, beforeEach, it } from 'node:test';
 
 const fontExists = fs.existsSync('/Library/Fonts/Skia.ttf');
 
 describe('variations', function () {
   describe('Skia', function () {
+    if (!fontExists) {
+      return;
+    }
+
     let font;
 
     beforeEach(async function () {
-      if (!fontExists) {
-        this.skip();
-        return;
-      }
       font = await open('/Library/Fonts/Skia.ttf');
     });
 

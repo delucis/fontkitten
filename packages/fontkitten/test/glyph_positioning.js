@@ -1,5 +1,6 @@
 import { open } from './helpers/util.js';
 import assert from 'assert';
+import { describe, beforeEach, it } from 'node:test';
 
 describe('glyph positioning', function () {
   describe('basic positioning', function () {

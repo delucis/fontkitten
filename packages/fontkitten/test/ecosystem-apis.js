@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import { describe, it } from 'mocha';
+import { describe, it, before } from 'node:test';
 import { open } from './helpers/util.js';
 import { basename, extname, join } from 'node:path';
 import { readdirSync } from 'node:fs';

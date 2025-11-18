@@ -1,5 +1,11 @@
 # fontkitten
 
+## 0.0.16
+
+### Patch Changes
+
+- [#48](https://github.com/delucis/fontkitten/pull/48) [`1ffc98a`](https://github.com/delucis/fontkitten/commit/1ffc98aa9df646d39cc6ae51f54ec7368d8e3e1a) Thanks [@delucis](https://github.com/delucis)! - Fixes a rare case where glyphs without layers in color fonts could cause infinite recursion
+
 ## 0.0.15
 
 ### Patch Changes

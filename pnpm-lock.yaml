@@ -21,7 +21,7 @@ importers:
         specifier: ^24.10.1
         version: 24.10.1
       tsdown:
-        specifier: ^0.16.7
+        specifier: ^0.16.8
         version: 0.16.8(synckit@0.11.11)(typescript@5.9.3)
 
   packages/fontkitten:
@@ -37,7 +37,7 @@ importers:
         specifier: ^24.10.1
         version: 24.10.1
       tsdown:
-        specifier: ^0.16.7
+        specifier: ^0.16.8
         version: 0.16.8(synckit@0.11.11)(typescript@5.9.3)
 
 packages:

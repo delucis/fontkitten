@@ -6,7 +6,9 @@
   "scripts": {
     "build": "pnpm --filter fontkitten... build",
     "pretest": "pnpm build",
-    "test": "pnpm --filter fontkitten... test"
+    "test": "pnpm --filter fontkitten... test",
+    "pretest:bun": "pnpm build",
+    "test:bun": "pnpm --filter fontkitten... test:bun"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.2",

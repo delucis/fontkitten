@@ -1,3 +1,5 @@
+const Latin1Decoder = new TextDecoder('latin1');
+
 export class DecodeStream {
   #view: DataView;
   pos: number;
@@ -9,13 +11,14 @@ export class DecodeStream {
     this.length = buffer.length;
   }
 
-  readString(length: number, encoding: string = 'ascii'): string | Uint8Array {
+  readString(length: number, encoding: string = 'ascii'): string {
     const buf = this.readBuffer(length);
     try {
       const decoder = new TextDecoder(encoding);
       return decoder.decode(buf);
-    } catch (err) {
-      return buf;
+    } catch {
+      // Fall back to latin1 if encoding is not supported.
+      return Latin1Decoder.decode(buf);
     }
   }
 

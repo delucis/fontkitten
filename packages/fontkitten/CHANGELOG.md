@@ -1,5 +1,11 @@
 # fontkitten
 
+## 1.0.1
+
+### Patch Changes
+
+- [#80](https://github.com/delucis/fontkitten/pull/80) [`5046dc0`](https://github.com/delucis/fontkitten/commit/5046dc0d85a6cc087d08b8848b29b56931551bc4) and [#82](https://github.com/delucis/fontkitten/pull/82) [`03db985`](https://github.com/delucis/fontkitten/commit/03db98556ba38ad9f5e62641eb97e0ff2d3d4e0f) Thanks [@delucis](https://github.com/delucis)! - Improves compatibility with Bun’s `TextDecoder` implementation. Fixes issues reading font information such as name tables when using the Bun runtime.
+
 ## 1.0.0
 
 ### Major Changes

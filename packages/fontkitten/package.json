@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "test": "node --test",
-    "test:bun": "for i in ./test/*.js; do echo \"\n\n\n\n\n\n\" && bun test --only-failures $i; done",
+    "test:bun": "for i in ./test/*.js; do echo \"\n\n\n\n\n$i\n\n\" && bun test --only-failures \"$i\"; done",
     "build": "tsdown --dts --no-fixed-extension"
   },
   "type": "module",

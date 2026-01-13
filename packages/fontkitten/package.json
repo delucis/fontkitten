@@ -11,6 +11,7 @@
   ],
   "scripts": {
     "test": "node --test",
+    "test:bun": "bun test ./test/*.js",
     "build": "tsdown --dts --no-fixed-extension"
   },
   "type": "module",

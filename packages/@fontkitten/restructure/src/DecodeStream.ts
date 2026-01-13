@@ -9,9 +9,14 @@ export class DecodeStream {
     this.length = buffer.length;
   }
 
-  readString(length: number, encoding: string = 'ascii'): string {
+  readString(length: number, encoding: string = 'ascii'): string | Uint8Array {
     const buf = this.readBuffer(length);
-    return new TextDecoder(encoding).decode(buf);
+    try {
+      const decoder = new TextDecoder(encoding);
+      return decoder.decode(buf);
+    } catch (err) {
+      return buf;
+    }
   }
 
   readBuffer(length: number): Uint8Array {

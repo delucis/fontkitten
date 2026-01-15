@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@fontkitten/restructure": "^0.0.7",
-    "@types/node": "^24.10.4",
+    "@types/node": "^24.10.7",
     "tsdown": "^0.18.3"
   }
 }

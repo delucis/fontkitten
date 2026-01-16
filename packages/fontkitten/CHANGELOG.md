@@ -1,5 +1,11 @@
 # fontkitten
 
+## 1.0.2
+
+### Patch Changes
+
+- [#87](https://github.com/delucis/fontkitten/pull/87) [`4de7251`](https://github.com/delucis/fontkitten/commit/4de72516573d0cd848eef83bdff168b0dfd0f3d7) Thanks [@delucis](https://github.com/delucis)! - Fixes `engines` field in package.json to correctly reflect support for Node.js versions >=20
+
 ## 1.0.1
 
 ### Patch Changes

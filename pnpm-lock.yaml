@@ -18,7 +18,7 @@ importers:
   packages/@fontkitten/restructure:
     devDependencies:
       '@types/node':
-        specifier: ^24.10.14
+        specifier: ^24.10.15
         version: 24.11.0
       tsdown:
         specifier: ^0.20.3
@@ -34,7 +34,7 @@ importers:
         specifier: ^0.0.7
         version: link:../@fontkitten/restructure
       '@types/node':
-        specifier: ^24.10.14
+        specifier: ^24.10.15
         version: 24.11.0
       tsdown:
         specifier: ^0.20.3

@@ -1,5 +1,11 @@
 # fontkitten
 
+## 1.0.3
+
+### Patch Changes
+
+- [#105](https://github.com/delucis/fontkitten/pull/105) [`9cebf61`](https://github.com/delucis/fontkitten/commit/9cebf61630bad80d8fe67523e74c51616a2bdea9) Thanks [@delucis](https://github.com/delucis)! - Avoids returning an invalid x-height of `0` for font files that don’t specify an x-height in their OS/2 table (these fonts now return `undefined`)
+
 ## 1.0.2
 
 ### Patch Changes

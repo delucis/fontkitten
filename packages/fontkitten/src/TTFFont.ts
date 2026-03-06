@@ -200,7 +200,7 @@ export default class TTFFont implements Font {
    * See [here](https://en.wikipedia.org/wiki/X-height) for more details.
    */
   get xHeight(): number {
-    return this['OS/2']?.xHeight ?? 0;
+    return this['OS/2']?.xHeight;
   }
 
   /**

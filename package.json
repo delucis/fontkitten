@@ -11,8 +11,8 @@
     "test:bun": "pnpm --filter fontkitten... test:bun"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.7.0",
-    "@changesets/cli": "^2.31.1"
+    "@changesets/changelog-github": "^1.0.0",
+    "@changesets/cli": "^3.0.0"
   },
   "packageManager": "pnpm@11.21.0+sha512.521705bce689924eac72f5a3587122f362689ef6571e55ba80076fd637c11132ecffada26fad4ea79c485bfddbfd3d5a2a5b05805a77e893de71ec8a6cca3bb1"
 }
